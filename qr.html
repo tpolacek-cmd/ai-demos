@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Totalplay - Factura Digital</title>
+    <link rel="stylesheet" href="css/qr-styles.css">
+    <script src="config/brand-config.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+    <!-- Header Bar -->
+    <header class="viewer-header">
+        <div class="header-left">
+            <!-- BRAND: company logo -->
+            <img id="qrHeaderLogo" src="assets/brand/totalplay.png" alt="Totalplay" class="header-logo">
+            <div class="header-text">
+                <h1>Estado de Cuenta Digital</h1>
+                <p>Periodo: 10 Feb - 09 Mar 2026</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="page-indicator">
+                <button class="page-btn" id="prevPage" disabled>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <span id="pageInfo">Cargando...</span>
+                <button class="page-btn" id="nextPage">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- PDF Viewer -->
+    <main class="viewer-main">
+        <div class="pdf-container" id="pdfContainer">
+            <div class="pdf-loading" id="pdfLoading">
+                <div class="loading-spinner"></div>
+                <p>Cargando factura...</p>
+            </div>
+
+            <!-- PDF pages will be rendered here -->
+            <div class="pdf-pages" id="pdfPages"></div>
+        </div>
+    </main>
+
+    <!-- QR Overlay (positioned over page 2) -->
+    <div class="qr-overlay" id="qrOverlay" style="display: none;">
+        <div class="qr-block">
+            <div class="qr-block-header">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#DBE442" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Portal de Pago Seguro</span>
+            </div>
+            <div class="qr-code-area" id="qrCodeArea">
+                <div class="qr-loading-small" id="qrLoadingSmall">
+                    <div class="loading-spinner-small"></div>
+                </div>
+            </div>
+            <p class="qr-label">Escanea este QR para acceder al portal de pago<br>y utilizar tus medios de pago favoritos</p>
+            <div class="qr-click-hint-factura">Click en el QR para simular escaneo</div>
+        </div>
+    </div>
+
+    <!-- Scan Simulation Overlay -->
+    <div class="scan-overlay" id="scanOverlay" style="display: none;">
+        <div class="scan-card">
+            <div class="scan-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="#DBE442" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M15 3h6v6M10 14L21 3" stroke="#DBE442" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <h3>Abriendo portal de pago</h3>
+            <p>Redirigiendo a <span data-brand="paymentDomain"></span></p>
+            <div class="scan-url">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#00A884" stroke-width="2"/></svg>
+                <span data-brand="paymentDomain"></span>
+            </div>
+            <div class="scan-progress">
+                <div class="scan-progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // BRAND: Initialize brand elements
+        (function initQrBrand() {
+            document.title = BRAND.name + ' - Factura Digital';
+            var logo = document.getElementById('qrHeaderLogo');
+            if (logo) { logo.src = BRAND.logo; logo.alt = BRAND.name; }
+            document.querySelectorAll('[data-brand="paymentDomain"]').forEach(function(el) {
+                el.textContent = BRAND.paymentDomain;
+            });
+        })();
+    </script>
+    <script src="js/qr-script.js"></script>
+</body>
+</html>

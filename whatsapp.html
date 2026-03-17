@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Web</title>
+    <script src="config/brand-config.js"></script>
+    <script>
+        // Embedded mode (inside mobile viewer iframe)
+        var isEmbedded = new URLSearchParams(window.location.search).get('embedded') === '1';
+        if (isEmbedded) {
+            var s = document.createElement('style');
+            s.textContent = `
+                /* iOS Status Bar spacer */
+                .ios-status-bar {
+                    height: 36px;
+                    min-height: 36px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 0 24px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    color: white;
+                    background: #202C33;
+                    flex-shrink: 0;
+                    z-index: 9999;
+                    position: relative;
+                }
+                .ios-status-bar .ios-time { letter-spacing: 0.5px; }
+                .ios-status-bar .ios-icons {
+                    display: flex;
+                    gap: 5px;
+                    align-items: center;
+                }
+                .ios-status-bar .ios-icons svg { display: block; }
+                .wa-top-bar { display: none !important; }
+                .wa-sidebar { display: none !important; }
+                html, body {
+                    height: 100% !important;
+                    overflow: hidden !important;
+                }
+                .wa-container {
+                    height: calc(100% - 36px) !important;
+                    display: flex !important;
+                }
+                .wa-chat {
+                    width: 100% !important;
+                    flex: 1 !important;
+                    border: none !important;
+                    height: 100% !important;
+                    display: flex !important;
+                    flex-direction: column !important;
+                }
+                .chat-header {
+                    border-radius: 0 !important;
+                }
+                .chat-messages {
+                    background-size: 300px !important;
+                    flex: 1 !important;
+                    overflow-y: auto !important;
+                }
+                .chat-header-avatar {
+                    width: 36px !important;
+                    height: 36px !important;
+                }
+                .chat-header-avatar img {
+                    width: 100% !important;
+                    height: 100% !important;
+                    object-fit: contain !important;
+                }
+                .chat-header-name { font-size: 15px !important; }
+                .chat-header-status { font-size: 11px !important; }
+                .chat-input-bar { border-radius: 0 !important; }
+                .message { max-width: 85% !important; }
+                .link-preview { max-width: 100% !important; }
+                .link-preview-banner { height: 120px !important; }
+                .link-preview-banner img { max-height: 30px !important; }
+            `;
+            document.head.appendChild(s);
+            // Inject status bar element when DOM is ready
+            document.addEventListener('DOMContentLoaded', function() {
+                var bar = document.createElement('div');
+                bar.className = 'ios-status-bar';
+                bar.innerHTML = '<span class="ios-time">17:35</span><div class="ios-icons"><svg width="12" height="8" viewBox="0 0 17 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="0.5" fill="white"/><rect x="4.5" y="2" width="3" height="10" rx="0.5" fill="white"/><rect x="9" y="0.5" width="3" height="11.5" rx="0.5" fill="white"/><rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="white" opacity="0.3"/></svg><svg width="12" height="9" viewBox="0 0 16 12" fill="none"><path d="M8 2.4C10.6 2.4 12.9 3.5 14.5 5.2L15.6 4C13.7 2 11 0.8 8 0.8S2.3 2 0.4 4L1.5 5.2C3.1 3.5 5.4 2.4 8 2.4Z" fill="white"/><path d="M8 5.6C9.8 5.6 11.4 6.3 12.5 7.5L13.6 6.3C12.2 4.8 10.2 3.9 8 3.9S3.8 4.8 2.4 6.3L3.5 7.5C4.6 6.3 6.2 5.6 8 5.6Z" fill="white"/><path d="M8 8.8C8.9 8.8 9.8 9.2 10.4 9.8L11.6 8.6C10.6 7.7 9.4 7.1 8 7.1S5.4 7.7 4.4 8.6L5.6 9.8C6.2 9.2 7.1 8.8 8 8.8Z" fill="white"/><circle cx="8" cy="11" r="1.2" fill="white"/></svg><svg width="18" height="9" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="2" stroke="white" stroke-opacity="0.35"/><rect x="2" y="2" width="17" height="9" rx="1" fill="white"/><path d="M24 4.5C24.8 4.8 25.5 5.5 25.5 6.5S24.8 8.2 24 8.5V4.5Z" fill="white" opacity="0.4"/></svg></div>';
+                document.body.insertBefore(bar, document.body.firstChild);
+            });
+        }
+    </script>
+    <link rel="stylesheet" href="config/variables.css">
+    <link rel="stylesheet" href="css/whatsapp-styles.css">
+</head>
+<body>
+    <div class="wa-top-bar"></div>
+
+    <div class="wa-container">
+        <!-- SIDEBAR -->
+        <div class="wa-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-avatar">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+                </div>
+                <div class="sidebar-actions">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                </div>
+            </div>
+
+            <div class="sidebar-search">
+                <div class="search-box">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2"/></svg>
+                    <input type="text" placeholder="Buscar o empezar un chat nuevo">
+                </div>
+            </div>
+
+            <div class="chat-list">
+                <!-- BRAND: active chat item -->
+                <div class="chat-item active">
+                    <div class="chat-avatar">
+                        <img class="brand-logo-sidebar" src="assets/brand/totalplay.png" alt="Totalplay">
+                    </div>
+                    <div class="chat-info">
+                        <div class="chat-info-top">
+                            <span class="chat-name brand-fullName"></span>
+                            <span class="chat-time unread">17:32</span>
+                        </div>
+                        <div class="chat-info-bottom">
+                            <span class="chat-preview brand-preview"></span>
+                            <span class="unread-badge">2</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other chats -->
+                <div class="chat-item">
+                    <div class="chat-avatar purple">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2"/></svg>
+                    </div>
+                    <div class="chat-info">
+                        <div class="chat-info-top">
+                            <span class="chat-name">Familia</span>
+                            <span class="chat-time">16:45</span>
+                        </div>
+                        <div class="chat-info-bottom">
+                            <span class="chat-preview">Mamá: ¿Ya vieron las fotos? 📸</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-item">
+                    <div class="chat-avatar blue">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+                    </div>
+                    <div class="chat-info">
+                        <div class="chat-info-top">
+                            <span class="chat-name">Carlos López</span>
+                            <span class="chat-time">15:20</span>
+                        </div>
+                        <div class="chat-info-bottom">
+                            <span class="chat-preview">Ok perfecto, nos vemos ahí</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-item">
+                    <div class="chat-avatar orange">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+                    </div>
+                    <div class="chat-info">
+                        <div class="chat-info-top">
+                            <span class="chat-name">Ana María</span>
+                            <span class="chat-time">14:05</span>
+                        </div>
+                        <div class="chat-info-bottom">
+                            <span class="chat-preview">Gracias!! 🙌</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-item">
+                    <div class="chat-avatar green">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2"/></svg>
+                    </div>
+                    <div class="chat-info">
+                        <div class="chat-info-top">
+                            <span class="chat-name">Trabajo</span>
+                            <span class="chat-time">Ayer</span>
+                        </div>
+                        <div class="chat-info-bottom">
+                            <span class="chat-preview">Roberto: La junta se movió a las 3</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHAT PANEL -->
+        <div class="wa-chat">
+            <div class="chat-header">
+                <div class="chat-header-avatar">
+                    <!-- BRAND: chat header avatar -->
+                    <img class="brand-logo-header" src="assets/brand/totalplay.png" alt="Totalplay">
+                </div>
+                <div class="chat-header-info">
+                    <div class="chat-header-name brand-fullName"></div>
+                    <div class="chat-header-status">Cuenta empresarial verificada ✓</div>
+                </div>
+                <div class="chat-header-actions">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2"/></svg>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="19" r="1" fill="currentColor"/></svg>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="msg-system">
+                    <span><span class="lock-icon">🔒</span> Los mensajes y las llamadas están cifrados de extremo a extremo.</span>
+                </div>
+
+                <div class="msg-date"><span>HOY</span></div>
+
+                <!-- Messages will be animated in by JS -->
+            </div>
+
+            <div class="chat-input-bar">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="9.5" r="1" fill="currentColor"/><circle cx="15" cy="9.5" r="1" fill="currentColor"/></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" stroke="currentColor" stroke-width="1.5"/></svg>
+                <input type="text" class="chat-input" placeholder="Escribe un mensaje">
+                <button class="send-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 20V4M12 4l7 7M12 4L5 11" stroke="#8696A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // BRAND: Initialize brand elements
+        (function initWhatsAppBrand() {
+            document.querySelectorAll('.brand-fullName').forEach(function(el) { el.textContent = BRAND.fullName; });
+            document.querySelectorAll('.brand-logo-sidebar, .brand-logo-header').forEach(function(img) {
+                img.src = BRAND.logo; img.alt = BRAND.name;
+            });
+            document.querySelectorAll('.brand-preview').forEach(function(el) {
+                el.textContent = 'Tienes un pago pendiente de ' + BRAND.formattedTotal() + '...';
+            });
+        })();
+
+        const chatMessages = document.getElementById('chatMessages');
+        const flow = 'curp-deeplink';
+
+        function createMessage(type, content, time, options = {}) {
+            const msg = document.createElement('div');
+            msg.className = `message ${type} animate-in`;
+
+            let html = '';
+
+            if (options.linkPreview) {
+                html += `
+                    <div class="link-preview" onclick="redirectToTotalplay()">
+                        <div class="link-preview-banner">
+                            <img src="${BRAND.logo}" alt="${BRAND.name}">
+                            <span class="banner-amount">${BRAND.formattedTotal()}</span>
+                        </div>
+                        <div class="link-preview-body">
+                            <div class="link-preview-domain">${BRAND.domain}</div>
+                            <div class="link-preview-title">${options.linkTitle || ''}</div>
+                            <div class="link-preview-desc">${options.linkDesc || ''}</div>
+                        </div>
+                    </div>`;
+            }
+
+            if (content) {
+                if (options.hasLink) {
+                    html += `<div class="msg-text">${content}</div>`;
+                    html += `<a href="#" onclick="event.preventDefault(); redirectToTotalplay();" class="msg-link">${options.linkUrl || ''}</a>`;
+                } else {
+                    html += `<div class="msg-text">${content}</div>`;
+                }
+            }
+
+            html += `
+                <div class="msg-time">
+                    <span>${time}</span>
+                    ${type === 'sent' ? '<svg width="16" height="11" viewBox="0 0 16 11"><path d="M11.071.929l-5.657 5.657-2.121-2.122L2.222 5.536l3.192 3.192L12.142 2l-1.071-1.071z" fill="currentColor"/><path d="M6.414 6.586L5.343 5.515l-2.121-2.122L2.15 4.464l3.192 3.193 1.071-1.071z" fill="currentColor"/></svg>' : ''}
+                </div>`;
+
+            msg.innerHTML = html;
+            chatMessages.appendChild(msg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showTyping() {
+            const typing = document.createElement('div');
+            typing.className = 'message received animate-in';
+            typing.id = 'typingIndicator';
+            typing.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div>`;
+            chatMessages.appendChild(typing);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function removeTyping() {
+            const t = document.getElementById('typingIndicator');
+            if (t) t.remove();
+        }
+
+        // Animate messages sequentially
+        setTimeout(() => {
+            createMessage('received', 'Hola, te saludamos de *' + BRAND.fullName + '* 👋', '17:30');
+        }, 800);
+
+        setTimeout(() => {
+            showTyping();
+        }, 2000);
+
+        setTimeout(() => {
+            removeTyping();
+            createMessage('received', 'Te informamos que tienes un <b>pago pendiente</b> en tu servicio de ' + BRAND.serviceType + ':', '17:31');
+        }, 3500);
+
+        setTimeout(() => {
+            showTyping();
+        }, 4500);
+
+        setTimeout(() => {
+            removeTyping();
+            createMessage('received',
+                'Realiza tu pago de forma rápida y segura a través del siguiente enlace. También puedes <b>domiciliar tus pagos</b> para que se realicen automáticamente cada mes.',
+                '17:32',
+                {
+                    linkPreview: true,
+                    linkTitle: 'Pago pendiente — Cuenta ' + BRAND.account.number,
+                    linkDesc: BRAND.planName + ' • Período: ' + BRAND.account.period + ' • Vencimiento: ' + BRAND.account.dueDateShort + ' • Total: ' + BRAND.formattedTotal() + ' MXN',
+                    hasLink: true,
+                    linkUrl: 'https://' + BRAND.paymentDomain + '/s/' + BRAND.account.number.replace(/-/g, '')
+                }
+            );
+        }, 6000);
+
+        setTimeout(() => {
+            createMessage('received', 'Si tienes dudas, responde a este mensaje o llama al *' + BRAND.phoneFriendly + '* (' + BRAND.phone + ').', '17:32');
+        }, 7200);
+
+        function redirectToTotalplay() {
+            const overlay = document.createElement('div');
+            overlay.className = 'wa-redirect-overlay';
+            overlay.innerHTML = `
+                <div class="wa-redirect-card">
+                    <div class="wa-redirect-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="${BRAND.colors.primary}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M15 3h6v6M10 14L21 3" stroke="${BRAND.colors.primary}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Saliendo de WhatsApp</h3>
+                    <p>Estás siendo redirigido al portal de pagos de ${BRAND.name}</p>
+                    <div class="wa-redirect-url">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#00A884" stroke-width="2"/></svg>
+                        <span>${BRAND.paymentDomain}</span>
+                    </div>
+                    <div class="wa-redirect-loader">
+                        <div class="wa-redirect-bar"></div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+
+            requestAnimationFrame(() => {
+                overlay.classList.add('show');
+            });
+
+            setTimeout(() => {
+                var embeddedParam = isEmbedded ? '&embedded=1' : '';
+                window.location.href = 'checkout.html?flow=' + flow + embeddedParam;
+            }, 2500);
+        }
+    </script>
+</body>
+</html>

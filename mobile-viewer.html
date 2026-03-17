@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Mobile</title>
+    <script src="config/brand-config.js"></script>
+    <script src="config/demos-config.js"></script>
+    <link rel="stylesheet" href="config/variables.css">
+    <link rel="stylesheet" href="css/mobile-viewer-styles.css">
+</head>
+<body>
+
+    <div class="mv-container">
+        <!-- Header -->
+        <div class="mv-header">
+            <div class="mv-header-left">
+                <a href="index.html" class="mv-back-btn" title="Volver al launcher">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+                <div>
+                    <div class="mv-title" id="mvDemoTitle">Demo</div>
+                    <div class="mv-subtitle" id="mvDemoSubtitle">Vista mobile</div>
+                </div>
+            </div>
+            <div class="mv-badge">
+                <span class="mv-badge-dot"></span>
+                iPhone 15 Pro
+            </div>
+        </div>
+
+        <!-- iPhone Device -->
+        <div class="mv-phone-device">
+            <div class="mv-phone-notch"></div>
+            <div class="mv-phone-screen">
+                <!-- Loading -->
+                <div class="mv-phone-loading" id="mvLoading">
+                    <div class="mv-phone-loading-spinner"></div>
+                    <div class="mv-phone-loading-text">Cargando demo...</div>
+                </div>
+                <!-- Demo iframe -->
+                <iframe id="mvIframe" src="" title="Demo mobile view"></iframe>
+            </div>
+            <div class="mv-phone-home-indicator"></div>
+        </div>
+    </div>
+
+    <script src="js/mobile-viewer.js"></script>
+</body>
+</html>

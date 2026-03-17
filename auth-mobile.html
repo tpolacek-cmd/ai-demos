@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autenticación Totalplay</title>
+    <script src="config/brand-config.js"></script>
+    <script src="config/banks-config.js"></script>
+    <script>
+        // Apply bank theme IMMEDIATELY (blocks rendering for correct colors)
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const bank = urlParams.get('bank') || 'hey-banco';
+            const bankData = BANKS[bank] || BANKS['hey-banco'];
+
+            // Build color object from centralized BANKS config
+            const colors = {
+                primary: bankData.color,
+                primaryDark: bankData.colorDark,
+                accent: bankData.colorAccent,
+                gradient: bankData.gradient,
+                name: bankData.name
+            };
+
+            // Inject bank theme styles synchronously
+            const style = document.createElement('style');
+            style.id = 'bank-theme';
+            style.textContent = `
+                :root {
+                    --primary-color: ${colors.primary} !important;
+                    --primary-color-dark: ${colors.primaryDark} !important;
+                    --accent-color: ${colors.accent} !important;
+                    --background: #f8f9fa !important;
+                }
+                body {
+                    background: ${colors.gradient} !important;
+                }
+                .bank-header {
+                    background: ${colors.primary} !important;
+                }
+                .checkbox-option:has(input:checked) .checkbox-custom,
+                .radio-option:has(input:checked) .radio-check {
+                    border-color: ${colors.primary} !important;
+                    background: ${colors.primary} !important;
+                }
+                .checkbox-option:has(input:checked),
+                .radio-option:has(input:checked) {
+                    border-color: ${colors.primary} !important;
+                    background: ${colors.primary}0A !important;
+                }
+                .btn-primary {
+                    background: ${colors.primary} !important;
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Update title
+            document.title = colors.name + ' - Autenticación ' + (typeof BRAND !== 'undefined' ? BRAND.name : 'Totalplay');
+
+            // Embedded mode (inside iframe phone mockup)
+            if (urlParams.get('embedded') === '1') {
+                const embeddedStyle = document.createElement('style');
+                embeddedStyle.id = 'embedded-theme';
+                embeddedStyle.textContent = `
+                    html, body {
+                        background: white !important;
+                        padding: 0 !important;
+                        margin: 0 !important;
+                        height: 100% !important;
+                        width: 100% !important;
+                        display: block !important;
+                        overflow: hidden !important;
+                    }
+                    .mobile-container {
+                        max-width: none !important;
+                        width: 100% !important;
+                        height: 100% !important;
+                        border-radius: 0 !important;
+                        box-shadow: none !important;
+                        background: white !important;
+                        margin: 0 !important;
+                    }
+                    .screen, .screen-content {
+                        background: white !important;
+                        box-shadow: none !important;
+                    }
+                    .screen-content.scrollable {
+                        overflow-y: auto !important;
+                        scrollbar-width: none !important;
+                        -ms-overflow-style: none !important;
+                    }
+                    .screen-content.scrollable::-webkit-scrollbar {
+                        display: none !important;
+                        width: 0 !important;
+                    }
+                `;
+                document.head.appendChild(embeddedStyle);
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="css/auth-mobile-styles.css?v=19">
+</head>
+<body>
+    <div class="mobile-container">
+        <!-- Home Screen with Push Notification -->
+        <div class="screen" id="pushScreen">
+            <!-- Status Bar -->
+            <div class="home-status-bar">
+                <span class="time">17:35</span>
+                <div class="status-icons">
+                    <span>📶</span>
+                    <span>📡</span>
+                    <span>🔋</span>
+                </div>
+            </div>
+            
+            <!-- Push Notification Banner -->
+            <div class="push-notification-banner" onclick="handlePushClick()">
+                <div class="push-banner-header">
+                    <div class="push-app-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="24" height="24" rx="6" fill="#1A2D4F"/>
+                            <circle cx="12" cy="12" r="6" fill="white"/>
+                        </svg>
+                    </div>
+                    <div class="push-app-info">
+                        <strong>Hey Banco</strong>
+                        <span>ahora</span>
+                    </div>
+                </div>
+                <div class="push-banner-content">
+                    <strong class="push-banner-title" data-brand="push-title"></strong>
+                    <p class="push-banner-message" data-brand="push-message"></p>
+                </div>
+            </div>
+            
+            <!-- Home Screen Content -->
+            <div class="home-screen-content">
+                <!-- App Icons Grid -->
+                <div class="app-grid">
+                    <div class="app-icon">
+                        <div class="icon-bg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="24" height="24" rx="6" fill="white" fill-opacity="0.3"/>
+                            </svg>
+                        </div>
+                        <span>Wallet</span>
+                    </div>
+                    <div class="app-icon">
+                        <div class="icon-bg bank-gradient">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="8" fill="white"/>
+                            </svg>
+                        </div>
+                        <span>Hey</span>
+                        <div class="notification-dot"></div>
+                    </div>
+                    <div class="app-icon">
+                        <div class="icon-bg" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2L15 9L22 10L17 15L18 22L12 18L6 22L7 15L2 10L9 9L12 2Z" fill="white"/>
+                            </svg>
+                        </div>
+                        <span>Favoritos</span>
+                    </div>
+                    <div class="app-icon">
+                        <div class="icon-bg" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="4" y="4" width="16" height="16" rx="4" fill="white"/>
+                            </svg>
+                        </div>
+                        <span>Mensajes</span>
+                    </div>
+                </div>
+                
+                <div class="app-grid">
+                    <div class="app-icon">
+                        <div class="icon-bg" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="8" fill="white"/>
+                            </svg>
+                        </div>
+                        <span>Fotos</span>
+                    </div>
+                    <div class="app-icon">
+                        <div class="icon-bg" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="white"/>
+                                <path d="M2 17L12 22L22 17" fill="white" opacity="0.7"/>
+                            </svg>
+                        </div>
+                        <span>Ajustes</span>
+                    </div>
+                    <div class="app-icon">
+                        <div class="icon-bg" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="6" y="6" width="12" height="12" rx="2" fill="white"/>
+                            </svg>
+                        </div>
+                        <span>Más</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dock -->
+            <div class="home-dock">
+                <div class="dock-icon">
+                    <div class="icon-bg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="8" fill="white"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="dock-icon">
+                    <div class="icon-bg" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="6" y="6" width="12" height="12" rx="3" fill="white"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="dock-icon">
+                    <div class="icon-bg" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L15 9L22 10L17 15L18 22L12 18L6 22L7 15L2 10L9 9L12 2Z" fill="white"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Face ID Screen -->
+        <div class="screen active" id="faceIdScreen">
+            <div class="mobile-header">
+                <div class="status-bar">
+                    <span class="time">17:35</span>
+                    <div class="status-icons">
+                        <span>📶</span>
+                        <span>📡</span>
+                        <span>🔋</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="screen-content auth-clean-screen">
+                <button class="change-user-btn" onclick="window.history.back()">
+                    ← Volver
+                </button>
+                
+                <div class="auth-welcome">
+                    <h1 class="welcome-message">¡Hola! 😃</h1>
+                </div>
+                
+                <div class="auth-spacer"></div>
+                
+                <button class="faceid-button" onclick="simulateFaceID()">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14C8 14 9.5 16 12 16C14.5 16 16 14 16 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        <circle cx="9" cy="10" r="1.5" fill="currentColor"/>
+                        <circle cx="15" cy="10" r="1.5" fill="currentColor"/>
+                        </svg>
+                    <span>Autenticar con Face ID</span>
+                </button>
+                
+                <div class="auth-help">
+                    <a href="#" class="help-link">¿Necesitas ayuda? Contactar soporte</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Screen -->
+        <div class="screen" id="paymentScreen">
+            <div class="mobile-header">
+                <div class="status-bar">
+                    <span class="time">17:35</span>
+                    <div class="status-icons">
+                        <span>📶</span>
+                        <span>📡</span>
+                        <span>🔋</span>
+                    </div>
+                </div>
+                <div class="app-header bank-header">
+                    <button class="back-btn" onclick="goBack()">‹</button>
+                    <h1>Pagar servicio</h1>
+                </div>
+            </div>
+            
+            <div class="screen-content">
+                <div class="payment-container">
+                    <div class="service-header">
+                        <div class="service-logo-large">
+                            <!-- BRAND: company logo -->
+                            <img class="brand-logo" src="assets/brand/totalplay.png" alt="Totalplay">
+                        </div>
+                        <h2 data-brand="fullname-service"></h2>
+                        <p class="service-number">Cuenta: <span data-brand="account-number"></span></p>
+                    </div>
+                    
+                    <div class="amount-display">
+                        <span class="amount-label">Monto a pagar</span>
+                        <span class="amount-value" data-brand="total-amount"></span>
+                        <span class="amount-currency">MXN</span>
+                    </div>
+                    
+                    <div class="payload-section">
+                        <h3 class="payload-title">Detalles del pago</h3>
+                        <div class="payment-details">
+                            <div class="detail-row">
+                                <span>Número de cuenta</span>
+                                <span class="detail-value" data-brand="account-number"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span>Fecha de vencimiento</span>
+                                <span class="detail-value highlight" data-brand="account-dueDate"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span>Forma de pago</span>
+                                <span class="detail-value" id="paymentMethodAccount">Cuenta Hey Banco **** 4829</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mobile-footer">
+                <button class="btn-primary nu-btn" id="btnPayAmount" onclick="processPayment()">Pagar $840.00</button>
+            </div>
+        </div>
+
+        <!-- Payment Success Screen -->
+        <div class="screen" id="successScreen">
+            <div class="mobile-header">
+                <div class="status-bar">
+                    <span class="time">17:35</span>
+                    <div class="status-icons">
+                        <span>📶</span>
+                        <span>📡</span>
+                        <span>🔋</span>
+                    </div>
+                </div>
+                <div class="app-header bank-header">
+                    <h1 id="bankNameHeader2"></h1>
+                </div>
+            </div>
+            
+            <div class="screen-content">
+                <div class="success-container">
+                    <div class="success-icon">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="10" fill="#00D4AA"/>
+                            <path d="M8 12L11 15L16 9" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h2>¡Pago exitoso!</h2>
+                    <p class="success-amount" data-brand="total-amount-mxn"></p>
+                    <p class="success-message">Tu pago a <span data-brand="name"></span> se realizó correctamente</p>
+                </div>
+            </div>
+            
+            <div class="mobile-footer">
+                <button class="btn-primary nu-btn" onclick="showDomiciliationScreen()">Domiciliar pago</button>
+                <button class="btn-secondary" onclick="finish()">Terminar</button>
+            </div>
+        </div>
+
+        <!-- Domiciliation Config Screen - NEW DESIGN (Santander) -->
+        <div class="screen" id="domiciliationScreenNew">
+            <div class="mobile-header">
+                <div class="status-bar">
+                    <span class="time">17:35</span>
+                    <div class="status-icons">
+                        <span>📶</span>
+                        <span>📡</span>
+                        <span>🔋</span>
+                    </div>
+                </div>
+                <div class="app-header bank-header">
+                    <button class="back-btn" onclick="goBack()">‹</button>
+                    <h1>Configurar domiciliación</h1>
+                </div>
+            </div>
+            
+            <div class="screen-content scrollable">
+                <div class="domiciliation-container">
+                    <!-- BRAND: Service Card -->
+                    <div class="service-card-new">
+                        <div class="service-logo-new">
+                            <img class="brand-logo" src="assets/brand/totalplay.png" alt="Totalplay">
+                        </div>
+                        <div>
+                            <h3 data-brand="fullName"></h3>
+                            <p data-brand="serviceType"></p>
+                        </div>
+                    </div>
+                    
+                    <!-- Alias Input -->
+                    <div class="alias-input-new">
+                        <input type="text" id="alias" placeholder="Dale un nombre (Ej: Internet Casa)" data-brand-value="alias-default">
+                    </div>
+                    
+                    <!-- Frequency Badge -->
+                    <div class="info-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Cobro mensual automático
+                    </div>
+                    
+                    <!-- Payment Timing Chips -->
+                    <div class="timing-section">
+                        <label class="section-label">¿Cuándo cobrar?</label>
+                        <div class="timing-chips">
+                            <input type="radio" name="paymentTiming" value="facturacion" id="timing1" checked>
+                            <label for="timing1" class="chip-option">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                                    <polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Al recibir
+                            </label>
+                            
+                            <input type="radio" name="paymentTiming" value="vencimiento" id="timing2">
+                            <label for="timing2" class="chip-option">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Al vencer
+                            </label>
+                            
+                            <input type="radio" name="paymentTiming" value="dia-especifico" id="timing3">
+                            <label for="timing3" class="chip-option">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M12 12h4" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Día fijo
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Day Selector (hidden by default) -->
+                    <div class="day-selector" id="specificDayGroup" style="display: none;">
+                        <select id="specificDay" class="select-new">
+                            <option value="">Elige el día</option>
+                            <option value="1">Día 1</option>
+                            <option value="5">Día 5</option>
+                            <option value="10">Día 10</option>
+                            <option value="15">Día 15</option>
+                            <option value="20">Día 20</option>
+                            <option value="25">Día 25</option>
+                            <option value="ultimo">Último día</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Limits Section -->
+                    <div class="limits-section">
+                        <div class="limit-item">
+                            <label class="limit-header" for="enableMaxAmount">
+                                <div>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                    <span>Monto máximo</span>
+                                </div>
+                                <input type="checkbox" id="enableMaxAmount" class="toggle-switch">
+                            </label>
+                            <div id="maxAmountGroup" class="limit-content" style="display: none;">
+                                <div class="amount-input-new">
+                                    <span>$</span>
+                                    <input type="number" id="maxAmount" placeholder="3,000" value="3000">
+                                    <span>MXN</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="limit-item">
+                            <label class="limit-header" for="enableExpiration">
+                                <div>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                        <path d="M12 6v6l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                    <span>Fecha límite</span>
+                                </div>
+                                <input type="checkbox" id="enableExpiration" class="toggle-switch">
+                            </label>
+                            <div id="expirationDateGroup" class="limit-content" style="display: none;">
+                                <input type="date" id="expirationDate" class="date-input-new" min="">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Notifications Toggles -->
+                    <div class="notifications-new">
+                        <div class="notification-toggle">
+                            <div>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                <span>Avisar 3 días antes</span>
+                            </div>
+                            <input type="checkbox" id="notifyBeforePayment" class="toggle-switch" checked>
+                        </div>
+                        
+                        <div class="notification-toggle">
+                            <div>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2"/>
+                                    <polyline points="22 4 12 14.01 9 11.01" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                <span>Confirmar después</span>
+                            </div>
+                            <input type="checkbox" id="notifyAfterPayment" class="toggle-switch" checked>
+                        </div>
+                    </div>
+                    
+                    <!-- Account Info -->
+                    <div class="account-card-new">
+                        <div class="account-header">
+                            <div class="bank-avatar" id="bankAvatarNew" style="background: white; padding: 6px;">
+                                <img src="assets/banks/Hey_Banco.svg" alt="Hey Banco" style="width: 100%; height: 100%; object-fit: contain;">
+                            </div>
+                            <div>
+                                <strong>Juan Carlos Pérez García</strong>
+                                <p id="accountCardInfo">**** 4829 • Hey Banco México</p>
+                            </div>
+                        </div>
+                        <button class="details-btn" onclick="toggleAccountDetails()">
+                            <span id="accountDetailsLabel">Ver CLABE</span>
+                            <span class="chevron-new" id="accountChevron">›</span>
+                        </button>
+                        <div id="accountDetails" class="account-details-new" style="display: none;">
+                            <div class="detail-row">
+                                <span>CLABE</span>
+                                <strong>646180157012345829</strong>
+                            </div>
+                            <div class="detail-row">
+                                <span>Teléfono</span>
+                                <strong>55 1234 5678</strong>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Terms and Conditions -->
+                    <div class="tyc-domiciliation">
+                        <label class="tyc-dom-label" for="tycDomCheckbox">
+                            <input type="checkbox" id="tycDomCheckbox" class="tyc-dom-checkbox">
+                            <span class="tyc-dom-checkmark"></span>
+                            <span class="tyc-dom-text">
+                                Acepto los <a href="#" onclick="event.preventDefault();" class="tyc-dom-link">Términos y Condiciones</a> 
+                                y el <a href="#" onclick="event.preventDefault();" class="tyc-dom-link">Aviso de Privacidad</a> 
+                                para la domiciliación de pagos automáticos de <span data-brand="name"></span>.
+                            </span>
+                        </label>
+                    </div>
+
+                    <!-- Legal Notice -->
+                    <div class="legal-notice">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        <p>Puedes cancelar esta domiciliación en cualquier momento sin costo desde tu app</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mobile-footer">
+                <button class="btn-primary nu-btn" id="btnConfirmDom" onclick="confirmDomiciliation()" disabled>Confirmar domiciliación</button>
+            </div>
+        </div>
+
+        <!-- Domiciliation Config Screen - ORIGINAL DESIGN (Other Banks) -->
+        <div class="screen" id="domiciliationScreen">
+            <div class="mobile-header">
+                <div class="status-bar">
+                    <span class="time">17:35</span>
+                    <div class="status-icons">
+                        <span>📶</span>
+                        <span>📡</span>
+                        <span>🔋</span>
+                    </div>
+                </div>
+                <div class="app-header bank-header">
+                    <button class="back-btn" onclick="goBack()">‹</button>
+                    <h1>Configurar domiciliación</h1>
+                </div>
+            </div>
+            
+            <div class="screen-content scrollable">
+                <div class="domiciliation-container">
+                    <div class="service-info-card compact">
+                        <div class="service-logo-small">
+                            <img class="brand-logo" src="assets/brand/totalplay.png" alt="Totalplay">
+                        </div>
+                            <div class="service-details">
+                                <span class="service-company" data-brand="fullname-service"></span>
+                                <span class="service-identifier">Cuenta: <span data-brand="account-number"></span></span>
+                            </div>
+                        </div>
+                    
+                    <div class="form-group">
+                        <label for="aliasOld">Alias del servicio (opcional)</label>
+                        <input type="text" id="aliasOld" placeholder="Ej: Internet Casa" data-brand-value="alias-default">
+                        <small>Te ayudará a identificar este servicio</small>
+                    </div>
+                    
+                    <!-- Sección 1: Periodicidad y momento de pago -->
+                    <div class="section-divider">
+                        <h3>Periodicidad y cargo</h3>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Frecuencia de cargos</label>
+                        <div class="frequency-display compact">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+                                <line x1="3" y1="9" x2="21" y2="9" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <span><strong>Mensual</strong> - Se determina automáticamente</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>¿Cuándo deseas que se realice el cargo?</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="paymentTimingOld" value="facturacion" checked>
+                                <span class="radio-check"></span>
+                                <div class="radio-content">
+                                    <span class="radio-title">Al recibir la factura</span>
+                                    <span class="radio-desc">Se cargará apenas llegue el recibo</span>
+                                </div>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="paymentTimingOld" value="vencimiento">
+                                <span class="radio-check"></span>
+                                <div class="radio-content">
+                                    <span class="radio-title">Fecha de vencimiento</span>
+                                    <span class="radio-desc">Se cargará el día del vencimiento</span>
+                                </div>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="paymentTimingOld" value="dia-especifico">
+                                <span class="radio-check"></span>
+                                <div class="radio-content">
+                                    <span class="radio-title">Día específico del mes</span>
+                                    <span class="radio-desc">Elige un día fijo cada mes</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" id="specificDayGroupOld" style="display: none;">
+                        <label for="specificDayOld">Día del mes para realizar el cargo</label>
+                        <select id="specificDayOld" class="select-input">
+                            <option value="">Selecciona un día</option>
+                            <option value="1">Día 1</option>
+                            <option value="5">Día 5</option>
+                            <option value="10">Día 10</option>
+                            <option value="15">Día 15</option>
+                            <option value="20">Día 20</option>
+                            <option value="25">Día 25</option>
+                            <option value="ultimo">Último día del mes</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Sección 2: Límites y vigencia -->
+                    <div class="section-divider">
+                        <h3>Límites de la domiciliación</h3>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="checkbox-option">
+                            <input type="checkbox" id="enableMaxAmountOld">
+                            <span class="checkbox-custom"></span>
+                            <div class="checkbox-content">
+                                <strong>Establecer un monto máximo de cargo</strong>
+                            </div>
+                        </label>
+                        
+                        <div id="maxAmountGroupOld" class="max-amount-group" style="display: none;">
+                            <label for="maxAmountOld">Monto máximo por periodo</label>
+                        <div class="amount-input">
+                            <span class="currency">$</span>
+                                <input type="number" id="maxAmountOld" placeholder="0.00" value="3000">
+                            <span class="currency-suffix">MXN</span>
+                            </div>
+                            <small>No se realizará el cargo si el monto excede este límite</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="checkbox-option">
+                            <input type="checkbox" id="enableExpirationOld">
+                            <span class="checkbox-custom"></span>
+                            <div class="checkbox-content">
+                                <strong>Establecer fecha límite</strong>
+                            </div>
+                        </label>
+                        
+                        <div id="expirationDateGroupOld" class="max-amount-group" style="display: none;">
+                            <label for="expirationDateOld">Fecha límite</label>
+                            <input type="date" id="expirationDateOld" class="date-input" min="">
+                            <small>La domiciliación se cancelará automáticamente después de esta fecha</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Sección 3: Notificaciones -->
+                    <div class="section-divider">
+                        <h3>Notificaciones</h3>
+                    </div>
+                    
+                    <div class="notifications-group">
+                        <label class="notification-item">
+                            <input type="checkbox" id="notifyBeforePaymentOld" checked>
+                            <div class="notification-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="notification-content">
+                                <strong>Notificar antes del cargo</strong>
+                                <p>Te avisaremos 3 días antes de realizar el cargo</p>
+                            </div>
+                        </label>
+                        
+                        <label class="notification-item">
+                            <input type="checkbox" id="notifyAfterPaymentOld" checked>
+                            <div class="notification-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="notification-content">
+                                <strong>Notificar después del cargo</strong>
+                                <p>Te confirmaremos cuando el cargo se realice exitosamente o si falla</p>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <!-- Sección 4: Información del titular y cuenta -->
+                    <div class="section-divider">
+                        <h3>Información del titular</h3>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="accountHolderOld">Nombre completo del titular</label>
+                        <input type="text" id="accountHolderOld" value="Juan Carlos Pérez García" readonly>
+                        <small>Información obtenida automáticamente de tu cuenta</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Cuenta para realizar el cargo</label>
+                        <div class="account-display">
+                            <div class="account-info">
+                                <div class="bank-icon bank-gradient" id="bankIconOld"></div>
+                                <div>
+                                    <strong id="accountNameOld">Cuenta Hey Banco</strong>
+                                    <p id="cardNumberOld">**** **** **** 4829</p>
+                                </div>
+                            </div>
+                            <div class="account-details-toggle" onclick="toggleAccountDetails()">
+                                <span id="accountDetailsLabelOld">Ver detalles</span>
+                                <span class="chevron">›</span>
+                            </div>
+                        </div>
+                        <div class="account-details-expanded" id="accountDetailsOld" style="display: none;">
+                            <div class="detail-item">
+                                <span class="detail-label">CLABE</span>
+                                <span class="detail-value">646180157012345829</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Teléfono asociado</span>
+                                <span class="detail-value">55 1234 5678</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Institución Financiera</span>
+                                <span class="detail-value" id="institutionNameOld">Hey Banco México</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sección 5: Disclaimer -->
+                    <div class="disclaimer-box">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#00c853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <div>
+                            <strong>Tu derecho de cancelación</strong>
+                            <p>Estoy enterado de que <strong>en cualquier momento podré solicitar la cancelación de la presente domiciliación sin costo a mi cargo</strong>. Podrás hacerlo desde la sección de servicios domiciliados en tu app.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mobile-footer">
+                <button class="btn-primary nu-btn" onclick="confirmDomiciliationOld()">Confirmar domiciliación</button>
+            </div>
+        </div>
+
+        <!-- Final Success Screen -->
+        <div class="screen" id="finalScreen">
+            <div class="mobile-header">
+                <div class="status-bar">
+                    <span class="time">17:35</span>
+                    <div class="status-icons">
+                        <span>📶</span>
+                        <span>📡</span>
+                        <span>🔋</span>
+                    </div>
+                </div>
+                <div class="app-header bank-header">
+                    <h1 id="bankNameHeader3"></h1>
+                </div>
+            </div>
+            
+            <div class="screen-content">
+                <div class="final-container">
+                    <div class="success-icon">
+                        <svg width="100" height="100" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="10" fill="#1A2D4F"/>
+                            <path d="M8 12L11 15L16 9" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h2>¡Todo listo!</h2>
+                    <p class="final-message">Tu servicio de <span data-brand="name"></span> ha sido pagado y domiciliado exitosamente</p>
+                    
+                    <div class="summary-card">
+                        <h3>Resumen de configuración</h3>
+                        <div class="summary-row">
+                            <span>Servicio</span>
+                            <span id="summaryAlias">Totalplay Casa</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Pago automático</span>
+                            <span id="summaryTiming">Al recibir deuda</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Monto máximo</span>
+                            <span id="summaryAmount">$3,000.00 MXN</span>
+                        </div>
+                    </div>
+                    
+                    <div class="next-steps">
+                        <h4>Próximos pasos</h4>
+                        <ul>
+                            <li>Recibirás notificaciones antes de cada pago</li>
+                            <li>Podrás pausar o cancelar en cualquier momento</li>
+                            <li>Verás el historial en tu app de Hey Banco</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mobile-footer">
+                <button class="btn-primary nu-btn" onclick="closeApp()">Cerrar</button>
+            </div>
+        </div>
+        <!-- Hey Banco Pagar Servicios Screen -->
+        <div class="screen" id="nuHomeScreen">
+            <div class="screen-content scrollable nu-pagar-screen">
+                <!-- Hey Banco Header -->
+                <div class="hey-header">
+                    <div class="hey-header-left">
+                        <img src="assets/banks/Hey_Banco.svg" alt="hey," style="height: 24px; filter: brightness(0) invert(1);">
+                        <span class="hey-header-name">Jafet</span>
+                    </div>
+                    <div class="hey-header-right">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" stroke="#fff" stroke-width="1.5"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="#fff" stroke-width="1.5"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="#fff" stroke-width="1.5"/><circle cx="12" cy="7" r="4" stroke="#fff" stroke-width="1.5"/></svg>
+                    </div>
+                </div>
+
+                <!-- Subtitle -->
+                <p class="hey-subtitle">Busca el servicio que deseas pagar</p>
+
+                <!-- Search bar -->
+                <div class="hey-search-bar">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="#777" stroke-width="2"/><path d="M21 21l-4.35-4.35" stroke="#777" stroke-width="2" stroke-linecap="round"/></svg>
+                    <span>Buscar</span>
+                </div>
+
+                <!-- Category Grid -->
+                <div class="hey-grid">
+                    <div class="hey-tile">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="1.5"/><polyline points="12 6 12 12 16 14" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+                        <span>Últimos movimientos</span>
+                    </div>
+                    <div class="hey-tile">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" stroke="#fff" stroke-width="1.5" fill="none"/></svg>
+                        <span>Favoritos</span>
+                    </div>
+                    <div class="hey-tile">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="18" rx="2" stroke="#fff" stroke-width="1.5"/><line x1="2" y1="9" x2="22" y2="9" stroke="#fff" stroke-width="1.5"/><text x="12" y="17" font-family="Arial" font-size="8" fill="#fff" text-anchor="middle">$</text></svg>
+                        <span>Servicios</span>
+                    </div>
+                    <div class="hey-tile">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="#fff" stroke-width="1.5"/><polyline points="9 22 9 12 15 12 15 22" stroke="#fff" stroke-width="1.5"/></svg>
+                        <span>Inmobiliario</span>
+                    </div>
+                    <div class="hey-tile">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v4M12 14v4M16 14v4" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+                        <span>Gobiernos y municipios</span>
+                    </div>
+                    <div class="hey-tile">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <span>Financieros</span>
+                    </div>
+                    <div class="hey-tile">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="1.5"/><line x1="12" y1="8" x2="12" y2="12" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+                        <span>Varios</span>
+                    </div>
+                    <div class="hey-tile">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="1" y="4" width="22" height="16" rx="2" stroke="#fff" stroke-width="1.5"/><line x1="1" y1="10" x2="23" y2="10" stroke="#fff" stroke-width="1.5"/></svg>
+                        <span>Pago de tarjetas</span>
+                    </div>
+                </div>
+
+                <!-- Pagos pendientes -->
+                <div class="nu-pagar-section">
+                    <div class="nu-pagar-section-header">
+                        <span>Pagos pendientes</span>
+                        <a class="nu-pagar-admin">Administrar</a>
+                    </div>
+                    <div class="nu-pagar-row">
+                        <div class="nu-pagar-row-logo"><svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#0097E6"/><text x="16" y="21" font-family="Arial" font-size="9" font-weight="bold" fill="white" text-anchor="middle">AT&T</text></svg></div>
+                        <div class="nu-pagar-row-text">
+                            <strong>AT&T Pospago</strong>
+                            <span>15 MAR • Por pagar</span>
+                        </div>
+                        <div class="nu-pagar-row-arrow">›</div>
+                    </div>
+                </div>
+
+                <!-- Pagos domiciliados -->
+                <div class="nu-pagar-section">
+                    <div class="nu-pagar-section-header">
+                        <span>Pagos domiciliados</span>
+                        <a class="nu-pagar-admin">Administrar</a>
+                    </div>
+                    <div class="nu-pagar-row nu-pagar-row-dom">
+                        <!-- BRAND: domiciliated service logo -->
+                        <div class="nu-pagar-row-logo"><img class="brand-logo" src="assets/brand/totalplay.png" alt="Totalplay" style="width:32px;height:32px;border-radius:8px;object-fit:contain;"></div>
+                        <div class="nu-pagar-row-text">
+                            <strong data-brand="name-dot-service"></strong>
+                            <span class="nu-dom-active">Domiciliación activa ✓</span>
+                        </div>
+                        <div class="nu-pagar-row-arrow">›</div>
+                    </div>
+                </div>
+
+                <!-- Bottom spacer for tab bar -->
+                <div style="height: 70px;"></div>
+            </div>
+
+            <!-- Hey Banco Tab Bar -->
+            <div class="hey-tab-bar">
+                <div class="hey-tab" onclick="finish()">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="#777" stroke-width="1.5"/></svg>
+                    <span>Inicio</span>
+                </div>
+                <div class="hey-tab hey-tab-active">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="1.5"/><text x="12" y="16" font-family="Arial" font-size="10" fill="#fff" text-anchor="middle">$</text></svg>
+                    <span>Pagos</span>
+                </div>
+                <div class="hey-tab hey-tab-center">
+                    <div class="hey-havi-ring">
+                        <span>HAVI</span>
+                    </div>
+                </div>
+                <div class="hey-tab">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4" stroke="#777" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>Transferir</span>
+                </div>
+                <div class="hey-tab">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="16" rx="2" stroke="#777" stroke-width="1.5"/><path d="M2 8h20" stroke="#777" stroke-width="1.5"/></svg>
+                    <span style="font-size:9px">Buzón</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // BRAND: Initialize brand elements
+        (function initAuthBrand() {
+            if (typeof BRAND === 'undefined') return;
+            var map = {
+                'name': BRAND.name,
+                'fullName': BRAND.fullName,
+                'serviceType': BRAND.serviceType,
+                'account-number': BRAND.account.number,
+                'account-dueDate': BRAND.account.dueDate,
+                'total-amount': BRAND.formattedTotal(),
+                'total-amount-mxn': BRAND.formattedTotal() + ' MXN',
+                'fullname-service': BRAND.fullName + ' - ' + BRAND.serviceType,
+                'name-dot-service': BRAND.name + ' • ' + BRAND.serviceType,
+                'push-title': BRAND.name + ' - Pago pendiente',
+                'push-message': 'Tienes un pago por realizar de ' + BRAND.formattedTotal() + ' MXN. Toca para completar el pago y domiciliar tu servicio.',
+            };
+            Object.keys(map).forEach(function(key) {
+                document.querySelectorAll('[data-brand="' + key + '"]').forEach(function(el) {
+                    el.textContent = map[key];
+                });
+            });
+            // Update logos
+            document.querySelectorAll('.brand-logo').forEach(function(img) {
+                img.src = BRAND.logo; img.alt = BRAND.name;
+            });
+            // Update alias default values
+            document.querySelectorAll('[data-brand-value="alias-default"]').forEach(function(input) {
+                input.value = BRAND.name + ' Casa';
+            });
+            // Update pay button
+            var btnPay = document.getElementById('btnPayAmount');
+            if (btnPay) btnPay.textContent = 'Pagar ' + BRAND.formattedTotal();
+        })();
+    </script>
+    <script src="js/auth-mobile-script.js?v=10"></script>
+</body>
+</html>
+

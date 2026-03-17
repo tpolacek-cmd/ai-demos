@@ -1,0 +1,41 @@
+/* variables.css
+   CSS VARIABLES CENTRALIZADAS
+   Los valores de color se sincronizan con brand-config.js.
+   Al cambiar de marca, actualizar ambos archivos. */
+
+:root {
+    /* Colores de marca */
+    --primary-color: #DBE442;
+    --primary-dark: #C5CD2E;
+    --primary-light: #F9FBEB;
+    --secondary-color: #DBE442;
+    --accent-color: #E5EC6B;
+    --background: #FDFDE8;
+    --gradient-start: #DBE442;
+    --gradient-end: #E5EC6B;
+    --header-bg: #2A3444;
+    --btn-text-color: #1a1a2e;
+
+    /* Aliases --tp-* (usados en index.html y qr-styles) */
+    --tp-primary: #DBE442;
+    --tp-dark: #2A3444;
+    --tp-text: #1a1a2e;
+    --tp-text-secondary: #6c757d;
+    --tp-border: #e2e8f0;
+    --tp-bg: #f5f5f5;
+
+    /* Colores generales (no cambian con la marca) */
+    --text-primary: #1a1a2e;
+    --text-secondary: #6c757d;
+    --border-color: #e2e8f0;
+    --white: #ffffff;
+    --danger: #dc3545;
+    --warning: #ffc107;
+    --success: #28a745;
+
+    /* Sombras (usan color de marca) */
+    --shadow-sm: 0 2px 8px rgba(219, 228, 66, 0.10);
+    --shadow-md: 0 4px 12px rgba(219, 228, 66, 0.15);
+    --shadow-lg: 0 8px 24px rgba(219, 228, 66, 0.18);
+    --shadow-xl: 0 12px 32px rgba(219, 228, 66, 0.22);
+}
