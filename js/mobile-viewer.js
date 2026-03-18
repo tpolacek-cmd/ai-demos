@@ -1,7 +1,7 @@
 // ============================================
 // MOBILE VIEWER
 // Controla el shell del iPhone frame que carga demos en un iframe.
-// Depende de: config/demos-config.js, config/brand-config.js
+// Depende de: config/demo-builder-config.js, config/brand-config.js
 // ============================================
 
 (function initMobileViewer() {
@@ -9,8 +9,8 @@
     var demoId = urlParams.get('demo');
     var flow = urlParams.get('flow') || '';
 
-    // Buscar la demo en config
-    var demo = getDemoById(demoId);
+    // Buscar la demo en las opciones de la etapa 'arrival' del builder
+    var demo = getOptionById('arrival', demoId);
 
     if (!demo) {
         // Demo no encontrada, volver al index
@@ -29,7 +29,7 @@
     if (subtitleEl) subtitleEl.textContent = 'Vista mobile';
 
     // Construir URL del iframe
-    var demoUrl = demo.url;
+    var demoUrl = demo.page;
     var separator = demoUrl.indexOf('?') !== -1 ? '&' : '?';
     demoUrl += separator + 'embedded=1';
 

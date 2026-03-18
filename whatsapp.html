@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WhatsApp Web</title>
     <script src="config/brand-config.js"></script>
+    <script src="config/demo-builder-config.js"></script>
+    <script src="js/demo-router.js"></script>
     <script>
         // Embedded mode (inside mobile viewer iframe)
         var isEmbedded = new URLSearchParams(window.location.search).get('embedded') === '1';
@@ -254,7 +256,7 @@
 
             if (options.linkPreview) {
                 html += `
-                    <div class="link-preview" onclick="redirectToTotalplay()">
+                    <div class="link-preview" onclick="redirectToCheckout()">
                         <div class="link-preview-banner">
                             <img src="${BRAND.logo}" alt="${BRAND.name}">
                             <span class="banner-amount">${BRAND.formattedTotal()}</span>
@@ -270,7 +272,7 @@
             if (content) {
                 if (options.hasLink) {
                     html += `<div class="msg-text">${content}</div>`;
-                    html += `<a href="#" onclick="event.preventDefault(); redirectToTotalplay();" class="msg-link">${options.linkUrl || ''}</a>`;
+                    html += `<a href="#" onclick="event.preventDefault(); redirectToCheckout();" class="msg-link">${options.linkUrl || ''}</a>`;
                 } else {
                     html += `<div class="msg-text">${content}</div>`;
                 }
@@ -338,7 +340,7 @@
             createMessage('received', 'Si tienes dudas, responde a este mensaje o llama al *' + BRAND.phoneFriendly + '* (' + BRAND.phone + ').', '17:32');
         }, 7200);
 
-        function redirectToTotalplay() {
+        function redirectToCheckout() {
             const overlay = document.createElement('div');
             overlay.className = 'wa-redirect-overlay';
             overlay.innerHTML = `
@@ -367,8 +369,7 @@
             });
 
             setTimeout(() => {
-                var embeddedParam = isEmbedded ? '&embedded=1' : '';
-                window.location.href = 'checkout.html?flow=' + flow + embeddedParam;
+                window.location.href = getNextPageUrl('arrival');
             }, 2500);
         }
     </script>

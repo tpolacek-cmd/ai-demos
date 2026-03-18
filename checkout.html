@@ -70,23 +70,6 @@
                 .payment-options h2 {
                     font-size: 16px !important;
                 }
-                .actions {
-                    flex-wrap: wrap !important;
-                    gap: 8px !important;
-                    padding: 0 !important;
-                }
-                .actions .btn-back,
-                .actions .btn-secondary {
-                    display: none !important;
-                }
-                .actions .btn-primary {
-                    width: 100% !important;
-                    border-radius: 12px !important;
-                }
-                /* Hide flow badge in embedded */
-                .flow-badge {
-                    display: none !important;
-                }
                 /* Modals: full screen in embedded */
                 .modal-content {
                     max-width: none !important;
@@ -127,7 +110,7 @@
             </div>
             <div class="header-info">
                 <span class="header-title">Pago de Servicios</span>
-                <span class="flow-badge" id="flowBadge"></span>
+
             </div>
         </header>
 
@@ -387,17 +370,7 @@
                 </div>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="actions">
-                <button class="btn-back" onclick="window.location.href='index.html'">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    Volver
-                </button>
-                <button class="btn-secondary">Cancelar</button>
-                <button class="btn-primary" id="continueBtn" disabled>Continuar al Pago</button>
-            </div>
+
         </main>
 
         <!-- Success Modal -->
@@ -405,8 +378,8 @@
             <div class="modal-content">
                 <div class="modal-icon">
                     <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="10" stroke="#DBE442" stroke-width="2"/>
-                        <path d="M8 12L11 15L16 9" stroke="#DBE442" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="12" cy="12" r="10" stroke="var(--primary-color, #DBE442)" stroke-width="2"/>
+                        <path d="M8 12L11 15L16 9" stroke="var(--primary-color, #DBE442)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </div>
                 <h2 id="modalTitle">¡Método seleccionado!</h2>
@@ -671,7 +644,7 @@
                 <div class="example-box">
                     <div class="example-header">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 16v-4M12 8h.01M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z" stroke="#DBE442" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M12 16v-4M12 8h.01M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z" stroke="var(--primary-color, #DBE442)" stroke-width="2" stroke-linecap="round"/>
                         </svg>
                         <strong>Ejemplo</strong>
                     </div>
@@ -926,6 +899,8 @@
 
     <!-- Configs (deben cargarse primero) -->
     <script src="config/banks-config.js"></script>
+    <script src="config/demo-builder-config.js"></script>
+    <script src="js/demo-router.js"></script>
 
     <!-- Modulos del checkout (orden importa para dependencias) -->
     <script src="js/checkout-core.js"></script>
@@ -977,19 +952,7 @@
         // Store in sessionStorage for future reference
         sessionStorage.setItem('selectedFlow', flow);
         
-        // Update flow badge
-        const flowBadge = document.getElementById('flowBadge');
-        const flowNames = {
-            'sin-dato': 'Sin pedido de dato',
-            'curp-deeplink': 'CURP + Deeplink',
-            'dato-push': 'Dato personal + Push',
-            'account-to-account': 'Account to Account'
-        };
-        
-        if (flowBadge) {
-            flowBadge.textContent = `Flujo: ${flowNames[flow] || flow}`;
-            flowBadge.style.display = 'inline-block';
-        }
+
     </script>
 </body>
 </html>

@@ -115,9 +115,9 @@ function resetBankSelection() {
     // Hide inline form
     inlineContainer.style.display = 'none';
     
-    // Show banks grid again
-    if (banksGrid) banksGrid.style.display = 'grid';
-    if (bankSelector) bankSelector.style.display = 'block';
+    // Show banks grid again (remove inline hide, let CSS control mobile/desktop visibility)
+    if (banksGrid) banksGrid.style.display = '';
+    if (bankSelector) bankSelector.style.display = '';
     
     // Remove selection from bank cards
     bankCards.forEach(c => c.classList.remove('selected'));

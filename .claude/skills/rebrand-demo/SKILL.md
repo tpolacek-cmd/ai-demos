@@ -12,6 +12,10 @@ El proyecto en el directorio actual es una demo de portal de pagos
 con domiciliacion bancaria. Los datos de marca estan centralizados
 en `config/brand-config.js` y `config/variables.css`.
 
+El `index.html` es un builder de 3 columnas (canal de llegada,
+portal de pago, flujo de pago) que arma la demo por bloques.
+La configuracion de opciones esta en `config/demo-builder-config.js`.
+
 ## Procedimiento
 
 ### 1. Obtener datos de la nueva marca
@@ -51,14 +55,27 @@ en `js/qr-script.js` linea 4 (const PDF_URL).
 ### 6. Verificar
 Ejecutar:
 ```bash
-grep -r "NombreMarcaAnterior" --include="*.{html,js,css}" . | grep -v tasks/ | grep -v config/brand-config.js
+grep -r "NombreMarcaAnterior" --include="*.{html,js,css}" . | grep -v tasks/ | grep -v config/brand-config.js | grep -v node_modules
 ```
 Debe retornar 0 resultados.
 
+Tambien buscar el color hex anterior por si quedo hardcodeado:
+```bash
+grep -r "#ColorHexAnterior" --include="*.{html,js,css}" . | grep -v tasks/ | grep -v config/
+```
+
 ### 7. Probar
 Abrir http://localhost:8000 y verificar:
-- Launcher muestra nuevo nombre y logo
+- Builder de 3 columnas muestra nuevo nombre y logo
 - Demo WhatsApp muestra nuevo branding
-- Demo QR Factura muestra nuevo branding
+- Demo QR Factura muestra nuevo branding (SVGs usan CSS variables)
 - Checkout muestra nuevos montos y datos
 - Colores son correctos en toda la UI
+
+## Notas
+- Los `<title>` de cada HTML tienen el nombre de marca hardcodeado pero son
+  sobreescritos por JS al cargar. Opcionalmente actualizar para evitar flash.
+- Los SVGs en qr.html y checkout.html usan `var(--primary-color, #fallback)`.
+  Al cambiar variables.css los colores se actualizan automaticamente.
+- `config/demo-builder-config.js` no necesita cambios para un rebrand
+  (solo contiene estructura de etapas, no datos de marca).

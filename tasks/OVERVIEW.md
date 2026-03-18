@@ -22,6 +22,7 @@ Convertir este repositorio de demos de portal de pagos en una base escalable y L
 - [x] **Fase 3** - Extraccion de estilos inline (`FASE-3-extract-styles.md`) — Media
 - [x] **Fase 4** - Split de script.js (`FASE-4-split-scripts.md`) — Media
 - [x] **Fase 5** - Limpieza y documentacion (`FASE-5-cleanup-docs.md`) — Baja
+- [x] **Fase 6** - Demo builder por bloques (`FASE-6-demo-builder.md`) — Alta
 
 ## Orden de ejecucion
 
@@ -32,55 +33,28 @@ Las fases deben ejecutarse en orden (0 -> 1 -> 2 -> 3 -> 4 -> 5) porque cada fas
 - Fase 3 extrae inline styles a `css/whatsapp-styles.css` y `css/index-styles.css`.
 - Fase 4 splitea `js/script.js` en modulos dentro de `js/`.
 - Fase 5 documenta la estructura final y crea la skill /rebrand.
+- Fase 6 transforma `index.html` en un builder de demos por bloques (3 etapas: llegada, checkout, pago). Depende de Fases 0-5 completadas.
 
-## Estructura actual de archivos (pre-Fase 0)
-
-```
-demo_naturgy_nu/                    # 35 items en root, todo mezclado
-├── index.html                      # Launcher de demos (250 lineas inline CSS)
-├── whatsapp.html                   # Demo WhatsApp (620 lineas inline CSS, 894 total)
-├── qr.html                        # Demo QR Factura (88 lineas)
-├── checkout.html                   # Checkout compartido (840 lineas, 7 modales)
-├── menu.html                       # Selector de flujos (146 lineas)
-├── auth-mobile.html                # Simulacion app movil (1035 lineas, 9 pantallas)
-├── script.js                       # Logica checkout MONOLITO (1945 lineas)
-├── auth-mobile-script.js           # Logica mobile auth (715 lineas)
-├── styles.css                      # Estilos checkout (3207 lineas)
-├── menu-styles.css                 # Estilos menu (424 lineas)
-├── auth-mobile-styles.css          # Estilos mobile (2425 lineas)
-├── qr-styles.css                   # Estilos QR viewer (459 lineas)
-├── qr-script.js                    # QR viewer logic (256 lineas)
-├── menu-script.js                  # Menu navigation (44 lineas)
-├── totalplay.png                   # Logo marca
-├── factura-totalplay.pdf           # Factura PDF
-├── Hey_Banco.svg, santa.png, ...   # Logos bancos sueltos
-├── Naturgy.png, nat.png            # BASURA: logos marca anterior
-├── IMG_0558.png, IMG_3580.PNG      # BASURA: screenshots
-├── openbank.png, plata.png         # BASURA: logos no usados
-├── AAMA850101HDFRRL09              # BASURA: CURP de prueba suelto
-├── *.mov                           # BASURA: videos demos anteriores
-├── tasks/
-├── .claude/
-└── README.md
-```
-
-## Estructura objetivo (post-Fase 5)
+## Estructura actual (post-Fase 6)
 
 ```
-demo-portal-pagos/
-├── index.html                      # Launcher (sin inline styles)
-├── whatsapp.html                   # Demo WhatsApp (sin inline styles)
-├── qr.html                        # Demo QR Factura
-├── checkout.html                   # Checkout compartido
-├── menu.html                       # Selector de flujos
-├── auth-mobile.html                # Simulacion app movil
+tapi-demos-hub/
+├── index.html                      # Demo builder (3 columnas: arrival, checkout, payment)
+├── whatsapp.html                   # Demo WhatsApp (canal de llegada)
+├── qr.html                        # Demo QR Factura (canal de llegada)
+├── checkout.html                   # Checkout compartido (portal de pago)
+├── auth-mobile.html                # Simulacion app movil (flujo de pago)
+├── mobile-viewer.html              # Wrapper iPhone frame para vista mobile
 │
 ├── config/                         # Configuraciones centrales
 │   ├── brand-config.js             # UNICA fuente de verdad para datos de marca
-│   ├── banks-config.js             # Config unificada de bancos
+│   ├── banks-config.js             # Config unificada de bancos (9 bancos)
+│   ├── demo-builder-config.js      # Etapas y opciones del demo builder
+│   ├── demos-config.js             # Legacy - metadata de demos (retrocompatibilidad)
 │   └── variables.css               # CSS custom properties (sync con brand-config.js)
 │
 ├── js/                             # Scripts
+│   ├── demo-router.js              # Routing centralizado entre bloques del builder
 │   ├── checkout-core.js            # Seleccion de metodo de pago y banco
 │   ├── identity-validation.js      # Validacion CURP/RFC/CLABE
 │   ├── qr-checkout-flow.js         # Flujo QR dentro del checkout
@@ -89,31 +63,22 @@ demo-portal-pagos/
 │   ├── phone-mockup.js             # Simulacion phone en desktop
 │   ├── qr-script.js                # QR factura viewer
 │   ├── auth-mobile-script.js       # Mobile auth logic
-│   └── menu-script.js              # Menu navigation
+│   └── mobile-viewer.js            # iPhone frame controller
 │
 ├── css/                            # Estilos
-│   ├── styles.css                  # Checkout (sin :root, importa variables.css)
-│   ├── whatsapp-styles.css         # Extraido de whatsapp.html
-│   ├── index-styles.css            # Extraido de index.html
-│   ├── menu-styles.css             # Sin :root
-│   ├── auth-mobile-styles.css      # Limpio de vars legacy
-│   └── qr-styles.css               # Sin :root
+│   ├── styles.css                  # Checkout principal
+│   ├── index-styles.css            # Estilos del builder
+│   ├── whatsapp-styles.css         # Estilos WhatsApp demo
+│   ├── auth-mobile-styles.css      # Estilos simulacion app bancaria
+│   ├── qr-styles.css               # Estilos QR viewer
+│   └── mobile-viewer-styles.css    # Estilos iPhone frame
 │
 ├── assets/                         # Recursos estaticos
 │   ├── brand/                      # Logo y factura de la marca actual
-│   │   ├── totalplay.png
-│   │   └── factura-totalplay.pdf
 │   └── banks/                      # Logos de bancos
-│       ├── Hey_Banco.svg
-│       ├── santa.png
-│       ├── banamex.svg
-│       ├── hsbc.jpg
-│       ├── stori.png
-│       ├── nu.jpeg
-│       └── tapi-Isologotipo blanco.png
 │
-├── tasks/                          # Planificacion (se puede borrar despues)
-├── .claude/
+├── tasks/                          # Documentacion de fases
+├── .claude/                        # Config Claude Code + skills
 └── README.md
 ```
 

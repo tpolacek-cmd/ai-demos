@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="config/variables.css">
     <link rel="stylesheet" href="css/index-styles.css">
     <script src="config/brand-config.js"></script>
-    <script src="config/demos-config.js"></script>
+    <script src="config/demo-builder-config.js"></script>
+    <script src="js/demo-router.js"></script>
 </head>
 <body>
     <header class="header">
@@ -16,13 +17,13 @@
         <div class="header-divider"></div>
         <div>
             <h1>Demo Portal de Pagos</h1>
-            <p>Selecciona un canal de entrada para iniciar la demo</p>
+            <p>Arma tu demo seleccionando una opcion por cada etapa</p>
         </div>
     </header>
 
     <main class="main">
         <div class="view-mode-bar">
-            <p class="section-title">Canales disponibles</p>
+            <p class="section-title">Configurar demo</p>
             <div class="view-mode-toggle" id="viewModeToggle">
                 <button class="view-mode-btn active" data-mode="desktop" id="btnDesktop">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -40,62 +41,17 @@
                 </button>
             </div>
         </div>
-        <div class="demos-grid">
 
-            <!-- WhatsApp Demo -->
-            <a href="whatsapp.html" class="demo-card" data-demo="whatsapp">
-                <div class="card-banner banner-whatsapp">
-                    <div class="card-banner-bg"></div>
-                    <span class="card-banner-icon">
-                        <svg width="64" height="64" viewBox="0 0 24 24" fill="white">
-                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                        </svg>
-                    </span>
-                </div>
-                <div class="card-body">
-                    <h2>WhatsApp</h2>
-                    <p>Simulacion de una conversacion de WhatsApp donde <span data-brand="name"></span> envia un link de pago al cliente. El usuario toca el link y accede al checkout de pago con opciones de domiciliacion.</p>
-                    <div class="card-footer">
-                        <span class="card-tag">Chat interactivo</span>
-                        <span class="card-arrow">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l6 7-6 7" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </span>
-                    </div>
-                </div>
-            </a>
+        <!-- Builder de 3 columnas — se genera dinamicamente desde DEMO_STAGES -->
+        <div class="builder-grid" id="builderGrid"></div>
 
-            <!-- QR Factura Demo -->
-            <a href="qr.html" class="demo-card" data-demo="qr">
-                <div class="card-banner banner-qr">
-                    <div class="card-banner-bg"></div>
-                    <span class="card-banner-icon">
-                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="2" y="2" width="8" height="8" rx="1"/>
-                            <rect x="14" y="2" width="8" height="8" rx="1"/>
-                            <rect x="2" y="14" width="8" height="8" rx="1"/>
-                            <rect x="5" y="5" width="2" height="2" fill="white" stroke="none"/>
-                            <rect x="17" y="5" width="2" height="2" fill="white" stroke="none"/>
-                            <rect x="5" y="17" width="2" height="2" fill="white" stroke="none"/>
-                            <line x1="14" y1="14" x2="14" y2="16"/>
-                            <line x1="18" y1="14" x2="22" y2="14"/>
-                            <line x1="14" y1="20" x2="14" y2="22"/>
-                            <line x1="18" y1="18" x2="18" y2="22"/>
-                            <line x1="22" y1="18" x2="22" y2="22"/>
-                        </svg>
-                    </span>
-                </div>
-                <div class="card-body">
-                    <h2>QR en Factura</h2>
-                    <p>Visualizacion de la factura digital de <span data-brand="name"></span> con un codigo QR integrado. El cliente escanea el QR desde su celular y accede directamente al checkout de pago.</p>
-                    <div class="card-footer">
-                        <span class="card-tag">Factura PDF + QR</span>
-                        <span class="card-arrow">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l6 7-6 7" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </span>
-                    </div>
-                </div>
-            </a>
-
+        <!-- Barra de resumen + boton iniciar -->
+        <div class="builder-summary" id="builderSummary">
+            <div class="summary-flow" id="summaryFlow"></div>
+            <button class="btn-start" id="startDemo">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Iniciar Demo
+            </button>
         </div>
     </main>
 
@@ -104,7 +60,9 @@
     </footer>
 
     <script>
+        // ============================================
         // BRAND: Initialize brand elements
+        // ============================================
         (function initIndexBrand() {
             document.title = BRAND.name + ' - Demo Portal de Pagos';
             var logo = document.getElementById('indexLogo');
@@ -114,59 +72,199 @@
             });
         })();
 
-        // VIEW MODE: Desktop / Mobile toggle
-        (function initViewMode() {
-            var currentMode = sessionStorage.getItem('viewMode') || 'desktop';
+        // ============================================
+        // BUILDER: Generate columns from DEMO_STAGES
+        // ============================================
+        (function initBuilder() {
+            var builderGrid = document.getElementById('builderGrid');
+            var summaryFlow = document.getElementById('summaryFlow');
+            var startBtn = document.getElementById('startDemo');
             var btnDesktop = document.getElementById('btnDesktop');
             var btnMobile = document.getElementById('btnMobile');
-            var cards = document.querySelectorAll('.demo-card[data-demo]');
+            var currentMode = sessionStorage.getItem('viewMode') || 'desktop';
 
+            // Build columns
+            DEMO_STAGES.forEach(function(stage, stageIndex) {
+                var column = document.createElement('div');
+                column.className = 'builder-column';
+                column.setAttribute('data-stage', stage.id);
+
+                // Stage header
+                var header = document.createElement('div');
+                header.className = 'stage-header';
+                header.innerHTML =
+                    '<div class="stage-number-row">' +
+                        '<span class="stage-icon">' + stage.icon + '</span>' +
+                        '<span class="stage-number">Paso ' + (stageIndex + 1) + '</span>' +
+                    '</div>' +
+                    '<h3>' + stage.label + '</h3>' +
+                    '<p>' + stage.description + '</p>';
+                column.appendChild(header);
+
+                // Options container
+                var optionsContainer = document.createElement('div');
+                optionsContainer.className = 'stage-options';
+
+                stage.options.forEach(function(option, optIndex) {
+                    var isDefault = optIndex === 0;
+                    var label = document.createElement('label');
+                    label.className = 'option-card' + (isDefault ? ' selected' : '');
+                    label.setAttribute('data-option', option.id);
+                    label.setAttribute('data-stage', stage.id);
+
+                    // Check if this option has mobile restriction
+                    if (option.mobileSupported === false) {
+                        label.setAttribute('data-mobile-supported', 'false');
+                    }
+
+                    label.innerHTML =
+                        '<input type="radio" name="stage-' + stage.id + '" value="' + option.id + '"' + (isDefault ? ' checked' : '') + '>' +
+                        '<span class="option-icon">' + option.icon + '</span>' +
+                        '<span class="option-info">' +
+                            '<strong>' + option.name + '</strong>' +
+                            '<span>' + option.description + '</span>' +
+                        '</span>' +
+                        '<span class="option-check">' +
+                            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' +
+                        '</span>';
+
+                    optionsContainer.appendChild(label);
+                });
+
+                column.appendChild(optionsContainer);
+                builderGrid.appendChild(column);
+            });
+
+            // Arrow separators between columns
+            var columns = builderGrid.querySelectorAll('.builder-column');
+            for (var i = 0; i < columns.length - 1; i++) {
+                var arrow = document.createElement('div');
+                arrow.className = 'builder-arrow';
+                arrow.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l6 7-6 7"/></svg>';
+                // Insert arrow after current column
+                columns[i].after(arrow);
+            }
+
+            // ============================================
+            // SELECTION LOGIC
+            // ============================================
+            builderGrid.addEventListener('change', function(e) {
+                if (e.target.type !== 'radio') return;
+
+                var stageId = e.target.name.replace('stage-', '');
+                var optionId = e.target.value;
+
+                // Update selected class
+                var stageCards = builderGrid.querySelectorAll('.option-card[data-stage="' + stageId + '"]');
+                stageCards.forEach(function(card) {
+                    card.classList.toggle('selected', card.getAttribute('data-option') === optionId);
+                });
+
+                updateSummary();
+                updateMobileRestrictions();
+            });
+
+            // ============================================
+            // SUMMARY BAR
+            // ============================================
+            function updateSummary() {
+                var parts = [];
+                DEMO_STAGES.forEach(function(stage) {
+                    var selected = builderGrid.querySelector('input[name="stage-' + stage.id + '"]:checked');
+                    if (selected) {
+                        var option = getOptionById(stage.id, selected.value);
+                        if (option) parts.push(option.name);
+                    }
+                });
+
+                summaryFlow.innerHTML = parts.map(function(name, i) {
+                    var html = '<span class="summary-step">' + name + '</span>';
+                    if (i < parts.length - 1) {
+                        html += '<span class="summary-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l6 7-6 7"/></svg></span>';
+                    }
+                    return html;
+                }).join('');
+            }
+
+            // ============================================
+            // VIEW MODE: Desktop / Mobile toggle
+            // ============================================
             function applyMode(mode) {
                 currentMode = mode;
                 sessionStorage.setItem('viewMode', mode);
-
-                // Toggle active button
                 btnDesktop.classList.toggle('active', mode === 'desktop');
                 btnMobile.classList.toggle('active', mode === 'mobile');
-
-                // Update each card
-                cards.forEach(function(card) {
-                    var demoId = card.getAttribute('data-demo');
-                    var demo = getDemoById(demoId);
-                    if (!demo) return;
-
-                    if (mode === 'mobile') {
-                        if (demo.mobileSupported) {
-                            card.href = 'mobile-viewer.html?demo=' + demo.id;
-                            card.classList.remove('card-disabled');
-                            card.removeAttribute('title');
-                        } else {
-                            card.href = '#';
-                            card.classList.add('card-disabled');
-                            card.setAttribute('title', 'No disponible en vista mobile');
-                        }
-                    } else {
-                        card.href = demo.url;
-                        card.classList.remove('card-disabled');
-                        card.removeAttribute('title');
-                    }
-                });
+                updateMobileRestrictions();
             }
 
-            // Click handlers
+            function updateMobileRestrictions() {
+                var mobileCards = builderGrid.querySelectorAll('.option-card[data-mobile-supported="false"]');
+
+                mobileCards.forEach(function(card) {
+                    if (currentMode === 'mobile') {
+                        card.classList.add('disabled');
+                        var radio = card.querySelector('input[type="radio"]');
+                        // If the disabled option is currently selected, switch to first available
+                        if (radio && radio.checked) {
+                            var stageId = card.getAttribute('data-stage');
+                            var firstAvailable = builderGrid.querySelector('.option-card[data-stage="' + stageId + '"]:not(.disabled) input[type="radio"]');
+                            if (firstAvailable) {
+                                firstAvailable.checked = true;
+                                firstAvailable.dispatchEvent(new Event('change', { bubbles: true }));
+                            }
+                        }
+                    } else {
+                        card.classList.remove('disabled');
+                    }
+                });
+
+                // Update start button state
+                var arrivalSelected = builderGrid.querySelector('input[name="stage-arrival"]:checked');
+                if (arrivalSelected && currentMode === 'mobile') {
+                    var option = getOptionById('arrival', arrivalSelected.value);
+                    if (option && option.mobileSupported === false) {
+                        startBtn.disabled = true;
+                        startBtn.title = 'La opcion seleccionada no esta disponible en modo mobile';
+                        return;
+                    }
+                }
+                startBtn.disabled = false;
+                startBtn.title = '';
+            }
+
             btnDesktop.addEventListener('click', function() { applyMode('desktop'); });
             btnMobile.addEventListener('click', function() { applyMode('mobile'); });
 
-            // Prevent navigation on disabled cards
-            document.querySelector('.demos-grid').addEventListener('click', function(e) {
-                var card = e.target.closest('.demo-card');
-                if (card && card.classList.contains('card-disabled')) {
-                    e.preventDefault();
+            // ============================================
+            // START DEMO
+            // ============================================
+            startBtn.addEventListener('click', function() {
+                if (startBtn.disabled) return;
+
+                // Read selections
+                var config = {};
+                DEMO_STAGES.forEach(function(stage) {
+                    var selected = builderGrid.querySelector('input[name="stage-' + stage.id + '"]:checked');
+                    config[stage.id] = selected ? selected.value : stage.options[0].id;
+                });
+
+                // Save config for other pages to read
+                saveDemoConfig(config);
+
+                // Navigate to the first page of the flow
+                var startUrl = getDemoStartUrl(currentMode);
+                if (!startUrl) {
+                    alert('Esta combinacion no esta disponible en modo mobile');
+                    return;
                 }
+                window.location.href = startUrl;
             });
 
-            // Apply saved mode on load
+            // ============================================
+            // INIT
+            // ============================================
             applyMode(currentMode);
+            updateSummary();
         })();
     </script>
 </body>

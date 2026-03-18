@@ -7,7 +7,6 @@
 
 // DOM Elements
 const paymentOptions = document.querySelectorAll('.payment-option');
-const continueBtn = document.getElementById('continueBtn');
 const modal = document.getElementById('successModal');
 const modalTitle = document.getElementById('modalTitle');
 const modalMessage = document.getElementById('modalMessage');
@@ -91,12 +90,8 @@ paymentOptions.forEach(option => {
             } else {
                 console.error('banksSelectionPagaDomicilia element not found!');
             }
-            // Disable continue button until a bank is selected
-            continueBtn.disabled = true;
             selectedBank = null;
         } else {
-            // Enable continue button for other methods
-            continueBtn.disabled = false;
             selectedBank = null;
         }
         
@@ -196,9 +191,6 @@ bankCards.forEach(card => {
         }
         
         // Normal flow for other cases
-        // Enable continue button
-        continueBtn.disabled = false;
-        
         // Add animation feedback
         card.style.transform = 'scale(0.95)';
         setTimeout(() => {
@@ -366,23 +358,6 @@ function closeRedirectLoading() {
     }
 }
 
-// Handle continue button click
-continueBtn.addEventListener('click', () => {
-    if (selectedMethod) {
-        const message = messages[selectedMethod];
-        modalTitle.textContent = message.title;
-        
-        // Replace {bank} placeholder with selected bank name if domiciliar or paga-domicilia
-        if ((selectedMethod === 'domiciliar' || selectedMethod === 'paga-domicilia') && selectedBank) {
-            modalMessage.textContent = message.message.replace('{bank}', bankNames[selectedBank]);
-        } else {
-            modalMessage.textContent = message.message;
-        }
-        
-        modal.classList.add('show');
-    }
-});
-
 // Close modal function
 function closeModal() {
     modal.classList.remove('show');
@@ -434,3 +409,5 @@ setTimeout(() => {
         featuredOption.style.animation = 'pulse 2s infinite';
     }
 }, 1000);
+
+

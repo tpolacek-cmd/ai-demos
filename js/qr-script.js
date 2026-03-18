@@ -186,8 +186,7 @@ function simulateQRScan() {
     
     // Redirect after animation
     setTimeout(() => {
-        const baseUrl = window.location.origin + window.location.pathname.replace('qr.html', '');
-        window.location.href = `${baseUrl}checkout.html?flow=curp-deeplink&source=qr`;
+        window.location.href = getNextPageUrl('arrival');
     }, 2300);
 }
 
