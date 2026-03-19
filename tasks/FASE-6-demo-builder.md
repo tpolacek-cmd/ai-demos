@@ -53,10 +53,11 @@ index.html (Builder 3 columnas)
 | 3 | TASK-003: Reescribir `index.html` como builder | frontend | 4 | TASK-001 |
 | 4 | TASK-004: Actualizar `css/index-styles.css` | frontend | 3 | TASK-003 |
 | 5 | TASK-005: Conectar paginas existentes al router | frontend | 2 | TASK-002 |
+| 6 | TASK-006: Agregar flujo Pago Directo BBVA | frontend | 16 | TASK-001..005 |
 
-**Estimacion total**: 12 horas
+**Estimacion total**: 28 horas
 
-**Orden sugerido**: TASK-001 → (TASK-002 + TASK-003 en paralelo) → TASK-004 → TASK-005
+**Orden sugerido**: TASK-001 → (TASK-002 + TASK-003 en paralelo) → TASK-004 → TASK-005 → TASK-006
 
 ## Lo que NO cambia
 

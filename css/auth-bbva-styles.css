@@ -1,0 +1,1677 @@
+/* ==========================================================================
+   BBVA Banking App Mock — Styles
+   Prefix: bbva-  (BEM-like, avoids conflicts with other mocks)
+   ========================================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bbva-blue: #004A97;
+    --bbva-blue-dark: #012b63;
+    --bbva-blue-deep: #0829b8;
+    --bbva-teal: #108f90;
+    --bbva-light-blue: #58b5ee;
+    --bbva-gray-bg: #f2f2f2;
+    --bbva-gray-bg-cool: #f2f5f9;
+    --bbva-border: #d5deea;
+    --bbva-text-dark: #1a1a2e;
+    --bbva-text-gray: #6b7280;
+    --bbva-text-white: #ffffff;
+    --bbva-green: #2ecc71;
+    --bbva-green-dark: #27ae60;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: #1a1a2e;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==========================================================================
+   Container & Screen system
+   ========================================================================== */
+
+.bbva-container {
+    width: 100%;
+    max-width: 430px;
+    height: 100vh;
+    max-height: 932px;
+    background: #031539;
+    border-radius: 40px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+.bbva-step {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.bbva-step.active {
+    display: flex;
+}
+
+/* ==========================================================================
+   Step 0 — iPhone Home Screen
+   Layout: statusbar / clock / notification / [flex spacer + apps + spacer] / dock / indicator
+   The apps sit inside a flex:1 area, centered vertically within it.
+   ========================================================================== */
+
+.bbva-home {
+    background:
+        radial-gradient(ellipse at 30% 20%, #1e3a5f 0%, transparent 55%),
+        radial-gradient(ellipse at 75% 80%, #1a1044 0%, transparent 50%),
+        #0d0d1a;
+    color: #fff;
+    cursor: default;
+    user-select: none;
+}
+
+/* iOS Status bar */
+.bbva-statusbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: max(12px, env(safe-area-inset-top)) 20px 6px;
+    flex-shrink: 0;
+}
+
+.bbva-statusbar__time {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.01em;
+    line-height: 1;
+}
+
+.bbva-statusbar__icons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    line-height: 1;
+}
+
+.bbva-statusbar__icons svg {
+    display: block;
+}
+
+/* Clock */
+.bbva-home__clock {
+    text-align: center;
+    padding: 18px 20px 0;
+    flex-shrink: 0;
+}
+
+.bbva-home__clock-time {
+    font-size: 56px;
+    font-weight: 200;
+    color: #fff;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+}
+
+.bbva-home__clock-date {
+    font-size: 16px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 0.01em;
+    line-height: 1;
+    margin-top: 4px;
+}
+
+/* Push Notification */
+.bbva-push {
+    margin: 8px 14px 0;
+    background: rgb(30 30 32 / 85%);
+    backdrop-filter: blur(20px) saturate(1.8);
+    -webkit-backdrop-filter: blur(20px) saturate(1.8);
+    border: 1px solid rgb(255 255 255 / 12%);
+    border-radius: 16px;
+    padding: 12px 14px 13px;
+    text-align: left;
+    font-family: inherit;
+    color: inherit;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    opacity: 0;
+    transform: translateY(-18px) scale(0.97);
+    animation: bbva-pushSlideIn 400ms cubic-bezier(0.34, 1.56, 0.64, 1) 600ms both;
+    transition: transform 120ms ease, background 120ms ease;
+    flex-shrink: 0;
+    z-index: 10;
+}
+
+.bbva-push:active {
+    background: rgb(50 50 52 / 90%);
+    transform: scale(0.985);
+}
+
+@keyframes bbva-pushSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-18px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.bbva-push__header {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    line-height: 1;
+}
+
+.bbva-push__icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.bbva-push__app-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgb(255 255 255 / 65%);
+    letter-spacing: 0.01em;
+    flex: 1;
+    line-height: 1;
+}
+
+.bbva-push__time {
+    font-size: 13px;
+    font-weight: 400;
+    color: rgb(255 255 255 / 45%);
+    line-height: 1;
+}
+
+.bbva-push__body-text {
+    padding-left: 35px;
+}
+
+.bbva-push__title {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: #fff;
+    line-height: 1.2;
+    margin: 0 0 3px;
+}
+
+.bbva-push__body {
+    font-size: 13px;
+    font-weight: 400;
+    color: rgb(255 255 255 / 75%);
+    line-height: 1.35;
+    margin: 0;
+}
+
+/* App grid area — takes all remaining space, centers the rows vertically */
+.bbva-home__apps {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 72px;
+    padding: 0 22px;
+    min-height: 0;
+}
+
+.bbva-app-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    justify-items: center;
+}
+
+.bbva-app-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.bbva-app-item__icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    line-height: 1;
+    background: rgba(255,255,255,0.12);
+}
+
+.bbva-app-item__icon--bbva {
+    background: var(--bbva-blue);
+}
+
+.bbva-app-item__icon--bbva-text {
+    color: #fff;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+
+.bbva-app-item__label {
+    font-size: 10px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.85);
+    text-align: center;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+}
+
+/* Dock */
+.bbva-dock {
+    display: flex;
+    justify-content: space-around;
+    gap: 8px;
+    padding: 10px 14px;
+    margin: 10px 16px 6px;
+    background: rgba(255,255,255,0.14);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 24px;
+    flex-shrink: 0;
+}
+
+.bbva-dock__icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    line-height: 1;
+    background: rgba(255,255,255,0.12);
+}
+
+/* Home indicator */
+.bbva-home-indicator {
+    width: 120px;
+    height: 4px;
+    background: rgba(255,255,255,0.35);
+    border-radius: 9999px;
+    margin: 4px auto 8px;
+    flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Step 1 — Splash Screen
+   ========================================================================== */
+
+.bbva-splash {
+    background: #001492;
+}
+
+.bbva-splash__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ==========================================================================
+   Step 2 — App Home Screen (image)
+   ========================================================================== */
+
+.bbva-app-home {
+    background: #031539;
+}
+
+.bbva-app-home__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.bbva-app-home__hotspot {
+    position: absolute;
+    top: 48%;
+    left: 9%;
+    width: 82%;
+    height: 4.5%;
+    background: rgba(0,0,0,0.04);
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    z-index: 2;
+}
+
+.bbva-app-home__hotspot:focus {
+    outline: 2px solid rgba(255,255,255,0.3);
+}
+
+/* ==========================================================================
+   Step 3 — Face ID
+   ========================================================================== */
+
+.bbva-faceid {
+    background: #031539;
+}
+
+.bbva-faceid__bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.bbva-faceid__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 4%;
+    z-index: 2;
+}
+
+.bbva-faceid__video {
+    max-width: 60%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+}
+
+/* Face ID fade phases */
+.bbva-faceid__overlay[data-phase="in"] {
+    animation: bbva-fadeIn 0.5s ease forwards;
+}
+
+.bbva-faceid__overlay[data-phase="hold"] {
+    opacity: 1;
+}
+
+.bbva-faceid__overlay[data-phase="out"] {
+    animation: bbva-fadeOut 0.5s ease forwards;
+}
+
+@keyframes bbva-fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes bbva-fadeOut {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+/* ==========================================================================
+   Step 4 — Loading / Validating
+   ========================================================================== */
+
+.bbva-loading {
+    background: linear-gradient(180deg, #0829b8 0%, #0f22a9 100%);
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.bbva-spinner {
+    width: 64px;
+    height: 64px;
+    border: 4px solid rgba(255,255,255,0.28);
+    border-top-color: rgba(255,255,255,0.95);
+    border-radius: 50%;
+    animation: bbva-spin 1s linear infinite;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.1);
+}
+
+@keyframes bbva-spin {
+    to { transform: rotate(360deg); }
+}
+
+.bbva-loading__bar {
+    position: absolute;
+    bottom: max(22px, env(safe-area-inset-bottom));
+    left: 16px;
+    right: 16px;
+    background: rgba(5,17,58,0.7);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    border-radius: 14px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   Step 5 — Payment Summary
+   ========================================================================== */
+
+.bbva-payment {
+    background: var(--bbva-gray-bg);
+}
+
+.bbva-payment__top {
+    background: #012b63;
+    color: #fff;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: max(12px, env(safe-area-inset-top)) 0 18px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.bbva-payment__top::-webkit-scrollbar {
+    display: none;
+}
+
+/* Fake status bar inside step 5 */
+.bbva-payment__statusbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px 24px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1;
+    opacity: 0.92;
+    color: #fff;
+}
+
+.bbva-payment__statusbar-left {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.bbva-payment__statusbar-center {
+    font-weight: 600;
+}
+
+.bbva-payment__statusbar-right {
+    font-weight: 500;
+}
+
+.bbva-payment__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px 36px;
+}
+
+.bbva-payment__header-title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.05;
+    color: #fff;
+    margin: 0;
+}
+
+.bbva-payment__close {
+    background: transparent;
+    border: 0;
+    color: inherit;
+    cursor: default;
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+}
+
+.bbva-payment__close:active {
+    background: rgba(255,255,255,0.15);
+}
+
+/* Info sections — matches reference exactly */
+.bbva-payment__info-grid {
+    display: grid;
+    gap: 16px;
+    margin: 0;
+}
+
+.bbva-payment__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    font-size: 17px;
+    gap: 12px;
+    line-height: 1.05;
+}
+
+.bbva-payment__row dt,
+.bbva-payment__row span {
+    margin: 0;
+    opacity: 0.95;
+    color: rgba(255,255,255,0.95);
+}
+
+.bbva-payment__row dd,
+.bbva-payment__row strong {
+    font-weight: 600;
+    margin: 0;
+    text-align: right;
+    color: #fff;
+}
+
+/* Section (used for Info, Origen and Concepto) */
+.bbva-payment__section {
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding: 0 20px 28px;
+}
+
+.bbva-payment__section + .bbva-payment__section {
+    padding-top: 28px;
+}
+
+.bbva-payment__section-headline {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 16px;
+}
+
+.bbva-payment__section-title {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.03;
+    margin: 0;
+    color: #fff;
+}
+
+.bbva-payment__modify-link {
+    font-size: 15px;
+    color: #58b5ee;
+    background: none;
+    border: none;
+    cursor: default;
+    font-weight: 500;
+    line-height: 1;
+    padding: 0;
+}
+
+/* Origin grid — 2 columns like the reference */
+.bbva-payment__origin-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px 12px;
+}
+
+.bbva-payment__origin-label {
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.05;
+    margin: 0;
+    white-space: nowrap;
+    color: rgba(255,255,255,0.95);
+}
+
+.bbva-payment__origin-amount {
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1;
+    margin: 0;
+    text-align: right;
+    color: #fff;
+}
+
+.bbva-payment__account-line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 17px;
+    line-height: 1;
+    color: rgba(255,255,255,0.95);
+}
+
+.bbva-payment__bank-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: #eef2f7;
+    border-radius: 50%;
+    color: #16325f;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.bbva-payment__origin-sub {
+    font-size: 13px;
+    line-height: 1;
+    opacity: 0.9;
+    text-align: right;
+    align-self: center;
+    color: rgba(255,255,255,0.9);
+}
+
+/* Row with no border (for Concepto) */
+.bbva-payment__row--no-border {
+    margin: 0;
+    padding-top: 4px;
+    border: none;
+}
+
+/* Checkbox row — matches reference */
+.bbva-payment__checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 24px 20px 8px;
+}
+
+.bbva-payment__recurrente {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex: 1;
+    min-width: 0;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.bbva-payment__checkbox-box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border: 2px solid rgba(255,255,255,0.6);
+    border-radius: 5px;
+    flex-shrink: 0;
+    color: #fff;
+    transition: background 150ms ease, border-color 150ms ease;
+}
+
+.bbva-payment__checkbox-box.checked {
+    background: #108f90;
+    border-color: #108f90;
+}
+
+.bbva-payment__recurrente-text {
+    font-size: 16px;
+    line-height: 1;
+    opacity: 0.95;
+    color: #fff;
+}
+
+.bbva-payment__help-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(88,181,238,0.5);
+    background: rgba(88,181,238,0.25);
+    color: #58b5ee;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: background 120ms ease, border-color 120ms ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.bbva-payment__help-btn:active {
+    background: rgba(88,181,238,0.4);
+    border-color: rgba(88,181,238,0.7);
+}
+
+/* Bottom bar */
+.bbva-payment__bottom {
+    background: #f2f2f2;
+    color: #1f2432;
+    padding: 20px 20px max(24px, env(safe-area-inset-bottom));
+    flex-shrink: 0;
+}
+
+.bbva-payment__bottom-label {
+    font-size: 18px;
+    line-height: 1;
+    margin: 0 0 12px;
+}
+
+.bbva-payment__bottom-amount {
+    display: block;
+    font-size: 38px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    margin-bottom: 12px;
+}
+
+.bbva-payment__bottom-commission {
+    font-size: 15px;
+    line-height: 1;
+    margin: 0 0 28px;
+    opacity: 0.9;
+}
+
+.bbva-btn {
+    width: 100%;
+    height: 52px;
+    border-radius: 24px;
+    border: none;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+.bbva-btn:active {
+    opacity: 0.85;
+}
+
+.bbva-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.bbva-btn--teal {
+    background: var(--bbva-teal);
+    color: #fff;
+}
+
+.bbva-btn--blue {
+    background: var(--bbva-blue-deep);
+    color: #fff;
+}
+
+/* ==========================================================================
+   Step 6 — Payment Receipt
+   ========================================================================== */
+
+.bbva-receipt {
+    background: #fff;
+    color: var(--bbva-text-dark);
+    cursor: pointer;
+}
+
+.bbva-receipt__scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 20px 24px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.bbva-receipt__scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.bbva-receipt__header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 16px 24px 12px;
+    flex-shrink: 0;
+}
+
+.bbva-receipt__close {
+    background: rgba(0,0,0,0.06);
+    border: none;
+    color: var(--bbva-text-gray);
+    font-size: 28px;
+    font-weight: 300;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    line-height: 1;
+    transition: background 0.15s;
+}
+
+.bbva-receipt__close:hover {
+    background: rgba(0,0,0,0.1);
+}
+
+.bbva-receipt__check {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--bbva-green), var(--bbva-green-dark));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px auto 16px;
+    box-shadow: 0 6px 20px rgba(46,204,113,0.35);
+}
+
+.bbva-receipt__title {
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.bbva-receipt__amount-label {
+    font-size: 14px;
+    color: var(--bbva-text-gray);
+    text-align: center;
+}
+
+.bbva-receipt__amount {
+    font-size: 30px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.bbva-receipt__detail {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.bbva-receipt__detail-label {
+    font-size: 13px;
+    color: var(--bbva-text-gray);
+    flex-shrink: 0;
+}
+
+.bbva-receipt__detail-value {
+    font-size: 15px;
+    color: var(--bbva-text-dark);
+    text-align: right;
+    max-width: 60%;
+    word-break: break-all;
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   Step 7 — Recurring Payments Dashboard
+   ========================================================================== */
+
+.bbva-dashboard {
+    background: var(--bbva-gray-bg-cool);
+}
+
+.bbva-dashboard__scroll {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.bbva-dashboard__scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/* Dark status bar for dashboard */
+.bbva-dashboard__statusbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px 8px;
+    font-size: 13px;
+    color: var(--bbva-text-dark);
+    flex-shrink: 0;
+}
+
+.bbva-dashboard__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 20px 12px;
+}
+
+.bbva-dashboard__back {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--bbva-blue-deep);
+    padding: 4px;
+    display: flex;
+    align-items: center;
+}
+
+.bbva-dashboard__title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--bbva-blue-deep);
+}
+
+.bbva-dashboard__subtitle {
+    font-size: 14px;
+    color: var(--bbva-text-gray);
+    padding: 0 20px 16px;
+}
+
+/* Stats row */
+.bbva-stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 0 20px 16px;
+}
+
+.bbva-stat-card {
+    background: #fff;
+    border: 1px solid var(--bbva-border);
+    border-radius: 14px;
+    padding: 14px 12px;
+    text-align: center;
+}
+
+.bbva-stat-card__icon {
+    margin-bottom: 6px;
+    color: var(--bbva-blue-deep);
+}
+
+.bbva-stat-card__value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--bbva-text-dark);
+}
+
+.bbva-stat-card__label {
+    font-size: 11px;
+    color: var(--bbva-text-gray);
+    margin-top: 2px;
+}
+
+/* CTA card */
+.bbva-cta-card {
+    background: linear-gradient(135deg, #0829b8 0%, #1040d0 100%);
+    margin: 0 20px 16px;
+    border-radius: 16px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #fff;
+    cursor: pointer;
+}
+
+.bbva-cta-card:active {
+    opacity: 0.9;
+}
+
+.bbva-cta-card__title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.bbva-cta-card__subtitle {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    margin-top: 2px;
+}
+
+.bbva-cta-card__icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Section heading */
+.bbva-section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 4px 20px 12px;
+}
+
+.bbva-section-heading__title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--bbva-text-dark);
+}
+
+.bbva-section-heading__count {
+    font-size: 13px;
+    color: var(--bbva-text-gray);
+}
+
+/* Service card (dashboard) */
+.bbva-service-card {
+    background: #fff;
+    border: 1px solid var(--bbva-border);
+    border-radius: 16px;
+    padding: 20px;
+    margin: 0 20px 12px;
+    position: relative;
+}
+
+.bbva-service-card__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.bbva-service-card__name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--bbva-text-dark);
+}
+
+.bbva-service-card__type {
+    font-size: 13px;
+    color: var(--bbva-text-gray);
+    margin-top: 1px;
+}
+
+.bbva-service-card__alias {
+    font-size: 12px;
+    color: var(--bbva-text-gray);
+}
+
+.bbva-service-card__edit {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid var(--bbva-border);
+    background: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bbva-text-gray);
+    flex-shrink: 0;
+    transition: background 0.15s;
+}
+
+.bbva-service-card__edit:active {
+    background: #f0f0f0;
+}
+
+.bbva-service-card__info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.bbva-service-card__due {
+    font-size: 13px;
+    color: var(--bbva-text-gray);
+}
+
+.bbva-service-card__amount {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--bbva-text-dark);
+}
+
+.bbva-service-card__tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.bbva-tag {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.bbva-tag--green {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.bbva-tag--blue {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+/* ==========================================================================
+   Step 8 — Edit Domiciliation
+   ========================================================================== */
+
+.bbva-edit {
+    background: var(--bbva-gray-bg-cool);
+}
+
+.bbva-edit__header {
+    background: var(--bbva-blue-deep);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 40px 20px 14px;
+    flex-shrink: 0;
+}
+
+.bbva-edit__back {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+}
+
+.bbva-edit__title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.bbva-edit__scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px 24px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.bbva-edit__scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/* Toggle card */
+.bbva-toggle-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-left: 4px solid var(--bbva-blue-deep);
+}
+
+.bbva-toggle-card__content {
+    flex: 1;
+}
+
+.bbva-toggle-card__label {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--bbva-text-dark);
+    margin-bottom: 2px;
+}
+
+.bbva-toggle-card__desc {
+    font-size: 12px;
+    color: var(--bbva-text-gray);
+}
+
+.bbva-toggle-card__icon {
+    color: var(--bbva-blue-deep);
+    flex-shrink: 0;
+}
+
+/* Toggle switch */
+.bbva-toggle {
+    position: relative;
+    width: 48px;
+    height: 28px;
+    flex-shrink: 0;
+}
+
+.bbva-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.bbva-toggle__slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #ccc;
+    border-radius: 28px;
+    transition: background 0.3s;
+}
+
+.bbva-toggle__slider::before {
+    content: '';
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    left: 3px;
+    bottom: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.3s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.bbva-toggle input:checked + .bbva-toggle__slider {
+    background: var(--bbva-teal);
+}
+
+.bbva-toggle input:checked + .bbva-toggle__slider::before {
+    transform: translateX(20px);
+}
+
+/* Service info card (edit screen) */
+.bbva-edit-service {
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.bbva-edit-service__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: #f0f4f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bbva-blue-deep);
+    flex-shrink: 0;
+}
+
+.bbva-edit-service__name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--bbva-text-dark);
+}
+
+.bbva-edit-service__type {
+    font-size: 13px;
+    color: var(--bbva-text-gray);
+}
+
+/* Alias input */
+.bbva-alias-input {
+    background: #fff;
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bbva-alias-input input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    color: var(--bbva-text-dark);
+    background: transparent;
+    font-family: inherit;
+}
+
+.bbva-alias-input input::placeholder {
+    color: #aaa;
+}
+
+.bbva-alias-input__icon {
+    color: var(--bbva-text-gray);
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+/* Chip badge */
+.bbva-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+
+.bbva-chip--blue {
+    background: #e3f2fd;
+    color: var(--bbva-blue-deep);
+}
+
+/* When to charge section */
+.bbva-charge-section__label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--bbva-text-dark);
+    margin-bottom: 10px;
+}
+
+.bbva-charge-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.bbva-charge-option {
+    background: #fff;
+    border: 1.5px solid var(--bbva-border);
+    border-radius: 12px;
+    padding: 14px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.bbva-charge-option:active {
+    transform: scale(0.97);
+}
+
+.bbva-charge-option.active {
+    background: var(--bbva-blue-deep);
+    border-color: var(--bbva-blue-deep);
+    color: #fff;
+}
+
+.bbva-charge-option__icon {
+    color: var(--bbva-text-gray);
+}
+
+.bbva-charge-option.active .bbva-charge-option__icon {
+    color: #fff;
+}
+
+.bbva-charge-option__text {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--bbva-text-dark);
+}
+
+.bbva-charge-option.active .bbva-charge-option__text {
+    color: #fff;
+}
+
+/* Field row */
+.bbva-field-row {
+    background: #fff;
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.bbva-field-row__left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bbva-field-row__icon {
+    color: var(--bbva-blue-deep);
+}
+
+.bbva-field-row__label {
+    font-size: 14px;
+    color: var(--bbva-text-dark);
+    font-weight: 500;
+}
+
+.bbva-field-row__input {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--bbva-text-dark);
+    width: 120px;
+    text-align: right;
+}
+
+/* Info banner */
+.bbva-info-banner {
+    background: #e8f5e9;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: #2e7d32;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 12px 0 20px;
+}
+
+/* Fixed bottom button area */
+.bbva-edit__footer {
+    padding: 16px 20px;
+    flex-shrink: 0;
+    background: var(--bbva-gray-bg-cool);
+}
+
+/* ==========================================================================
+   Help Dialog (recurring payment ?)
+   ========================================================================== */
+
+.bbva-help-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+.bbva-help-overlay.bbva-help-open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.bbva-help-dialog {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    z-index: 110;
+    background: #fff;
+    border-radius: 16px;
+    padding: 28px 20px 24px;
+    width: calc(100% - 40px);
+    max-width: 360px;
+    max-height: 80%;
+    overflow-y: auto;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    color: #1a1a2e;
+}
+
+.bbva-help-dialog.bbva-help-open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.bbva-help-dialog__close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    background: none;
+    border: none;
+    font-size: 22px;
+    color: #9ca3af;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px;
+}
+
+.bbva-help-dialog__title {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 0 0 10px;
+    padding-right: 24px;
+}
+
+.bbva-help-dialog__desc {
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.55;
+    margin: 0 0 16px;
+}
+
+.bbva-help-dialog__section {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 12px;
+    background: #fff;
+}
+
+.bbva-help-dialog__section h5 {
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 0 10px;
+}
+
+.bbva-help-dialog__benefits {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.bbva-help-dialog__benefits li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.bbva-help-dialog__benefits li svg {
+    flex-shrink: 0;
+}
+
+.bbva-help-dialog__steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.bbva-help-dialog__steps li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+.bbva-help-dialog__num {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    border-radius: 50%;
+    background: rgba(0,68,129,0.08);
+    color: #004481;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ==========================================================================
+   Embedded mode overrides
+   ========================================================================== */
+
+body.bbva-embedded {
+    background: #000 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100vh !important;
+    width: 100vw !important;
+    overflow: hidden !important;
+}
+
+body.bbva-embedded .bbva-container {
+    max-width: none !important;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+/* ==========================================================================
+   Utility
+   ========================================================================== */
+
+.bbva-clickable {
+    cursor: pointer;
+}
+
+.bbva-tap-hint {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+    pointer-events: none;
+}

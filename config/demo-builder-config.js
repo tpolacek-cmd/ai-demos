@@ -55,6 +55,15 @@ const DEMO_STAGES = [
                 flow: 'curp-deeplink',
                 icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/><path d="M13 13h4"/><path d="M13 17h4"/></svg>',
             },
+            {
+                id: 'pago-directo-bbva',
+                name: 'Pago Directo BBVA',
+                description: 'Portal de deudas con Pago Directo BBVA',
+                page: 'checkout-bbva.html',
+                flow: 'bbva-direct',
+                forcedPayment: 'bbva',
+                icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/><path d="M9 6h6"/><path d="M9 10h6"/></svg>',
+            },
         ]
     },
     {
@@ -69,7 +78,17 @@ const DEMO_STAGES = [
                 description: 'Pago y domiciliacion via Hey Banco',
                 bank: 'hey-banco',
                 action: 'pay-domiciliar',
+                authPage: 'auth-mobile.html',
                 icon: '<img src="assets/banks/Hey_Banco.svg" alt="Hey Banco" style="width: 28px; height: 28px; object-fit: contain; border-radius: 6px; background: white; padding: 2px;">',
+            },
+            {
+                id: 'bbva',
+                name: 'BBVA',
+                description: 'Pago Directo via app BBVA',
+                bank: 'bbva',
+                action: 'pay-domiciliar',
+                authPage: 'auth-bbva.html',
+                icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="16" rx="3" fill="#004481"/><text x="12" y="14.5" font-family="Arial,sans-serif" font-size="7" font-weight="bold" fill="white" text-anchor="middle">BBVA</text></svg>',
             },
         ]
     }

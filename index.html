@@ -154,6 +154,20 @@
                 var stageId = e.target.name.replace('stage-', '');
                 var optionId = e.target.value;
 
+                // If the payment stage is locked, revert the change
+                if (stageId === 'payment') {
+                    var card = builderGrid.querySelector('.option-card[data-stage="payment"][data-option="' + optionId + '"]');
+                    if (card && card.classList.contains('locked')) {
+                        // Re-select the currently forced option
+                        var currentlySelected = builderGrid.querySelector('.option-card[data-stage="payment"].selected');
+                        if (currentlySelected) {
+                            var forcedRadio = currentlySelected.querySelector('input[type="radio"]');
+                            if (forcedRadio) forcedRadio.checked = true;
+                        }
+                        return;
+                    }
+                }
+
                 // Update selected class
                 var stageCards = builderGrid.querySelectorAll('.option-card[data-stage="' + stageId + '"]');
                 stageCards.forEach(function(card) {
@@ -162,6 +176,7 @@
 
                 updateSummary();
                 updateMobileRestrictions();
+                updateForcedPayment();
             });
 
             // ============================================
@@ -232,6 +247,51 @@
                 startBtn.title = '';
             }
 
+            // ============================================
+            // FORCED PAYMENT: Lock payment when checkout requires it
+            // ============================================
+            function updateForcedPayment() {
+                var checkoutSelected = builderGrid.querySelector('input[name="stage-checkout"]:checked');
+                if (!checkoutSelected) return;
+
+                var checkoutOption = getOptionById('checkout', checkoutSelected.value);
+                var paymentCards = builderGrid.querySelectorAll('.option-card[data-stage="payment"]');
+                var paymentColumn = builderGrid.querySelector('.builder-column[data-stage="payment"]');
+
+                if (checkoutOption && checkoutOption.forcedPayment) {
+                    // Force-select the linked payment option
+                    var forcedRadio = builderGrid.querySelector('input[name="stage-payment"][value="' + checkoutOption.forcedPayment + '"]');
+                    if (forcedRadio && !forcedRadio.checked) {
+                        forcedRadio.checked = true;
+                        // Update selection visuals
+                        paymentCards.forEach(function(card) {
+                            card.classList.toggle('selected', card.getAttribute('data-option') === checkoutOption.forcedPayment);
+                        });
+                    }
+                    // Disable all payment cards (locked to this choice)
+                    paymentCards.forEach(function(card) {
+                        card.classList.add('locked');
+                    });
+                    // Add a "linked" badge to the payment column
+                    if (paymentColumn && !paymentColumn.querySelector('.locked-badge')) {
+                        var badge = document.createElement('div');
+                        badge.className = 'locked-badge';
+                        badge.textContent = 'Vinculado al portal seleccionado';
+                        paymentColumn.querySelector('.stage-header').appendChild(badge);
+                    }
+                } else {
+                    // Restore free selection
+                    paymentCards.forEach(function(card) {
+                        card.classList.remove('locked');
+                    });
+                    // Remove locked badge
+                    var badge = paymentColumn && paymentColumn.querySelector('.locked-badge');
+                    if (badge) badge.remove();
+                }
+
+                updateSummary();
+            }
+
             btnDesktop.addEventListener('click', function() { applyMode('desktop'); });
             btnMobile.addEventListener('click', function() { applyMode('mobile'); });
 
@@ -265,6 +325,7 @@
             // ============================================
             applyMode(currentMode);
             updateSummary();
+            updateForcedPayment();
         })();
     </script>
 </body>

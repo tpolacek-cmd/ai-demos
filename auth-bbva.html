@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BBVA Mexico - Autenticacion</title>
+    <script src="config/brand-config.js"></script>
+    <link rel="stylesheet" href="css/auth-bbva-styles.css?v=2">
+</head>
+<body>
+    <div class="bbva-container">
+
+        <!-- ================================================================
+             STEP 0 — iPhone Home Screen with Push Notification
+             ================================================================ -->
+        <div class="bbva-step bbva-home" id="bbva-step-0">
+            <!-- iOS Status Bar -->
+            <div class="bbva-statusbar">
+                <span class="bbva-statusbar__time">9:41</span>
+                <div class="bbva-statusbar__icons">
+                    <!-- Signal bars -->
+                    <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+                        <rect x="0" y="9" width="3" height="3" rx="0.5" fill="#fff"/>
+                        <rect x="4.5" y="6" width="3" height="6" rx="0.5" fill="#fff"/>
+                        <rect x="9" y="3" width="3" height="9" rx="0.5" fill="#fff"/>
+                        <rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="#fff"/>
+                    </svg>
+                    <!-- WiFi -->
+                    <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                        <path d="M8 11.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" fill="#fff"/>
+                        <path d="M5.17 8.33a4 4 0 0 1 5.66 0" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M2.34 5.5a8 8 0 0 1 11.32 0" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <!-- Battery -->
+                    <svg width="27" height="12" viewBox="0 0 27 12" fill="none">
+                        <rect x="0.5" y="0.5" width="22" height="11" rx="2" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+                        <rect x="23.5" y="3.5" width="2" height="5" rx="1" fill="rgba(255,255,255,0.5)"/>
+                        <rect x="2" y="2" width="19" height="8" rx="1" fill="#fff"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Clock -->
+            <div class="bbva-home__clock">
+                <div class="bbva-home__clock-time">9:41</div>
+                <div class="bbva-home__clock-date">Martes, 10 de marzo</div>
+            </div>
+
+            <!-- Push Notification -->
+            <button type="button" class="bbva-push" id="bbva-push-card" onclick="onPushClick()">
+                <div class="bbva-push__header">
+                    <div class="bbva-push__icon">
+                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                            <rect width="28" height="28" rx="6" fill="#004A97"/>
+                            <text x="14" y="19" text-anchor="middle" fill="white" font-size="9" font-weight="700" font-family="system-ui,-apple-system,sans-serif" letter-spacing="0.5">BBVA</text>
+                        </svg>
+                    </div>
+                    <span class="bbva-push__app-name">BBVA Mexico</span>
+                    <span class="bbva-push__time">ahora</span>
+                </div>
+                <div class="bbva-push__body-text">
+                    <p class="bbva-push__title">Continua tu pago en BBVA</p>
+                    <p class="bbva-push__body">Tienes un pago pendiente. Toca para completarlo desde la app.</p>
+                </div>
+            </button>
+
+            <!-- App Grid -->
+            <div class="bbva-home__apps">
+                <!-- Row 1 -->
+                <div class="bbva-app-row">
+                    <div class="bbva-app-item">
+                        <div class="bbva-app-item__icon">📷</div>
+                        <span class="bbva-app-item__label">Camara</span>
+                    </div>
+                    <div class="bbva-app-item">
+                        <div class="bbva-app-item__icon">🗺️</div>
+                        <span class="bbva-app-item__label">Mapas</span>
+                    </div>
+                    <div class="bbva-app-item">
+                        <div class="bbva-app-item__icon">💬</div>
+                        <span class="bbva-app-item__label">Mensajes</span>
+                    </div>
+                    <div class="bbva-app-item">
+                        <div class="bbva-app-item__icon">📱</div>
+                        <span class="bbva-app-item__label">Telefono</span>
+                    </div>
+                </div>
+                <!-- Row 2 -->
+                <div class="bbva-app-row">
+                    <div class="bbva-app-item">
+                        <div class="bbva-app-item__icon">⚙️</div>
+                        <span class="bbva-app-item__label">Ajustes</span>
+                    </div>
+                    <div class="bbva-app-item">
+                        <div class="bbva-app-item__icon">🎵</div>
+                        <span class="bbva-app-item__label">Musica</span>
+                    </div>
+                    <div class="bbva-app-item">
+                        <div class="bbva-app-item__icon">📧</div>
+                        <span class="bbva-app-item__label">Mail</span>
+                    </div>
+                    <div class="bbva-app-item">
+                        <div class="bbva-app-item__icon">🧭</div>
+                        <span class="bbva-app-item__label">Safari</span>
+                    </div>
+                </div>
+                <!-- Row 3 -->
+                <div class="bbva-app-row">
+                    <div class="bbva-app-item">
+                        <div class="bbva-app-item__icon">📅</div>
+                        <span class="bbva-app-item__label">Calendario</span>
+                    </div>
+                    <div class="bbva-app-item">
+                        <div class="bbva-app-item__icon">📸</div>
+                        <span class="bbva-app-item__label">Fotos</span>
+                    </div>
+                    <div class="bbva-app-item">
+                        <div class="bbva-app-item__icon">🏪</div>
+                        <span class="bbva-app-item__label">App Store</span>
+                    </div>
+                    <div class="bbva-app-item">
+                        <div class="bbva-app-item__icon bbva-app-item__icon--bbva">
+                            <span class="bbva-app-item__icon--bbva-text">BBVA</span>
+                        </div>
+                        <span class="bbva-app-item__label">BBVA</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dock -->
+            <div class="bbva-dock">
+                <div class="bbva-dock__icon">📱</div>
+                <div class="bbva-dock__icon">💬</div>
+                <div class="bbva-dock__icon">🧭</div>
+                <div class="bbva-dock__icon">🎵</div>
+            </div>
+
+            <!-- Home indicator -->
+            <div class="bbva-home-indicator"></div>
+        </div>
+
+        <!-- ================================================================
+             STEP 1 — BBVA Splash (auto-advance 3s)
+             ================================================================ -->
+        <div class="bbva-step bbva-splash" id="bbva-step-1">
+            <img class="bbva-splash__img" src="assets/bbva/step-06-app-launch-screen.png" alt="BBVA Splash">
+        </div>
+
+        <!-- ================================================================
+             STEP 2 — BBVA App Home (image + hotspot)
+             ================================================================ -->
+        <div class="bbva-step bbva-app-home" id="bbva-step-2">
+            <img class="bbva-app-home__img" src="assets/bbva/step-07-app-home-screen.png" alt="BBVA Home">
+            <button class="bbva-app-home__hotspot" onclick="onHotspotClick()" aria-label="Iniciar sesion"></button>
+        </div>
+
+        <!-- ================================================================
+             STEP 3 — Face ID
+             ================================================================ -->
+        <div class="bbva-step bbva-faceid" id="bbva-step-3">
+            <img class="bbva-faceid__bg" src="assets/bbva/step-07-app-home-screen.png" alt="">
+            <div class="bbva-faceid__overlay" id="bbva-faceid-overlay" data-phase="">
+                <video class="bbva-faceid__video" autoplay muted playsinline>
+                    <source src="assets/bbva/faceid.webm" type="video/webm">
+                    <img src="assets/bbva/faceid.gif" alt="Face ID" class="bbva-faceid__video">
+                </video>
+            </div>
+        </div>
+
+        <!-- ================================================================
+             STEP 4 — Loading / Validating (auto-advance 5s)
+             ================================================================ -->
+        <div class="bbva-step bbva-loading" id="bbva-step-4">
+            <div class="bbva-spinner"></div>
+            <div class="bbva-loading__bar">
+                <span>🔒</span>
+                <span>Validando credenciales...</span>
+            </div>
+        </div>
+
+        <!-- ================================================================
+             STEP 5 — Payment Summary + Confirm
+             ================================================================ -->
+        <div class="bbva-step bbva-payment" id="bbva-step-5">
+            <!-- Scrollable top (dark) -->
+            <div class="bbva-payment__top">
+                <!-- Fake status bar -->
+                <div class="bbva-payment__statusbar">
+                    <span class="bbva-payment__statusbar-left">oooo Carrier</span>
+                    <span class="bbva-payment__statusbar-center">13:20</span>
+                    <span class="bbva-payment__statusbar-right">100%</span>
+                </div>
+
+                <!-- Header -->
+                <div class="bbva-payment__header">
+                    <span class="bbva-payment__header-title">Pagar con Pago Directo</span>
+                    <button class="bbva-payment__close" aria-label="Cerrar">&times;</button>
+                </div>
+
+                <!-- Informacion del pago -->
+                <div class="bbva-payment__section">
+                    <h3 class="bbva-payment__section-title" style="margin-bottom:24px;">Informacion del pago</h3>
+                    <div class="bbva-payment__info-grid">
+                        <div class="bbva-payment__row">
+                            <dt>Comercio</dt>
+                            <dd id="bbva-pay-comercio"></dd>
+                        </div>
+                        <div class="bbva-payment__row">
+                            <dt>Importe</dt>
+                            <dd id="bbva-pay-importe"></dd>
+                        </div>
+                        <div class="bbva-payment__row">
+                            <dt>Numero de convenio</dt>
+                            <dd id="bbva-pay-convenio"></dd>
+                        </div>
+                        <div class="bbva-payment__row">
+                            <dt>Referencia</dt>
+                            <dd id="bbva-pay-referencia"></dd>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Origen -->
+                <div class="bbva-payment__section">
+                    <div class="bbva-payment__section-headline">
+                        <span class="bbva-payment__section-title">Origen</span>
+                        <button class="bbva-payment__modify-link">Modificar</button>
+                    </div>
+                    <div class="bbva-payment__origin-grid">
+                        <p class="bbva-payment__origin-label">Cuenta debito</p>
+                        <strong class="bbva-payment__origin-amount">$ 3,500.00</strong>
+                        <div class="bbva-payment__account-line">
+                            <span class="bbva-payment__bank-icon" aria-hidden>&#9650;</span>
+                            <span>&#8226;1234</span>
+                        </div>
+                        <span class="bbva-payment__origin-sub">Saldo disponible</span>
+                    </div>
+                </div>
+
+                <!-- Concepto -->
+                <div class="bbva-payment__section">
+                    <div class="bbva-payment__section-headline">
+                        <span class="bbva-payment__section-title">Concepto</span>
+                        <button class="bbva-payment__modify-link">Modificar</button>
+                    </div>
+                    <div class="bbva-payment__row bbva-payment__row--no-border">
+                        <span>Concepto</span>
+                        <strong>Pago Directo BBVA</strong>
+                    </div>
+                </div>
+
+                <!-- Checkbox -->
+                <div class="bbva-payment__checkbox-row">
+                    <label class="bbva-payment__recurrente" for="bbva-recurring">
+                        <span class="bbva-payment__checkbox-box" id="bbvaCheckboxBox">
+                            <svg viewBox="0 0 12 10" fill="none" width="12" height="10" style="display:none" id="bbvaCheckboxSvg">
+                                <path d="M1 5.5L4 8.5L11 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                        <input type="checkbox" id="bbva-recurring" style="position:absolute;opacity:0;width:0;height:0;" checked>
+                        <span class="bbva-payment__recurrente-text">Activar pago recurrente y domiciliado</span>
+                    </label>
+                    <button class="bbva-payment__help-btn" aria-label="Ayuda" onclick="openHelpDialog()">?</button>
+                </div>
+            </div>
+
+            <!-- Help dialog overlay -->
+            <div class="bbva-help-overlay" id="bbvaHelpOverlay" onclick="closeHelpDialog()"></div>
+            <div class="bbva-help-dialog" id="bbvaHelpDialog">
+                <button class="bbva-help-dialog__close" onclick="closeHelpDialog()" aria-label="Cerrar">&times;</button>
+                <h3 class="bbva-help-dialog__title">Que es Pago Directo recurrente BBVA?</h3>
+                <p class="bbva-help-dialog__desc">Es el metodo para clientes BBVA que permite dejar tus servicios domiciliados a traves de un primer pago directo. Cuenta a cuenta, sin numeros de tarjeta.</p>
+                <div class="bbva-help-dialog__section">
+                    <h5>Pago Directo recurrente BBVA es:</h5>
+                    <ul class="bbva-help-dialog__benefits">
+                        <li><svg viewBox="0 0 20 20" fill="#004481" width="16" height="16"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg> Seguro</li>
+                        <li><svg viewBox="0 0 20 20" fill="#004481" width="16" height="16"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg> Inmediato</li>
+                        <li><svg viewBox="0 0 20 20" fill="#004481" width="16" height="16"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg> Sin costo</li>
+                    </ul>
+                </div>
+                <div class="bbva-help-dialog__section">
+                    <h5>Como funciona?</h5>
+                    <ol class="bbva-help-dialog__steps">
+                        <li><span class="bbva-help-dialog__num">1</span><span>Haz clic en el boton de "Activar pago recurrente y domiciliado"</span></li>
+                        <li><span class="bbva-help-dialog__num">2</span><span>Al hacer clic en el boton, das conformidad con los terminos y condiciones de la domiciliacion.</span></li>
+                        <li><span class="bbva-help-dialog__num">3</span><span>Listo. Todos los meses cuando llegue una nueva factura, el cargo se hara automaticamente a tu cuenta.</span></li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Fixed bottom (light) -->
+            <div class="bbva-payment__bottom">
+                <div class="bbva-payment__bottom-label">Importe a pagar</div>
+                <div class="bbva-payment__bottom-amount" id="bbva-pay-bottom-amount"></div>
+                <div class="bbva-payment__bottom-commission">Comision: $0.00</div>
+                <button class="bbva-btn bbva-btn--teal" id="bbva-confirm-btn" onclick="onConfirmPayment()">Confirmar</button>
+            </div>
+        </div>
+
+        <!-- ================================================================
+             STEP 6 — Payment Receipt
+             ================================================================ -->
+        <div class="bbva-step bbva-receipt" id="bbva-step-6" onclick="onReceiptClick()">
+            <!-- Header (title removed, just close button + spacing) -->
+            <div class="bbva-receipt__header">
+                <span></span>
+                <button class="bbva-receipt__close" aria-label="Cerrar">&times;</button>
+            </div>
+
+            <div class="bbva-receipt__scroll">
+                <!-- Green check -->
+                <div class="bbva-receipt__check">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                        <path d="M5 12l5 5L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+
+                <div class="bbva-receipt__title">Pago exitoso</div>
+
+                <div class="bbva-receipt__amount-label">Importe pagado</div>
+                <div class="bbva-receipt__amount" id="bbva-rec-amount"></div>
+
+                <!-- Detail rows -->
+                <div class="bbva-receipt__detail">
+                    <span class="bbva-receipt__detail-label">Fecha y hora</span>
+                    <span class="bbva-receipt__detail-value" id="bbva-rec-datetime"></span>
+                </div>
+                <div class="bbva-receipt__detail">
+                    <span class="bbva-receipt__detail-label">Folio de operacion</span>
+                    <span class="bbva-receipt__detail-value" id="bbva-rec-folio"></span>
+                </div>
+                <div class="bbva-receipt__detail">
+                    <span class="bbva-receipt__detail-label">Comercio</span>
+                    <span class="bbva-receipt__detail-value" id="bbva-rec-comercio"></span>
+                </div>
+                <div class="bbva-receipt__detail">
+                    <span class="bbva-receipt__detail-label">Numero de convenio</span>
+                    <span class="bbva-receipt__detail-value" id="bbva-rec-convenio"></span>
+                </div>
+                <div class="bbva-receipt__detail">
+                    <span class="bbva-receipt__detail-label">Referencia</span>
+                    <span class="bbva-receipt__detail-value" id="bbva-rec-referencia"></span>
+                </div>
+                <div class="bbva-receipt__detail">
+                    <span class="bbva-receipt__detail-label">Origen</span>
+                    <span class="bbva-receipt__detail-value">Cuenta debito 1234</span>
+                </div>
+                <div class="bbva-receipt__detail">
+                    <span class="bbva-receipt__detail-label">Tipo de operacion</span>
+                    <span class="bbva-receipt__detail-value">Pago convenio CIE</span>
+                </div>
+                <div class="bbva-receipt__detail">
+                    <span class="bbva-receipt__detail-label">Guia CIE</span>
+                    <span class="bbva-receipt__detail-value" id="bbva-rec-guia"></span>
+                </div>
+                <div class="bbva-receipt__detail">
+                    <span class="bbva-receipt__detail-label">Comision</span>
+                    <span class="bbva-receipt__detail-value">$0.00</span>
+                </div>
+                <div class="bbva-receipt__detail" style="border-bottom:none;">
+                    <span class="bbva-receipt__detail-label">Concepto</span>
+                    <span class="bbva-receipt__detail-value">Pago Directo BBVA</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================================================================
+             STEP 7 — Recurring Payments Dashboard
+             ================================================================ -->
+        <div class="bbva-step bbva-dashboard" id="bbva-step-7">
+            <div class="bbva-dashboard__scroll">
+                <!-- Status bar (dark text) -->
+                <div class="bbva-dashboard__statusbar">
+                    <span>9:41</span>
+                    <span></span>
+                    <span>100%</span>
+                </div>
+
+                <!-- Header -->
+                <div class="bbva-dashboard__header">
+                    <button class="bbva-dashboard__back" aria-label="Volver">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <h1 class="bbva-dashboard__title">Pagos recurrentes</h1>
+                </div>
+
+                <div class="bbva-dashboard__subtitle">Administra tus servicios y pagos</div>
+
+                <!-- Stats row -->
+                <div class="bbva-stats-row">
+                    <div class="bbva-stat-card">
+                        <div class="bbva-stat-card__icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0829b8" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        </div>
+                        <div class="bbva-stat-card__value" id="bbva-stat-total">$0.00</div>
+                        <div class="bbva-stat-card__label">Total</div>
+                    </div>
+                    <div class="bbva-stat-card">
+                        <div class="bbva-stat-card__icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0829b8" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                        </div>
+                        <div class="bbva-stat-card__value">3</div>
+                        <div class="bbva-stat-card__label">Automaticos</div>
+                    </div>
+                    <div class="bbva-stat-card">
+                        <div class="bbva-stat-card__icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0829b8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                        </div>
+                        <div class="bbva-stat-card__value">0</div>
+                        <div class="bbva-stat-card__label">Pendientes</div>
+                    </div>
+                </div>
+
+                <!-- CTA Card -->
+                <div class="bbva-cta-card">
+                    <div>
+                        <div class="bbva-cta-card__title">Agregar Servicio</div>
+                        <div class="bbva-cta-card__subtitle">Domicilia un nuevo servicio</div>
+                    </div>
+                    <div class="bbva-cta-card__icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </div>
+                </div>
+
+                <!-- Section heading -->
+                <div class="bbva-section-heading">
+                    <span class="bbva-section-heading__title">Mis Servicios</span>
+                    <span class="bbva-section-heading__count">3 servicios</span>
+                </div>
+
+                <!-- Service Card 0 — BRAND -->
+                <div class="bbva-service-card">
+                    <div class="bbva-service-card__top">
+                        <div>
+                            <div class="bbva-service-card__name" id="bbva-svc0-name"></div>
+                            <div class="bbva-service-card__type" id="bbva-svc0-type"></div>
+                            <div class="bbva-service-card__alias" id="bbva-svc0-alias"></div>
+                        </div>
+                        <button class="bbva-service-card__edit" onclick="onEditService(0)" aria-label="Editar servicio">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                    </div>
+                    <div class="bbva-service-card__info">
+                        <span class="bbva-service-card__due">Pagado hoy</span>
+                        <span class="bbva-service-card__amount" id="bbva-svc0-amount"></span>
+                    </div>
+                    <div class="bbva-service-card__tags">
+                        <span class="bbva-tag bbva-tag--green">Al dia</span>
+                        <span class="bbva-tag bbva-tag--blue">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10"/></svg>
+                            Debito auto
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Service Card 1 — Telmex -->
+                <div class="bbva-service-card">
+                    <div class="bbva-service-card__top">
+                        <div>
+                            <div class="bbva-service-card__name">Telmex</div>
+                            <div class="bbva-service-card__type">Internet y Telefono</div>
+                            <div class="bbva-service-card__alias">Plan Infinitum</div>
+                        </div>
+                        <button class="bbva-service-card__edit" onclick="onEditService(1)" aria-label="Editar servicio">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                    </div>
+                    <div class="bbva-service-card__info">
+                        <span class="bbva-service-card__due">Vence en 12 dias</span>
+                        <span class="bbva-service-card__amount">$1,899.00</span>
+                    </div>
+                    <div class="bbva-service-card__tags">
+                        <span class="bbva-tag bbva-tag--green">Al dia</span>
+                        <span class="bbva-tag bbva-tag--blue">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10"/></svg>
+                            Debito auto
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Service Card 2 — Naturgy -->
+                <div class="bbva-service-card">
+                    <div class="bbva-service-card__top">
+                        <div>
+                            <div class="bbva-service-card__name">Naturgy</div>
+                            <div class="bbva-service-card__type">Gas Natural</div>
+                            <div class="bbva-service-card__alias">Naturgy Hogar</div>
+                        </div>
+                        <button class="bbva-service-card__edit" onclick="onEditService(2)" aria-label="Editar servicio">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                    </div>
+                    <div class="bbva-service-card__info">
+                        <span class="bbva-service-card__due">Vence en 5 dias</span>
+                        <span class="bbva-service-card__amount">$1,199.00</span>
+                    </div>
+                    <div class="bbva-service-card__tags">
+                        <span class="bbva-tag bbva-tag--green">Al dia</span>
+                        <span class="bbva-tag bbva-tag--blue">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10"/></svg>
+                            Debito auto
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Bottom spacer -->
+                <div style="height:24px;"></div>
+            </div>
+        </div>
+
+        <!-- ================================================================
+             STEP 8 — Edit Domiciliation
+             ================================================================ -->
+        <div class="bbva-step bbva-edit" id="bbva-step-8">
+            <!-- Blue header with notch spacer -->
+            <div class="bbva-edit__header">
+                <button class="bbva-edit__back" onclick="onEditBack()" aria-label="Volver">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+                </button>
+                <span class="bbva-edit__title">Editar domiciliacion</span>
+            </div>
+
+            <div class="bbva-edit__scroll">
+                <!-- Adhesion Activa -->
+                <div class="bbva-toggle-card">
+                    <div class="bbva-toggle-card__icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                    </div>
+                    <div class="bbva-toggle-card__content">
+                        <div class="bbva-toggle-card__label">Adhesion Activa</div>
+                        <div class="bbva-toggle-card__desc">Los cobros se realizan automaticamente</div>
+                    </div>
+                    <label class="bbva-toggle">
+                        <input type="checkbox" checked>
+                        <span class="bbva-toggle__slider"></span>
+                    </label>
+                </div>
+
+                <!-- Service info -->
+                <div class="bbva-edit-service">
+                    <div class="bbva-edit-service__icon" id="bbva-edit-svc-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg>
+                    </div>
+                    <div>
+                        <div class="bbva-edit-service__name" id="bbva-edit-svc-name">Servicio</div>
+                        <div class="bbva-edit-service__type" id="bbva-edit-svc-type">Tipo</div>
+                    </div>
+                </div>
+
+                <!-- Alias -->
+                <div class="bbva-alias-input">
+                    <input type="text" id="bbva-edit-alias" placeholder="Alias del servicio">
+                    <span class="bbva-alias-input__icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    </span>
+                </div>
+
+                <!-- Cobro mensual chip -->
+                <div class="bbva-chip bbva-chip--blue">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                    Cobro mensual automatico
+                </div>
+
+                <!-- When to charge -->
+                <div class="bbva-charge-section__label">Cuando cobrar?</div>
+                <div class="bbva-charge-options">
+                    <div class="bbva-charge-option active" onclick="selectChargeOption(this)">
+                        <span class="bbva-charge-option__icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </span>
+                        <span class="bbva-charge-option__text">Al recibir</span>
+                    </div>
+                    <div class="bbva-charge-option" onclick="selectChargeOption(this)">
+                        <span class="bbva-charge-option__icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                        </span>
+                        <span class="bbva-charge-option__text">Al vencer</span>
+                    </div>
+                    <div class="bbva-charge-option" onclick="selectChargeOption(this)">
+                        <span class="bbva-charge-option__icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                        </span>
+                        <span class="bbva-charge-option__text">Dia fijo</span>
+                    </div>
+                </div>
+
+                <!-- Monto maximo -->
+                <div class="bbva-field-row">
+                    <div class="bbva-field-row__left">
+                        <span class="bbva-field-row__icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0829b8" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        </span>
+                        <span class="bbva-field-row__label">Monto maximo</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:4px;">
+                        <label class="bbva-toggle" style="margin-right:8px;">
+                            <input type="checkbox" checked>
+                            <span class="bbva-toggle__slider"></span>
+                        </label>
+                        <span style="font-size:14px;color:#666;">$</span>
+                        <input type="text" class="bbva-field-row__input" id="bbva-edit-max-amount" value="3000">
+                    </div>
+                </div>
+
+                <!-- Fecha limite -->
+                <div class="bbva-field-row">
+                    <div class="bbva-field-row__left">
+                        <span class="bbva-field-row__icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0829b8" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                        </span>
+                        <span class="bbva-field-row__label">Fecha limite</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:4px;">
+                        <label class="bbva-toggle" style="margin-right:8px;">
+                            <input type="checkbox" checked>
+                            <span class="bbva-toggle__slider"></span>
+                        </label>
+                        <input type="date" class="bbva-field-row__input" style="width:140px;" value="2026-12-31">
+                    </div>
+                </div>
+
+                <!-- Confirmar pago despues -->
+                <div class="bbva-field-row">
+                    <div class="bbva-field-row__left">
+                        <span class="bbva-field-row__icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0829b8" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10"/></svg>
+                        </span>
+                        <span class="bbva-field-row__label">Confirmar pago despues</span>
+                    </div>
+                    <label class="bbva-toggle">
+                        <input type="checkbox" checked>
+                        <span class="bbva-toggle__slider"></span>
+                    </label>
+                </div>
+
+                <!-- Info banner -->
+                <div class="bbva-info-banner">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                    <span>Puedes pausar esta domiciliacion en cualquier momento</span>
+                </div>
+            </div>
+
+            <!-- Footer button -->
+            <div class="bbva-edit__footer">
+                <button class="bbva-btn bbva-btn--blue" id="bbva-update-dom-btn" onclick="onUpdateDomiciliation()">Actualizar domiciliacion</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="js/auth-bbva-script.js?v=1"></script>
+</body>
+</html>

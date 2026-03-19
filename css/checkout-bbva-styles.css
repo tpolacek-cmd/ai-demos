@@ -1,0 +1,1359 @@
+@import url('../config/variables.css');
+
+/* =========================================
+   checkout-bbva-styles.css
+   Styles for the Pago Directo BBVA checkout portal.
+   All classes prefixed with cb- to avoid conflicts.
+   Portal colors use CSS custom properties from brand-config (--primary-color, --primary-dark).
+   ========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: #f5f5f5;
+    min-height: 100vh;
+    color: #1a1a2e;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* =========================================
+   CONTAINER
+   ========================================= */
+
+.cb-container {
+    max-width: 480px;
+    margin: 0 auto;
+    background: #f5f5f5;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* =========================================
+   SCREENS WRAPPER (transition)
+   ========================================= */
+
+.cb-screens {
+    position: relative;
+    width: 200%;
+    display: flex;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cb-screens.cb-show-screen2 {
+    transform: translateX(-50%);
+}
+
+.cb-screen {
+    width: 50%;
+    min-height: 100vh;
+    flex-shrink: 0;
+}
+
+/* =========================================
+   HEADER
+   ========================================= */
+
+.cb-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--primary-color);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cb-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cb-header-left img.cb-brand-logo {
+    height: 28px;
+    width: auto;
+    object-fit: contain;
+}
+
+.cb-header-right {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* Header Screen 2 (mobile back-arrow header) */
+
+.cb-header-s2 {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--primary-color);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Desktop shared header for Screen 2 — hidden on mobile, shown on desktop */
+.cb-header-s2-shared {
+    display: none;
+}
+
+.cb-back-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #ffffff;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.cb-back-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.cb-header-s2-title {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    flex: 1;
+}
+
+.cb-header-s2-logo {
+    height: 22px;
+    width: auto;
+    object-fit: contain;
+}
+
+/* =========================================
+   TABS (Screen 1)
+   ========================================= */
+
+.cb-tabs {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+}
+
+.cb-tab {
+    flex: 1;
+    padding: 12px 8px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: #9ca3af;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}
+
+.cb-tab.cb-tab-active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* =========================================
+   SUBTITLE
+   ========================================= */
+
+.cb-subtitle {
+    padding: 16px 16px 8px;
+    font-size: 13px;
+    color: #9ca3af;
+    font-style: italic;
+    line-height: 1.4;
+}
+
+/* =========================================
+   DESKTOP NAV BAR (hidden on mobile)
+   ========================================= */
+
+.cb-desktop-nav {
+    display: none;
+}
+
+/* =========================================
+   DESKTOP TABLE (hidden on mobile)
+   ========================================= */
+
+.cb-desktop-table-wrap {
+    display: none;
+}
+
+/* =========================================
+   DESKTOP DETAIL PANEL (hidden on mobile)
+   ========================================= */
+
+.cb-s2-right {
+    display: none;
+}
+
+/* =========================================
+   DEBT CARD (Screen 1)
+   ========================================= */
+
+.cb-debt-card {
+    margin: 8px 16px 100px;
+    background: #ffffff;
+    border-radius: 16px;
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 2px 12px color-mix(in srgb, var(--primary-color) 10%, transparent);
+    overflow: hidden;
+}
+
+.cb-debt-top {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cb-debt-amount {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.cb-badge-pending {
+    font-size: 12px;
+    font-weight: 600;
+    color: #d97706;
+    background: #fef3c7;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.cb-debt-concept {
+    padding: 0 16px 12px;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+/* Expandable section */
+
+.cb-expand-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-top: 1px solid #f3f4f6;
+    cursor: pointer;
+    background: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    width: 100%;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--primary-color);
+}
+
+.cb-expand-toggle svg {
+    transition: transform 0.3s ease;
+}
+
+.cb-expand-toggle.cb-expanded svg {
+    transform: rotate(180deg);
+}
+
+.cb-expand-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+}
+
+.cb-expand-content.cb-expanded {
+    max-height: 300px;
+}
+
+.cb-detail-rows {
+    padding: 0 16px 16px;
+}
+
+.cb-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 13px;
+    border-bottom: 1px solid #f9fafb;
+}
+
+.cb-detail-row:last-child {
+    border-bottom: none;
+}
+
+.cb-detail-label {
+    color: #9ca3af;
+}
+
+.cb-detail-value {
+    color: #374151;
+    font-weight: 500;
+    text-align: right;
+}
+
+/* =========================================
+   FOOTER Screen 1
+   ========================================= */
+
+.cb-footer-s1 {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 90;
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+    padding: 16px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.cb-footer-amount-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.cb-footer-label {
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.cb-footer-amount {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.cb-btn-pagar {
+    background: var(--primary-color);
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 32px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.cb-btn-pagar:hover {
+    background: var(--primary-dark);
+}
+
+.cb-btn-pagar:active {
+    transform: scale(0.97);
+}
+
+/* =========================================
+   SCREEN 2 CONTENT
+   ========================================= */
+
+.cb-s2-body {
+    padding-bottom: 220px;
+}
+
+/* Debt summary compact card */
+
+.cb-summary-card {
+    margin: 16px;
+    background: #f4f4f5;
+    border-radius: 16px;
+    padding: 20px 16px 16px;
+    text-align: center;
+}
+
+.cb-summary-amount {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.cb-summary-concept {
+    font-size: 14px;
+    color: #6b7280;
+    margin-top: 4px;
+}
+
+.cb-summary-divider {
+    height: 1px;
+    background: #e5e7eb;
+    margin: 14px 0;
+}
+
+.cb-summary-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.cb-summary-date {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.cb-summary-date svg {
+    flex-shrink: 0;
+}
+
+.cb-summary-badge {
+    font-size: 11px;
+    font-weight: 600;
+    color: #d97706;
+    background: #fef3c7;
+    padding: 3px 8px;
+    border-radius: 12px;
+}
+
+/* Section title */
+
+.cb-section-title {
+    padding: 8px 16px 4px;
+}
+
+.cb-section-title h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.cb-section-title p {
+    font-size: 14px;
+    color: #9ca3af;
+    margin-top: 2px;
+}
+
+/* =========================================
+   PAYMENT METHOD CARDS
+   ========================================= */
+
+.cb-methods {
+    padding: 12px 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.cb-method-card {
+    background: #ffffff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.cb-method-card:hover {
+    border-color: #c5cdd6;
+}
+
+.cb-method-card.cb-method-selected {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 1px var(--primary-color);
+}
+
+.cb-method-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--primary-color) 12%, white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--primary-color);
+}
+
+.cb-method-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.cb-method-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+.cb-method-desc {
+    font-size: 13px;
+    color: #9ca3af;
+    margin-top: 1px;
+}
+
+/* Radio circle */
+
+.cb-method-radio {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid #d1d5db;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s;
+}
+
+.cb-method-card.cb-method-selected .cb-method-radio {
+    border-color: var(--primary-color);
+}
+
+.cb-method-radio-inner {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: transparent;
+    transition: background 0.2s;
+}
+
+.cb-method-card.cb-method-selected .cb-method-radio-inner {
+    background: var(--primary-color);
+}
+
+/* =========================================
+   FOOTER Screen 2
+   ========================================= */
+
+.cb-footer-s2 {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 90;
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+    padding: 12px 16px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.cb-info-banner {
+    background: #eff6ff;
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: #1e40af;
+    line-height: 1.45;
+}
+
+.cb-info-banner svg {
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.cb-footer-total-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.cb-footer-total-label {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.cb-footer-total-amount {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.cb-btn-continuar {
+    width: 100%;
+    height: 48px;
+    background: var(--primary-color);
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.cb-btn-continuar:hover {
+    background: var(--primary-dark);
+}
+
+.cb-btn-continuar:active {
+    transform: scale(0.98);
+}
+
+/* =========================================
+   BBVA INFO LINK (on method card, mobile)
+   ========================================= */
+
+.cb-method-info-link {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--primary-color);
+    text-decoration: none;
+    margin-top: 4px;
+    display: inline-block;
+}
+
+.cb-method-info-link:hover {
+    text-decoration: underline;
+}
+
+/* =========================================
+   BBVA INFO CONTENT (shared desktop + drawer)
+   ========================================= */
+
+.cb-bbva-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.cb-bbva-info-section {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 16px;
+    background: #ffffff;
+}
+
+.cb-bbva-info-section.cb-bbva-info-muted {
+    background: #f9fafb;
+}
+
+.cb-bbva-info-logo {
+    height: 28px;
+    width: auto;
+    margin-bottom: 12px;
+}
+
+.cb-bbva-info-section h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin-bottom: 6px;
+}
+
+.cb-bbva-info-section p {
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.55;
+}
+
+.cb-bbva-info-section h5 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin-bottom: 10px;
+}
+
+.cb-bbva-benefits {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cb-bbva-benefits li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #374151;
+}
+
+.cb-bbva-benefits li svg {
+    flex-shrink: 0;
+}
+
+.cb-bbva-steps {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.cb-bbva-steps li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+.cb-bbva-step-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--primary-color) 8%, transparent);
+    color: var(--primary-color);
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.cb-bbva-info-notice {
+    border: 1px solid color-mix(in srgb, var(--primary-color) 15%, transparent);
+    background: color-mix(in srgb, var(--primary-color) 4%, transparent);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 12px;
+    color: #374151;
+    line-height: 1.5;
+}
+
+/* =========================================
+   MOBILE DRAWER (Que es Pago Directo BBVA?)
+   ========================================= */
+
+.cb-drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.cb-drawer-overlay.cb-drawer-open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.cb-drawer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 210;
+    background: #ffffff;
+    border-radius: 16px 16px 0 0;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cb-drawer.cb-drawer-open {
+    transform: translateY(0);
+}
+
+.cb-drawer-handle {
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: #d1d5db;
+    margin: 10px auto 0;
+}
+
+.cb-drawer-header {
+    padding: 16px 20px 8px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.cb-drawer-header h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.cb-drawer-header p {
+    font-size: 13px;
+    color: #9ca3af;
+    margin-top: 2px;
+}
+
+.cb-drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px;
+}
+
+.cb-drawer-footer {
+    padding: 12px 20px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid #f3f4f6;
+}
+
+.cb-btn-drawer-close {
+    width: 100%;
+    height: 44px;
+    background: var(--primary-color);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.cb-btn-drawer-close:hover {
+    background: var(--primary-dark);
+}
+
+/* =========================================
+   EMBEDDED MODE OVERRIDES
+   ========================================= */
+
+.cb-embedded .cb-container {
+    max-width: none;
+}
+
+.cb-embedded .cb-header,
+.cb-embedded .cb-header-s2 {
+    padding: 10px 12px;
+}
+
+.cb-embedded .cb-footer-s1,
+.cb-embedded .cb-footer-s2 {
+    max-width: none;
+}
+
+/* =========================================
+   iOS STATUS BAR (embedded)
+   ========================================= */
+
+.cb-ios-status-bar {
+    height: 36px;
+    min-height: 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+    background: white;
+    flex-shrink: 0;
+    z-index: 9999;
+    position: sticky;
+    top: 0;
+}
+
+.cb-ios-status-bar .cb-ios-time {
+    letter-spacing: 0.5px;
+}
+
+.cb-ios-status-bar .cb-ios-icons {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.cb-ios-status-bar .cb-ios-icons svg {
+    display: block;
+}
+
+/* =========================================
+   RESPONSIVE / MOBILE (up to 768px)
+   ========================================= */
+
+@media (max-width: 768px) {
+    .cb-desktop-nav {
+        display: none !important;
+    }
+
+    .cb-desktop-table-wrap {
+        display: none !important;
+    }
+
+    .cb-s2-right {
+        display: none !important;
+    }
+
+    .cb-header-s2-shared {
+        display: none !important;
+    }
+}
+
+/* =========================================
+   PHONE MOCKUP OVERLAY (desktop)
+   ========================================= */
+
+.cb-phone-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+.cb-phone-overlay.cb-phone-show {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.cb-phone-overlay-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.cb-phone-overlay-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    transform: scale(0.85) translateY(40px);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cb-phone-overlay.cb-phone-show .cb-phone-overlay-content {
+    transform: scale(1) translateY(0);
+}
+
+.cb-phone-overlay-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 420px;
+    padding: 0 4px;
+}
+
+.cb-phone-overlay-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.cb-phone-overlay-close {
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    transition: background 0.2s ease;
+}
+
+.cb-phone-overlay-close:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.cb-phone-device {
+    width: 390px;
+    height: 780px;
+    background: #1a1a1a;
+    border-radius: 50px;
+    padding: 12px;
+    box-shadow:
+        0 0 0 3px #333,
+        0 0 0 6px #1a1a1a,
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        inset 0 0 4px rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.cb-phone-notch {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 160px;
+    height: 34px;
+    background: #1a1a1a;
+    border-radius: 0 0 24px 24px;
+    z-index: 10;
+}
+
+.cb-phone-notch::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    background: #333;
+    border-radius: 50%;
+}
+
+.cb-phone-screen {
+    width: 100%;
+    height: 100%;
+    border-radius: 40px;
+    overflow: hidden;
+    background: #031539;
+}
+
+.cb-phone-screen iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    overflow: hidden;
+}
+
+.cb-phone-home-ind {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    z-index: 10;
+}
+
+/* =========================================
+   RESPONSIVE / DESKTOP (769px and up)
+   ========================================= */
+
+@media (min-width: 769px) {
+    body {
+        background: #e5e7eb;
+    }
+
+    /* --- Container: full width for desktop --- */
+    .cb-container {
+        max-width: 100%;
+        background: #f5f5f5;
+        box-shadow: none;
+    }
+
+    /* --- Screens: disable slide mechanism --- */
+    .cb-screens {
+        width: 100%;
+        display: block;
+    }
+
+    .cb-screens.cb-show-screen2 {
+        transform: none;
+    }
+
+    .cb-screen {
+        width: 100%;
+        display: none;
+        min-height: auto;
+    }
+
+    .cb-screen.cb-screen-active {
+        display: block;
+    }
+
+    /* --- Header: wider padding on desktop --- */
+    .cb-header {
+        padding: 14px 32px;
+    }
+
+    .cb-header-left img.cb-brand-logo {
+        height: 32px;
+    }
+
+    .cb-header-right {
+        font-size: 15px;
+    }
+
+    /* --- Hide mobile-only elements --- */
+    .cb-tabs,
+    .cb-subtitle,
+    .cb-debt-card,
+    .cb-footer-s1,
+    .cb-footer-s2,
+    .cb-header-s2,
+    .cb-method-info-link,
+    .cb-drawer,
+    .cb-drawer-overlay {
+        display: none !important;
+    }
+
+    /* --- Show desktop shared header for Screen 2 --- */
+    .cb-header-s2-shared {
+        display: flex;
+    }
+
+    /* --- Desktop Nav Bar --- */
+    .cb-desktop-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 32px;
+        background: #ffffff;
+        border-bottom: 1px solid #e5e7eb;
+        position: sticky;
+        top: 52px;
+        z-index: 90;
+    }
+
+    .cb-desktop-greeting {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin: 0;
+    }
+
+    .cb-btn-pagar-desktop {
+        background: var(--primary-color);
+        color: #ffffff;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 28px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.1s;
+    }
+
+    .cb-btn-pagar-desktop:hover {
+        background: var(--primary-dark);
+    }
+
+    .cb-btn-pagar-desktop:active {
+        transform: scale(0.97);
+    }
+
+    /* --- Volver button --- */
+    .cb-btn-volver {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: transparent;
+        color: var(--primary-color);
+        border: 1.5px solid var(--primary-color);
+        border-radius: 10px;
+        padding: 8px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s;
+    }
+
+    .cb-btn-volver:hover {
+        background: var(--primary-color);
+        color: #ffffff;
+    }
+
+    .cb-btn-volver svg {
+        flex-shrink: 0;
+    }
+
+    /* --- Desktop Debt Table --- */
+    .cb-desktop-table-wrap {
+        display: block;
+        padding: 24px 32px;
+    }
+
+    .cb-desktop-table {
+        width: 100%;
+        max-width: 960px;
+        margin: 0 auto;
+        border-collapse: separate;
+        border-spacing: 0;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        overflow: hidden;
+        font-size: 14px;
+    }
+
+    .cb-desktop-table thead th {
+        background: #f9fafb;
+        padding: 14px 16px;
+        text-align: left;
+        font-size: 13px;
+        font-weight: 600;
+        color: #6b7280;
+        border-bottom: 1px solid #e5e7eb;
+        white-space: nowrap;
+    }
+
+    .cb-desktop-table tbody td {
+        padding: 16px;
+        color: #374151;
+        font-weight: 500;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .cb-desktop-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .cb-table-row-selected {
+        background: #f9fafb;
+        border-left: 3px solid var(--primary-color);
+    }
+
+    .cb-table-row-selected td:first-child {
+        padding-left: 13px;
+    }
+
+    .cb-table-concept {
+        font-weight: 600;
+        color: #1a1a2e;
+    }
+
+    /* --- Screen 2: Desktop grid layout --- */
+    .cb-s2-desktop-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.2fr;
+        gap: 24px;
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 24px;
+    }
+
+    .cb-s2-left .cb-s2-body {
+        padding-bottom: 24px;
+    }
+
+    .cb-s2-left .cb-summary-card {
+        margin: 0 0 16px;
+    }
+
+    .cb-s2-left .cb-section-title {
+        padding: 0 0 4px;
+        text-align: left;
+    }
+
+    .cb-s2-left .cb-section-title h2 {
+        text-align: left;
+    }
+
+    .cb-s2-left .cb-section-title p {
+        text-align: left;
+    }
+
+    .cb-s2-left .cb-methods {
+        padding: 12px 0 0;
+    }
+
+    /* --- Right column: detail panel --- */
+    .cb-s2-right {
+        display: block;
+    }
+
+    .cb-detail-panel {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 24px;
+        position: sticky;
+        top: 120px;
+    }
+
+    .cb-detail-panel-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin: 0 0 4px;
+    }
+
+    .cb-detail-panel-sub {
+        font-size: 14px;
+        color: #6b7280;
+        margin: 0 0 16px;
+    }
+
+    .cb-detail-panel .cb-info-banner {
+        margin-bottom: 16px;
+    }
+
+    .cb-detail-panel-total {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 0;
+        margin-bottom: 16px;
+        border-top: 1px solid #f3f4f6;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .cb-detail-panel-total span:first-child {
+        font-size: 14px;
+        color: #6b7280;
+    }
+
+    .cb-detail-panel-amount {
+        font-size: 22px;
+        font-weight: 700;
+        color: #1a1a2e;
+    }
+
+    .cb-detail-panel .cb-btn-continuar {
+        width: 100%;
+    }
+}
+
+/* =========================================
+   SMALL DESKTOP (481px - 768px) — keep
+   mobile shadow
+   ========================================= */
+
+@media (min-width: 481px) and (max-width: 768px) {
+    body {
+        background: #e5e7eb;
+    }
+
+    .cb-container {
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
+        border-radius: 0;
+    }
+}

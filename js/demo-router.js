@@ -48,11 +48,15 @@ function getNextPageUrl(currentStage) {
     }
 
     if (currentStage === 'checkout') {
-        // Siguiente: payment (auth-mobile)
-        var paymentOption = getOptionById('payment', config.payment);
+        // Siguiente: payment (auth page)
+        var checkoutOption = getOptionById('checkout', config.checkout);
+        // If checkout forces a specific payment, use that instead of user's selection
+        var paymentId = (checkoutOption && checkoutOption.forcedPayment) ? checkoutOption.forcedPayment : config.payment;
+        var paymentOption = getOptionById('payment', paymentId);
         if (!paymentOption) return 'auth-mobile.html?bank=hey-banco&action=pay-domiciliar' + embeddedParam + '&session=' + Date.now();
 
-        return 'auth-mobile.html?bank=' + paymentOption.bank
+        var authPage = paymentOption.authPage || 'auth-mobile.html';
+        return authPage + '?bank=' + paymentOption.bank
             + '&action=' + paymentOption.action
             + embeddedParam
             + '&session=' + Date.now();

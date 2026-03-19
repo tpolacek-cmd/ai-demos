@@ -1,7 +1,7 @@
 // PDF.js configuration
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-const PDF_URL = 'assets/brand/factura-totalplay.pdf';
+const PDF_URL = (typeof BRAND !== 'undefined' && BRAND.invoicePdf) ? BRAND.invoicePdf : 'assets/brand/factura.pdf';
 const QR_TARGET_PAGE = 2; // Page where we overlay the QR
 
 let pdfDoc = null;

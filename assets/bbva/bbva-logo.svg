@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="200" height="60">
+  <defs>
+    <linearGradient id="bbvaGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#004481"/>
+      <stop offset="100%" style="stop-color:#1973B8"/>
+    </linearGradient>
+  </defs>
+  <!-- BBVA Text Logo -->
+  <text x="10" y="42" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="36" fill="#004481">BBVA</text>
+  <!-- Cobranzas subtitle -->
+  <text x="10" y="56" font-family="Arial, Helvetica, sans-serif" font-weight="normal" font-size="11" fill="#072146">Cobranzas</text>
+</svg>

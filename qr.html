@@ -18,7 +18,7 @@
             <img id="qrHeaderLogo" src="assets/brand/totalplay.png" alt="Totalplay" class="header-logo">
             <div class="header-text">
                 <h1>Estado de Cuenta Digital</h1>
-                <p>Periodo: 10 Feb - 09 Mar 2026</p>
+                <p id="qrPeriod">Periodo: cargando...</p>
             </div>
         </div>
         <div class="header-right">
@@ -96,6 +96,8 @@
             document.querySelectorAll('[data-brand="paymentDomain"]').forEach(function(el) {
                 el.textContent = BRAND.paymentDomain;
             });
+            var periodEl = document.getElementById('qrPeriod');
+            if (periodEl) periodEl.textContent = 'Periodo: ' + BRAND.account.period;
         })();
     </script>
     <script src="js/qr-script.js"></script>

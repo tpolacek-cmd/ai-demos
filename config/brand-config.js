@@ -24,11 +24,11 @@ const BRAND = {
         period: '10 Feb - 09 Mar 2026',
         dueDate: '28 de Febrero 2026',
         dueDateShort: '28 Feb 2026',
-        planAmount: 880.00,
-        discount: -40.00,
+        planAmount: 1550.00,
+        discount: -50.00,
         discountLabel: 'Descuento por lealtad',
         previousBalance: 0.00,
-        totalAmount: 840.00,
+        totalAmount: 1500.00,
         reference: '0900 0001 0281 7861 3',
     },
 
@@ -42,6 +42,9 @@ const BRAND = {
         headerBg: '#2A3444',
         btnText: '#1a1a2e',
     },
+
+    // Factura PDF para la demo QR (path relativo al root)
+    invoicePdf: 'assets/brand/factura-totalplay.pdf',
 
     // Deep link scheme (usado en simulacion de apps bancarias)
     deepLinkServiceParam: 'totalplay',
@@ -60,9 +63,17 @@ BRAND.formattedDiscount = () =>
 BRAND.formattedPreviousBalance = () =>
     '$' + BRAND.account.previousBalance.toLocaleString('es-MX', { minimumFractionDigits: 2 });
 
+// Convertir hex a componentes RGB para usar en rgba()
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? parseInt(result[1], 16) + ', ' + parseInt(result[2], 16) + ', ' + parseInt(result[3], 16) : '0, 0, 0';
+}
+
 // Sincronizar colores de JS a CSS custom properties
 function applyBrandColors() {
-    const root = document.documentElement;
+    var root = document.documentElement;
+    var rgb = hexToRgb(BRAND.colors.primary);
+
     root.style.setProperty('--primary-color', BRAND.colors.primary);
     root.style.setProperty('--primary-dark', BRAND.colors.primaryDark);
     root.style.setProperty('--primary-light', BRAND.colors.primaryLight);
@@ -74,7 +85,13 @@ function applyBrandColors() {
     root.style.setProperty('--header-bg', BRAND.colors.headerBg);
     root.style.setProperty('--btn-text-color', BRAND.colors.btnText);
 
-    // Also set --tp-* variants used in index.html and qr-styles
+    // Sombras dinamicas basadas en el color primario
+    root.style.setProperty('--shadow-sm', '0 2px 8px rgba(' + rgb + ', 0.10)');
+    root.style.setProperty('--shadow-md', '0 4px 12px rgba(' + rgb + ', 0.15)');
+    root.style.setProperty('--shadow-lg', '0 8px 24px rgba(' + rgb + ', 0.18)');
+    root.style.setProperty('--shadow-xl', '0 12px 32px rgba(' + rgb + ', 0.22)');
+
+    // Aliases --tp-* usados en index.html y qr-styles
     root.style.setProperty('--tp-primary', BRAND.colors.primary);
     root.style.setProperty('--tp-dark', BRAND.colors.headerBg);
     root.style.setProperty('--tp-text', BRAND.colors.btnText);

@@ -8,7 +8,7 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: linear-gradient(180deg, #FDFDE8 0%, #ffffff 100%);
+    background: linear-gradient(180deg, var(--background, #FDFDE8) 0%, #ffffff 100%);
     min-height: 100vh;
     padding: 0;
     color: var(--text-primary);
@@ -2497,12 +2497,12 @@ body {
 }
 
 .tyc-checkbox:hover ~ .tyc-checkmark {
-    border-color: #DBE442;
+    border-color: var(--primary-color);
 }
 
 .tyc-checkbox:checked ~ .tyc-checkmark {
-    background-color: #DBE442;
-    border-color: #DBE442;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
 .tyc-checkmark:after {
@@ -2529,14 +2529,14 @@ body {
 }
 
 .tyc-link {
-    color: #DBE442;
+    color: var(--primary-color);
     text-decoration: none;
     font-weight: 500;
     transition: color 0.2s ease;
 }
 
 .tyc-link:hover {
-    color: #C5CD2E;
+    color: var(--primary-dark);
     text-decoration: underline;
 }
 
