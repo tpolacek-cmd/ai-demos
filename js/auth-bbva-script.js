@@ -10,6 +10,7 @@ var urlParams = new URLSearchParams(window.location.search);
 var bankParam = urlParams.get('bank') || 'bbva';
 var actionParam = urlParams.get('action') || 'pay-domiciliar';
 var isEmbedded = urlParams.get('embedded') === '1';
+var isDirect = urlParams.get('direct') === '1';
 
 // ---------------------------------------------------------------------------
 // Random data (generated once)
@@ -357,6 +358,6 @@ document.addEventListener('DOMContentLoaded', function() {
         statTotal.textContent = '$' + total.toLocaleString('es-MX', { minimumFractionDigits: 2 });
     }
 
-    // Show Step 0
-    showStep(0);
+    // Direct mode (mobile): skip phone home/push notification, go straight to app splash
+    showStep(isDirect ? 1 : 0);
 });

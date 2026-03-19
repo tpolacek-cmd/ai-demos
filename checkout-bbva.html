@@ -814,8 +814,10 @@
         if (!nextUrl) return;
 
         // If embedded (mobile viewer) or small screen, navigate directly
+        // Add direct=1 to skip the phone home/push notification screens
         if (isEmbedded || window.innerWidth <= 768) {
-            window.location.href = nextUrl;
+            var sep = nextUrl.indexOf('?') > -1 ? '&' : '?';
+            window.location.href = nextUrl + sep + 'direct=1';
             return;
         }
 
