@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Autenticación Totalplay</title>
+    <title>Autenticación</title>
     <script src="config/brand-config.js"></script>
     <script src="config/banks-config.js"></script>
     <script>
@@ -55,7 +55,7 @@
             document.head.appendChild(style);
 
             // Update title
-            document.title = colors.name + ' - Autenticación ' + (typeof BRAND !== 'undefined' ? BRAND.name : 'Totalplay');
+            document.title = colors.name + ' - Autenticación ' + (typeof BRAND !== 'undefined' ? BRAND.name : 'Servicio');
 
             // Embedded mode (inside iframe phone mockup)
             if (urlParams.get('embedded') === '1') {
@@ -290,7 +290,7 @@
                     <div class="service-header">
                         <div class="service-logo-large">
                             <!-- BRAND: company logo -->
-                            <img class="brand-logo" src="assets/brand/totalplay.png" alt="Totalplay">
+                            <img class="brand-logo" src="" alt="Logo">
                         </div>
                         <h2 data-brand="fullname-service"></h2>
                         <p class="service-number">Cuenta: <span data-brand="account-number"></span></p>
@@ -385,7 +385,7 @@
                     <!-- BRAND: Service Card -->
                     <div class="service-card-new">
                         <div class="service-logo-new">
-                            <img class="brand-logo" src="assets/brand/totalplay.png" alt="Totalplay">
+                            <img class="brand-logo" src="" alt="Logo">
                         </div>
                         <div>
                             <h3 data-brand="fullName"></h3>
@@ -592,7 +592,7 @@
                 <div class="domiciliation-container">
                     <div class="service-info-card compact">
                         <div class="service-logo-small">
-                            <img class="brand-logo" src="assets/brand/totalplay.png" alt="Totalplay">
+                            <img class="brand-logo" src="" alt="Logo">
                         </div>
                             <div class="service-details">
                                 <span class="service-company" data-brand="fullname-service"></span>
@@ -831,7 +831,7 @@
                         <h3>Resumen de configuración</h3>
                         <div class="summary-row">
                             <span>Servicio</span>
-                            <span id="summaryAlias">Totalplay Casa</span>
+                            <span id="summaryAlias">Mi Servicio</span>
                         </div>
                         <div class="summary-row">
                             <span>Pago automático</span>
@@ -942,7 +942,7 @@
                     </div>
                     <div class="nu-pagar-row nu-pagar-row-dom">
                         <!-- BRAND: domiciliated service logo -->
-                        <div class="nu-pagar-row-logo"><img class="brand-logo" src="assets/brand/totalplay.png" alt="Totalplay" style="width:32px;height:32px;border-radius:8px;object-fit:contain;"></div>
+                        <div class="nu-pagar-row-logo"><img class="brand-logo" src="" alt="Logo" style="width:32px;height:32px;border-radius:8px;object-fit:contain;"></div>
                         <div class="nu-pagar-row-text">
                             <strong data-brand="name-dot-service"></strong>
                             <span class="nu-dom-active">Domiciliación activa ✓</span>
@@ -1012,6 +1012,9 @@
             document.querySelectorAll('[data-brand-value="alias-default"]').forEach(function(input) {
                 input.value = BRAND.name + ' Casa';
             });
+            // Update summary alias fallback
+            var summaryAlias = document.getElementById('summaryAlias');
+            if (summaryAlias) summaryAlias.textContent = BRAND.name + ' Casa';
             // Update pay button
             var btnPay = document.getElementById('btnPayAmount');
             if (btnPay) btnPay.textContent = 'Pagar ' + BRAND.formattedTotal();

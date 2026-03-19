@@ -11,23 +11,42 @@ description: Cambiar la marca de la demo de portal de pagos.
 
 El proyecto es una demo interactiva (100% visual mock) de portal de pagos
 con domiciliacion bancaria. Toda la data de marca esta centralizada en
-**un unico archivo**: `config/brand-config.js`.
+**dos archivos**:
 
-Al editar ese archivo + reemplazar el logo, toda la demo se actualiza
+1. `config/brand-config.js` — UNICA fuente de verdad (JS)
+2. `config/variables.css` — CSS custom properties (sincronizado con el JS)
+
+Al editar esos dos archivos + reemplazar el logo, toda la demo se actualiza
 automaticamente: nombre, colores, montos, telefono, dominio, factura, etc.
 
-No hay que tocar ningun HTML, CSS ni otro JS.
+**No hay que tocar ningun HTML ni otro JS.** Los HTML usan placeholders
+genericos (`src=""`, `alt="Logo"`, `<title>` sin marca) y se populan
+dinamicamente via `BRAND.*` al cargar.
 
 ## Arquitectura de branding
 
 ```
 config/brand-config.js    <-- UNICA fuente de verdad (editar este)
         |
-        |-- applyBrandColors() sincroniza colores a CSS custom properties
-        |-- Cada pagina lee BRAND.* via JS al cargar
+        |-- applyBrandColors()  → sincroniza colores a CSS custom properties
+        |-- Cada pagina lee BRAND.* via JS al cargar (titulos, logos, textos, montos)
         |
-config/variables.css      <-- Valores iniciales CSS (opcional, JS los overridea)
+config/variables.css      <-- CSS custom properties (sync manual con brand-config.js)
+                               Define defaults para evitar flash antes de que JS cargue
 ```
+
+### Paginas de la demo
+
+| Pagina | Archivo | Descripcion |
+|--------|---------|-------------|
+| Builder | `index.html` | Selector de etapas para armar la demo |
+| WhatsApp | `whatsapp.html` | Canal de llegada: chat de WhatsApp |
+| QR Factura | `qr.html` | Canal de llegada: factura digital con QR |
+| Checkout | `checkout.html` | Portal de pago estandar (multi-banco) |
+| Checkout BBVA | `checkout-bbva.html` | Portal de pago directo BBVA |
+| App bancaria | `auth-mobile.html` | Simulacion de app bancaria (Hey Banco, etc.) |
+| Auth BBVA | `auth-bbva.html` | Simulacion de app BBVA |
+| Mobile viewer | `mobile-viewer.html` | Wrapper con frame de iPhone |
 
 ## Procedimiento paso a paso
 
@@ -42,12 +61,6 @@ Preguntar al usuario (o inventar datos coherentes si no los da):
 | Tipo de servicio | Cosmeticos y bienestar |
 | Nombre de plan/producto | Suscripcion Mensual |
 | Color principal (hex) | #F4A623 |
-| Color oscuro (hex) | #D18E1E |
-| Color claro (hex) | #FFF8EC |
-| Color acento (hex) | #F7BD54 |
-| Color de fondo (hex) | #FFFCF5 |
-| Color header (hex) | #2A3444 |
-| Color texto boton (hex) | #1a1a2e |
 | Dominio | natura.com.mx |
 | Dominio de pago | pago.natura.com.mx |
 | Telefono | 800 123 4567 |
@@ -63,13 +76,14 @@ Preguntar al usuario (o inventar datos coherentes si no los da):
 | Total a pagar | 600.00 |
 | Referencia de pago | 0045 0001 9182 3300 1 |
 
-Si el usuario proporciona solo nombre y color, inventar el resto con
-datos coherentes para ese tipo de empresa.
+**Si el usuario solo da nombre y color**, inventar el resto con datos
+coherentes para ese tipo de empresa. Derivar los colores secundarios
+usando la guia de colores al final de este documento.
 
 ### Paso 2: Editar `config/brand-config.js`
 
-Reemplazar TODOS los campos del objeto `BRAND`. Aqui esta el template
-completo — copiar y adaptar:
+Reemplazar TODOS los campos del objeto `BRAND` (lineas 6-51).
+Aqui esta el template completo — copiar y adaptar:
 
 ```javascript
 const BRAND = {
@@ -120,19 +134,21 @@ const BRAND = {
 };
 ```
 
-IMPORTANTE: No tocar nada debajo de `};` — los helpers (`formattedTotal`,
+**IMPORTANTE:** No tocar nada debajo de `};` — los helpers (`formattedTotal`,
 `applyBrandColors`, etc.) son genericos y no necesitan cambios.
 
 ### Paso 3: Actualizar `config/variables.css`
 
-Actualizar los valores iniciales de las CSS custom properties para que
-coincidan con los nuevos colores. Esto es para evitar un flash del color
-anterior antes de que JS cargue.
+Actualizar SOLO el bloque de colores de marca y sombras en `:root`
+para que coincidan con los nuevos colores. Esto evita un flash del
+color anterior antes de que JS cargue.
 
-Campos a actualizar en el bloque `:root`:
+**Campos a actualizar** (dejar intactos los colores generales y aliases
+`tp-text-secondary`, `tp-border`, `tp-bg`):
 
 ```css
 :root {
+    /* Colores de marca */
     --primary-color: #F4A623;
     --primary-dark: #D18E1E;
     --primary-light: #FFF8EC;
@@ -144,11 +160,12 @@ Campos a actualizar en el bloque `:root`:
     --header-bg: #2A3444;
     --btn-text-color: #1a1a2e;
 
+    /* Aliases --tp-* */
     --tp-primary: #F4A623;
     --tp-dark: #2A3444;
     --tp-text: #1a1a2e;
 
-    /* Sombras: reemplazar rgb con el del nuevo color primario */
+    /* Sombras: convertir color primario a RGB para rgba() */
     --shadow-sm: 0 2px 8px rgba(244, 166, 35, 0.10);
     --shadow-md: 0 4px 12px rgba(244, 166, 35, 0.15);
     --shadow-lg: 0 8px 24px rgba(244, 166, 35, 0.18);
@@ -156,12 +173,8 @@ Campos a actualizar en el bloque `:root`:
 }
 ```
 
-No tocar los colores generales (--text-primary, --border-color, etc.)
-ni los aliases tp-text-secondary, tp-border, tp-bg.
-
-NOTA: `applyBrandColors()` en brand-config.js sobreescribe todos estos
-valores al cargar, incluyendo las sombras. Variables.css solo define
-los defaults para el primer render.
+**Tip para las sombras:** Convertir el color primario hex a componentes
+RGB (ej: `#F4A623` → `244, 166, 35`) y usarlos en los rgba().
 
 ### Paso 4: Copiar logo
 
@@ -176,16 +189,16 @@ Si hay una factura PDF para la demo QR:
 2. El QR se superpone automaticamente en la pagina 2 del PDF
 
 Si no hay PDF:
-- La demo QR mostrara un error de carga, pero el resto de las demos funciona
+- La demo QR mostrara un error de carga, pero el resto funciona
 
 ### Paso 6: Verificar
 
 ```bash
-# Buscar restos del nombre de marca anterior
-grep -r "NombreMarcaAnterior" --include="*.{html,js,css}" . | grep -v tasks/ | grep -v config/brand-config.js
+# Buscar restos del nombre de marca anterior en archivos de codigo
+grep -rn "NombreAnterior" --include="*.html" --include="*.js" --include="*.css" . | grep -v '.git/' | grep -v 'tasks/' | grep -v '.claude/' | grep -v 'config/brand-config.js' | grep -v 'config/variables.css'
 
-# Buscar color hex anterior (sin var() wrapper)
-grep -rn "ColorHexAnterior" --include="*.{html,js,css}" css/ js/ | grep -v 'var('
+# Buscar color hex anterior fuera de los archivos de config
+grep -rn "#ColorHexAnterior" --include="*.html" --include="*.js" --include="*.css" . | grep -v '.git/' | grep -v 'tasks/' | grep -v '.claude/' | grep -v 'config/brand-config.js' | grep -v 'config/variables.css'
 
 # Ambos comandos deben retornar 0 resultados
 ```
@@ -194,11 +207,21 @@ grep -rn "ColorHexAnterior" --include="*.{html,js,css}" css/ js/ | grep -v 'var(
 
 Abrir http://localhost:8000 y verificar:
 
-1. **Builder** (index.html): muestra nuevo nombre y logo en el header
-2. **WhatsApp**: mensajes muestran nuevo nombre, monto, dominio, telefono
-3. **QR Factura**: header muestra logo, periodo correcto, colores del QR block
-4. **Checkout**: monto, nombre de plan, colores de botones y checkboxes
-5. **App bancaria**: monto a pagar, nombre del servicio, colores correctos
+1. **Builder** (`index.html`): logo y nombre en header
+2. **WhatsApp** (`whatsapp.html`): nombre, monto, dominio, telefono en mensajes
+3. **QR Factura** (`qr.html`): logo, periodo, colores del bloque QR
+4. **Checkout** (`checkout.html`): monto, nombre de plan, colores de botones
+5. **Checkout BBVA** (`checkout-bbva.html`): logo, monto, colores
+6. **App bancaria** (`auth-mobile.html`): monto, nombre del servicio, alias, colores
+
+## Que archivos se editan
+
+| Archivo | Que cambiar |
+|---------|-------------|
+| `config/brand-config.js` | Todos los datos del objeto `BRAND` (nombre, colores, montos, contacto) |
+| `config/variables.css` | CSS custom properties de colores y sombras en `:root` |
+| `assets/brand/*.png` | Logo de la nueva marca |
+| `assets/brand/*.pdf` | (Opcional) Factura PDF para demo QR |
 
 ## Que archivos NO hay que tocar
 
@@ -209,14 +232,17 @@ Abrir http://localhost:8000 y verificar:
 | `index.html` | Lee todo de BRAND.* dinamicamente |
 | `whatsapp.html` | Lee todo de BRAND.* dinamicamente |
 | `qr.html` | Lee todo de BRAND.* dinamicamente |
-| `checkout.html` | Lee todo de BRAND.* via data-brand attributes |
+| `checkout.html` | Lee todo de BRAND.* dinamicamente |
+| `checkout-bbva.html` | Lee todo de BRAND.* dinamicamente |
 | `auth-mobile.html` | Lee todo de BRAND.* dinamicamente |
-| Todos los `.css` | Usan CSS custom properties que se sincronizan desde JS |
+| `auth-bbva.html` | Lee todo de BRAND.* dinamicamente |
+| `mobile-viewer.html` | Wrapper iframe, sin datos de marca |
+| Todos los `.css` | Usan CSS custom properties sincronizadas desde JS |
 | Todos los `.js` en `js/` | Leen de BRAND.* o usan CSS variables |
 
 ## Guia de colores
 
-Para elegir colores coherentes a partir de un color principal:
+Para elegir colores coherentes a partir de un solo color principal:
 
 | Campo | Como derivarlo |
 |-------|---------------|
@@ -225,5 +251,59 @@ Para elegir colores coherentes a partir de un color principal:
 | `primaryLight` | primary muy claro, casi blanco con tinte del color |
 | `accent` | primary aclarado ~20%, para gradientes |
 | `background` | Blanco con muy leve tinte del color primario |
-| `headerBg` | Gris oscuro / azul oscuro (generalmente #2A3444 funciona para cualquier marca) |
-| `btnText` | Color del texto sobre botones primarios (oscuro si el primary es claro, blanco si es oscuro) |
+| `headerBg` | Gris oscuro / azul oscuro (`#2A3444` funciona para cualquier marca) |
+| `btnText` | Color del texto sobre botones — oscuro (`#1a1a2e`) si primary es claro, blanco (`#ffffff`) si primary es oscuro |
+
+### Ejemplo: derivar desde un solo color
+
+Si el usuario dice "el color es `#E91E63`" (rosa):
+
+```javascript
+colors: {
+    primary: '#E91E63',      // el color dado
+    primaryDark: '#C2185B',  // ~15% mas oscuro
+    primaryLight: '#FDE8EF', // casi blanco con tinte rosa
+    accent: '#F06292',       // ~20% mas claro
+    background: '#FFF5F8',   // blanco con leve tinte rosa
+    headerBg: '#2A3444',     // gris oscuro (universal)
+    btnText: '#ffffff',      // blanco porque primary es oscuro
+}
+```
+
+## Referencia rapida de campos BRAND
+
+```
+BRAND.name                    → Nombre corto (ej: "Natura")
+BRAND.fullName                → Nombre completo (ej: "Natura Mexico")
+BRAND.serviceType             → Tipo de servicio (ej: "Cosmeticos y bienestar")
+BRAND.planName                → Plan o producto (ej: "Suscripcion Mensual")
+BRAND.logo                    → Path al logo (ej: "assets/brand/natura.png")
+BRAND.domain                  → Dominio web (ej: "natura.com.mx")
+BRAND.paymentDomain           → Dominio de pago (ej: "pago.natura.com.mx")
+BRAND.phone                   → Telefono (ej: "800 123 4567")
+BRAND.phoneFriendly           → Telefono amigable (ej: "800 NATURA")
+BRAND.whatsapp                → WhatsApp (ej: "55 1234 5678")
+BRAND.account.number          → Numero de cuenta demo
+BRAND.account.period          → Periodo de facturacion
+BRAND.account.dueDate         → Fecha de vencimiento (formato largo)
+BRAND.account.dueDateShort    → Fecha de vencimiento (formato corto)
+BRAND.account.planAmount      → Monto del plan (numero)
+BRAND.account.discount        → Descuento (numero negativo)
+BRAND.account.discountLabel   → Etiqueta del descuento
+BRAND.account.previousBalance → Saldo anterior
+BRAND.account.totalAmount     → Total a pagar
+BRAND.account.reference       → Referencia de pago
+BRAND.colors.primary          → Color principal hex
+BRAND.colors.primaryDark      → Color oscuro hex
+BRAND.colors.primaryLight     → Color claro hex
+BRAND.colors.accent           → Color acento hex
+BRAND.colors.background       → Color de fondo hex
+BRAND.colors.headerBg         → Color del header hex
+BRAND.colors.btnText          → Color texto boton hex
+BRAND.invoicePdf              → Path a factura PDF
+BRAND.deepLinkServiceParam    → Parametro para deep links
+BRAND.formattedTotal()        → "$1,500.00" (helper, no editar)
+BRAND.formattedPlanAmount()   → "$1,550.00" (helper, no editar)
+BRAND.formattedDiscount()     → "-$50.00" (helper, no editar)
+BRAND.formattedPreviousBalance() → "$0.00" (helper, no editar)
+```

@@ -626,7 +626,7 @@ body {
 
 .wa-redirect-bar {
     height: 100%;
-    background: linear-gradient(90deg, var(--primary-color, #DBE442), var(--accent-color, #E5EC6B));
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
     border-radius: 4px;
     width: 0%;
     animation: redirectProgress 2.3s ease-in-out forwards;
