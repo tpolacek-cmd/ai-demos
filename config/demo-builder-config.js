@@ -39,6 +39,16 @@ const DEMO_STAGES = [
                 mobileSupported: false,
                 icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/><rect x="5" y="5" width="2" height="2" fill="currentColor" stroke="none"/><rect x="17" y="5" width="2" height="2" fill="currentColor" stroke="none"/><rect x="5" y="17" width="2" height="2" fill="currentColor" stroke="none"/><line x1="14" y1="14" x2="14" y2="16"/><line x1="18" y1="14" x2="22" y2="14"/><line x1="14" y1="20" x2="14" y2="22"/><line x1="18" y1="18" x2="18" y2="22"/><line x1="22" y1="18" x2="22" y2="22"/></svg>',
             },
+            {
+                id: 'nubank-impuestos',
+                name: 'Nubank Impuestos',
+                description: 'App Nubank - Pago de impuestos estatales',
+                page: 'nubank-impuestos.html',
+                mobileSupported: true,
+                mobileOnly: true,
+                group: 'nubank-impuestos',
+                icon: '<img src="assets/banks/nu.jpeg" alt="Nubank" style="width: 28px; height: 28px; object-fit: contain; border-radius: 6px;">',
+            },
         ]
     },
     {
@@ -63,6 +73,15 @@ const DEMO_STAGES = [
                 flow: 'bbva-direct',
                 forcedPayment: 'bbva',
                 icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/><path d="M9 6h6"/><path d="M9 10h6"/></svg>',
+            },
+            {
+                id: 'nubank-impuestos-checkout',
+                name: 'Nubank Impuestos',
+                description: 'Flujo in-app de pago de impuestos',
+                page: 'nubank-impuestos.html',
+                flow: 'nubank-impuestos',
+                group: 'nubank-impuestos',
+                icon: '<img src="assets/banks/nu.jpeg" alt="Nubank" style="width: 28px; height: 28px; object-fit: contain; border-radius: 6px;">',
             },
         ]
     },
@@ -89,6 +108,16 @@ const DEMO_STAGES = [
                 action: 'pay-domiciliar',
                 authPage: 'auth-bbva.html',
                 icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="16" rx="3" fill="#004481"/><text x="12" y="14.5" font-family="Arial,sans-serif" font-size="7" font-weight="bold" fill="white" text-anchor="middle">BBVA</text></svg>',
+            },
+            {
+                id: 'nubank-impuestos-payment',
+                name: 'Nubank',
+                description: 'Confirmacion de pago en app Nubank',
+                bank: 'nubank',
+                action: 'pay-impuestos',
+                authPage: 'nubank-impuestos.html',
+                group: 'nubank-impuestos',
+                icon: '<img src="assets/banks/nu.jpeg" alt="Nubank" style="width: 28px; height: 28px; object-fit: contain; border-radius: 6px;">',
             },
         ]
     }

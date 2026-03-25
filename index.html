@@ -154,18 +154,16 @@
                 var stageId = e.target.name.replace('stage-', '');
                 var optionId = e.target.value;
 
-                // If the payment stage is locked, revert the change
-                if (stageId === 'payment') {
-                    var card = builderGrid.querySelector('.option-card[data-stage="payment"][data-option="' + optionId + '"]');
-                    if (card && card.classList.contains('locked')) {
-                        // Re-select the currently forced option
-                        var currentlySelected = builderGrid.querySelector('.option-card[data-stage="payment"].selected');
-                        if (currentlySelected) {
-                            var forcedRadio = currentlySelected.querySelector('input[type="radio"]');
-                            if (forcedRadio) forcedRadio.checked = true;
-                        }
-                        return;
+                // If the stage is locked (by forcedPayment or group locking), revert the change
+                var card = builderGrid.querySelector('.option-card[data-stage="' + stageId + '"][data-option="' + optionId + '"]');
+                if (card && card.classList.contains('locked')) {
+                    // Re-select the currently forced option
+                    var currentlySelected = builderGrid.querySelector('.option-card[data-stage="' + stageId + '"].selected');
+                    if (currentlySelected) {
+                        var forcedRadio = currentlySelected.querySelector('input[type="radio"]');
+                        if (forcedRadio) forcedRadio.checked = true;
                     }
+                    return;
                 }
 
                 // Update selected class
@@ -177,6 +175,7 @@
                 updateSummary();
                 updateMobileRestrictions();
                 updateForcedPayment();
+                updateGroupLocking();
             });
 
             // ============================================
@@ -273,9 +272,9 @@
                         card.classList.add('locked');
                     });
                     // Add a "linked" badge to the payment column
-                    if (paymentColumn && !paymentColumn.querySelector('.locked-badge')) {
+                    if (paymentColumn && !paymentColumn.querySelector('.forced-payment-badge')) {
                         var badge = document.createElement('div');
-                        badge.className = 'locked-badge';
+                        badge.className = 'locked-badge forced-payment-badge';
                         badge.textContent = 'Vinculado al portal seleccionado';
                         paymentColumn.querySelector('.stage-header').appendChild(badge);
                     }
@@ -285,8 +284,92 @@
                         card.classList.remove('locked');
                     });
                     // Remove locked badge
-                    var badge = paymentColumn && paymentColumn.querySelector('.locked-badge');
+                    var badge = paymentColumn && paymentColumn.querySelector('.forced-payment-badge');
                     if (badge) badge.remove();
+                }
+
+                updateSummary();
+            }
+
+            // ============================================
+            // GROUP LOCKING: Lock linked stages when a group option is selected
+            // ============================================
+            function updateGroupLocking() {
+                // Find the active group (if any) from current selections
+                var activeGroup = null;
+                var sourceStageId = null;
+
+                DEMO_STAGES.forEach(function(stage) {
+                    var selected = builderGrid.querySelector('input[name="stage-' + stage.id + '"]:checked');
+                    if (selected) {
+                        var option = getOptionById(stage.id, selected.value);
+                        if (option && option.group) {
+                            activeGroup = option.group;
+                            sourceStageId = stage.id;
+                        }
+                    }
+                });
+
+                if (activeGroup) {
+                    // Force-select matching group options in other stages and lock them
+                    DEMO_STAGES.forEach(function(stage) {
+                        if (stage.id === sourceStageId) return;
+
+                        // Find the option in this stage that belongs to the same group
+                        var groupOption = null;
+                        stage.options.forEach(function(opt) {
+                            if (opt.group === activeGroup) groupOption = opt;
+                        });
+
+                        if (!groupOption) return;
+
+                        var stageCards = builderGrid.querySelectorAll('.option-card[data-stage="' + stage.id + '"]');
+                        var column = builderGrid.querySelector('.builder-column[data-stage="' + stage.id + '"]');
+
+                        // Force-select the group option
+                        var groupRadio = builderGrid.querySelector('input[name="stage-' + stage.id + '"][value="' + groupOption.id + '"]');
+                        if (groupRadio && !groupRadio.checked) {
+                            groupRadio.checked = true;
+                            stageCards.forEach(function(card) {
+                                card.classList.toggle('selected', card.getAttribute('data-option') === groupOption.id);
+                            });
+                        }
+
+                        // Lock all cards in this stage
+                        stageCards.forEach(function(card) {
+                            card.classList.add('locked');
+                        });
+
+                        // Add "Demo vinculada" badge if not present
+                        if (column && !column.querySelector('.group-locked-badge')) {
+                            var badge = document.createElement('div');
+                            badge.className = 'locked-badge group-locked-badge';
+                            badge.textContent = 'Demo vinculada';
+                            column.querySelector('.stage-header').appendChild(badge);
+                        }
+                    });
+                } else {
+                    // No group active — remove group locking from all stages
+                    DEMO_STAGES.forEach(function(stage) {
+                        var stageCards = builderGrid.querySelectorAll('.option-card[data-stage="' + stage.id + '"]');
+                        var column = builderGrid.querySelector('.builder-column[data-stage="' + stage.id + '"]');
+
+                        // Only remove .locked if it was set by group locking (not by forcedPayment)
+                        // Check if forcedPayment is active for this stage
+                        var checkoutSelected = builderGrid.querySelector('input[name="stage-checkout"]:checked');
+                        var checkoutOption = checkoutSelected ? getOptionById('checkout', checkoutSelected.value) : null;
+                        var isForcedByPayment = stage.id === 'payment' && checkoutOption && checkoutOption.forcedPayment;
+
+                        if (!isForcedByPayment) {
+                            stageCards.forEach(function(card) {
+                                card.classList.remove('locked');
+                            });
+                        }
+
+                        // Remove group badge
+                        var groupBadge = column && column.querySelector('.group-locked-badge');
+                        if (groupBadge) groupBadge.remove();
+                    });
                 }
 
                 updateSummary();
@@ -311,6 +394,13 @@
                 // Save config for other pages to read
                 saveDemoConfig(config);
 
+                // Verificar mobileOnly — demos que siempre abren en mobile-viewer
+                var arrivalOption = getOptionById('arrival', config.arrival);
+                if (arrivalOption && arrivalOption.mobileOnly) {
+                    window.location.href = 'mobile-viewer.html?demo=' + arrivalOption.id;
+                    return;
+                }
+
                 // Navigate to the first page of the flow
                 var startUrl = getDemoStartUrl(currentMode);
                 if (!startUrl) {
@@ -326,6 +416,7 @@
             applyMode(currentMode);
             updateSummary();
             updateForcedPayment();
+            updateGroupLocking();
         })();
     </script>
 </body>
