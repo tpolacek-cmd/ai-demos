@@ -120,28 +120,34 @@ if (bankSelectMobile) {
         console.log('Current Flow:', currentFlow);
         console.log('Selected Method:', selectedMethod);
         
+        // Nubank: always show direct continue (skip identity validation)
+        if (selectedBank === 'nubank' && selectedMethod === 'paga-domicilia') {
+            showIdentityValidationInline(selectedBank);
+            return;
+        }
+
         // Handle the same flows as bank cards
         if (currentFlow === 'account-to-account' && selectedMethod === 'paga-domicilia') {
             console.log('Opening CLABE modal for account-to-account flow');
             showClabeModal(selectedBank);
             return;
         }
-        
+
         if (currentFlow === 'sin-dato' && selectedMethod === 'paga-domicilia') {
             handleSinDatoFlow(selectedBank);
             return;
         }
-        
+
         if (currentFlow === 'curp-deeplink' && selectedMethod === 'paga-domicilia') {
             showIdentityValidationInline(selectedBank);
             return;
         }
-        
+
         if (currentFlow === 'dato-push' && selectedMethod === 'paga-domicilia') {
             showCurpModalForPush(selectedBank);
             return;
         }
-        
+
         // Normal flow for other cases
         showSuccessModal();
     });
@@ -150,46 +156,52 @@ if (bankSelectMobile) {
 bankCards.forEach(card => {
     card.addEventListener('click', (e) => {
         e.stopPropagation();
-        
+
         // Store selected bank
         selectedBank = card.dataset.bank;
-        
+
         console.log('=== BANK CARD CLICKED ===');
         console.log('Bank:', selectedBank);
         console.log('Current Flow:', currentFlow);
         console.log('Selected Method:', selectedMethod);
-        
+
         // Remove selected class from all bank cards first
         bankCards.forEach(c => c.classList.remove('selected'));
-        
+
         // Add selected class to clicked card
         card.classList.add('selected');
-        
+
+        // Nubank: always show direct continue (skip identity validation)
+        if (selectedBank === 'nubank' && selectedMethod === 'paga-domicilia') {
+            showIdentityValidationInline(selectedBank);
+            return;
+        }
+
         // Check if flow is "account-to-account" and show CLABE modal
         if (currentFlow === 'account-to-account' && selectedMethod === 'paga-domicilia') {
             console.log('Opening CLABE modal for account-to-account flow');
             showClabeModal(selectedBank);
             return;
         }
-        
+
         // Check if flow is "sin-dato" and handle immediately
         if (currentFlow === 'sin-dato' && selectedMethod === 'paga-domicilia') {
             handleSinDatoFlow(selectedBank);
             return;
         }
-        
+
         // Check if flow is "curp-deeplink" and show identity validation inline
         if (currentFlow === 'curp-deeplink' && selectedMethod === 'paga-domicilia') {
             showIdentityValidationInline(selectedBank);
             return;
         }
-        
+
         // Check if flow is "dato-push" and show CURP modal for push notification
         if (currentFlow === 'dato-push' && selectedMethod === 'paga-domicilia') {
             showCurpModalForPush(selectedBank);
             return;
         }
-        
+
         // Normal flow for other cases
         // Add animation feedback
         card.style.transform = 'scale(0.95)';
@@ -217,11 +229,16 @@ function redirectToBankAuth(bank) {
     const isPagaDomicilia = selectedMethod === 'paga-domicilia';
     const actionLabel = isPagaDomicilia ? 'Procesando domiciliacion y pago' : 'Redirigiendo';
 
-    // If embedded in mobile viewer, navigate directly to auth-mobile
+    // If embedded in mobile viewer, navigate directly to auth page
     if (isCheckoutEmbedded) {
-        const baseUrl = window.location.origin + window.location.pathname.replace('checkout.html', '');
+        var embAuthPage = 'auth-mobile.html';
+        if (typeof getOptionById === 'function') {
+            var embPayOpt = getOptionById('payment', bank);
+            if (embPayOpt && embPayOpt.authPage) embAuthPage = embPayOpt.authPage;
+        }
+        const baseUrl = window.location.origin + window.location.pathname.replace(/[^\/]*$/, '');
         const actionType = isPagaDomicilia ? 'pay-domiciliar' : 'domiciliar';
-        const authUrl = `${baseUrl}auth-mobile.html?bank=${bank}&action=${actionType}&embedded=1&session=${Date.now()}`;
+        const authUrl = `${baseUrl}${embAuthPage}?bank=${bank}&action=${actionType}&embedded=1&session=${Date.now()}`;
         window.location.href = authUrl;
         return;
     }
@@ -323,19 +340,27 @@ function showQRModal(bank) {
 function openBankApp() {
     const bank = window.currentBank;
     const action = window.currentAction;
-    
-    // Build URL to auth-mobile page
-    const baseUrl = window.location.origin + window.location.pathname.replace('checkout.html', '');
+
+    // Resolve auth page from payment options config (supports auth-bbva.html, auth-mobile.html, etc.)
+    var authPage = 'auth-mobile.html';
+    if (typeof getOptionById === 'function') {
+        var paymentOption = getOptionById('payment', bank);
+        if (paymentOption && paymentOption.authPage) {
+            authPage = paymentOption.authPage;
+        }
+    }
+
+    // Build URL to auth page
+    const baseUrl = window.location.origin + window.location.pathname.replace(/[^\/]*$/, '');
 
     if (isCheckoutEmbedded) {
-        // In mobile viewer: navigate directly to auth-mobile (we're already in a phone frame)
-        const authUrl = `${baseUrl}auth-mobile.html?bank=${bank}&action=${action}&embedded=1&session=${Date.now()}`;
+        const authUrl = `${baseUrl}${authPage}?bank=${bank}&action=${action}&embedded=1&session=${Date.now()}`;
         window.location.href = authUrl;
         return;
     }
 
-    const authUrl = `${baseUrl}auth-mobile.html?bank=${bank}&action=${action}&session=${Date.now()}`;
-    
+    const authUrl = `${baseUrl}${authPage}?bank=${bank}&action=${action}&session=${Date.now()}`;
+
     // Open in new window with mobile dimensions
     window.open(authUrl, '_blank', 'width=420,height=900,resizable=yes,scrollbars=yes');
     

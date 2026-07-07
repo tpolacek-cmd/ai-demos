@@ -49,6 +49,14 @@ const DEMO_STAGES = [
                 group: 'nubank-impuestos',
                 icon: '<img src="assets/banks/nu.jpeg" alt="Nubank" style="width: 28px; height: 28px; object-fit: contain; border-radius: 6px;">',
             },
+            {
+                id: 'compartamos-whatsapp',
+                name: 'Compartamos WhatsApp',
+                description: 'Bot de cobranza — genera portal personalizado',
+                page: 'compartamos-whatsapp.html',
+                mobileSupported: true,
+                icon: '<img src="assets/brand/compartamos.png" alt="Compartamos" style="width: 28px; height: 28px; object-fit: contain; border-radius: 6px; background: white; padding: 2px;">',
+            },
         ]
     },
     {
@@ -118,6 +126,16 @@ const DEMO_STAGES = [
                 authPage: 'nubank-impuestos.html',
                 group: 'nubank-impuestos',
                 icon: '<img src="assets/banks/nu.jpeg" alt="Nubank" style="width: 28px; height: 28px; object-fit: contain; border-radius: 6px;">',
+            },
+            {
+                id: 'video',
+                name: 'Video Nubank',
+                description: 'Autenticacion Nubank + video del flujo de pago',
+                bank: 'video',
+                action: 'play',
+                authPage: 'video-player.html',
+                videoSrc: 'assets/videos/segiagua_cut.mp4',
+                icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>',
             },
         ]
     }

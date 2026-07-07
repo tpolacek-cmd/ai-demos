@@ -5,49 +5,49 @@
 
 const BRAND = {
     // Identidad
-    name: 'Totalplay',
-    fullName: 'Totalplay México',
-    serviceType: 'Internet y TV',
-    planName: 'Plan Sónico - Simétrico',
-    logo: 'assets/brand/totalplay.png',
+    name: 'Banco Compartamos',
+    fullName: 'Banco Compartamos',
+    serviceType: 'Credito personal',
+    planName: 'Credito CR-2024-084521',
+    logo: 'assets/brand/compartamos.png',
 
     // Contacto y dominio
-    domain: 'totalplay.com.mx',
-    paymentDomain: 'pago.totalplay.com.mx',
-    phone: '800 868 2527',
-    phoneFriendly: '800 totalplay',
-    whatsapp: '55 6611 0060',
+    domain: 'compartamos.com.mx',
+    paymentDomain: 'pago.compartamos.com.mx',
+    phone: '800 290 1100',
+    phoneFriendly: '800 COMPARTAMOS',
+    whatsapp: '55 7568 4000',
 
-    // Datos de cuenta/factura para la demo
+    // Datos de cuenta/credito para la demo
     account: {
-        number: '0102-8178-61',
-        period: '10 Feb - 09 Mar 2026',
-        dueDate: '28 de Febrero 2026',
-        dueDateShort: '28 Feb 2026',
-        planAmount: 1550.00,
-        discount: -50.00,
-        discountLabel: 'Descuento por lealtad',
+        number: 'CR-2024-084521',
+        period: 'Marzo 2026',
+        dueDate: '15 de Abril 2026',
+        dueDateShort: '15 Abr 2026',
+        planAmount: 8000.00,
+        discount: 0.00,
+        discountLabel: '',
         previousBalance: 0.00,
-        totalAmount: 1500.00,
-        reference: '0900 0001 0281 7861 3',
+        totalAmount: 8000.00,
+        reference: '0900 0002 0845 2100 4',
     },
 
     // Colores de la marca
     colors: {
-        primary: '#DBE442',
-        primaryDark: '#C5CD2E',
-        primaryLight: '#F9FBEB',
-        accent: '#E5EC6B',
-        background: '#FDFDE8',
-        headerBg: '#2A3444',
-        btnText: '#1a1a2e',
+        primary: '#C81566',
+        primaryDark: '#A01050',
+        primaryLight: '#F9EBF3',
+        accent: '#D4921A',
+        background: '#FDF5F9',
+        headerBg: '#1a1a2e',
+        btnText: '#ffffff',
     },
 
-    // Factura PDF para la demo QR (path relativo al root)
-    invoicePdf: 'assets/brand/factura-totalplay.pdf',
+    // Factura PDF para la demo QR (no aplica para Compartamos)
+    invoicePdf: null,
 
     // Deep link scheme (usado en simulacion de apps bancarias)
-    deepLinkServiceParam: 'totalplay',
+    deepLinkServiceParam: 'compartamos',
 };
 
 // Helpers de formato
@@ -84,6 +84,10 @@ function applyBrandColors() {
     root.style.setProperty('--gradient-end', BRAND.colors.accent);
     root.style.setProperty('--header-bg', BRAND.colors.headerBg);
     root.style.setProperty('--btn-text-color', BRAND.colors.btnText);
+
+    // RGB components para uso en rgba() desde CSS
+    root.style.setProperty('--primary-rgb', rgb);
+    root.style.setProperty('--accent-rgb', hexToRgb(BRAND.colors.accent));
 
     // Sombras dinamicas basadas en el color primario
     root.style.setProperty('--shadow-sm', '0 2px 8px rgba(' + rgb + ', 0.10)');

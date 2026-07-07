@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="config/variables.css">
     <link rel="stylesheet" href="css/index-styles.css">
     <script src="config/brand-config.js"></script>
+    <script src="js/brand-override.js"></script>
     <script src="config/demo-builder-config.js"></script>
     <script src="js/demo-router.js"></script>
 </head>
@@ -41,6 +42,216 @@
                 </button>
             </div>
         </div>
+
+        <!-- Brand Editor Panel -->
+        <div class="brand-editor" id="brandEditor">
+            <button class="brand-editor-toggle" id="brandEditorToggle">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                <span>Personalizar marca</span>
+                <span class="brand-editor-badge" id="brandEditorBadge" style="display:none">Modificada</span>
+                <svg class="brand-editor-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+
+            <div class="brand-editor-body" id="brandEditorBody">
+                <!-- Preset selector bar -->
+                <div class="brand-presets-bar" id="brandPresetsBar">
+                    <label class="brand-presets-label">Preset:</label>
+                    <select class="brand-presets-select" id="brandPresetSelect">
+                        <option value="">Default (brand-config.js)</option>
+                    </select>
+                    <button class="brand-btn brand-btn-secondary brand-btn-sm" id="brandPresetSaveAs">
+                        Guardar como...
+                    </button>
+                    <button class="brand-btn brand-btn-secondary brand-btn-sm brand-btn-danger" id="brandPresetDelete" style="display:none">
+                        Eliminar
+                    </button>
+                </div>
+
+                <!-- Tabs de secciones -->
+                <div class="brand-editor-tabs" id="brandEditorTabs">
+                    <button class="brand-tab active" data-tab="identity">Identidad</button>
+                    <button class="brand-tab" data-tab="contact">Contacto</button>
+                    <button class="brand-tab" data-tab="account">Cuenta</button>
+                    <button class="brand-tab" data-tab="colors">Colores</button>
+                </div>
+
+                <!-- Tab: Identidad -->
+                <div class="brand-tab-content active" data-tab="identity">
+                    <div class="brand-field">
+                        <label>Nombre de la empresa</label>
+                        <input type="text" data-brand="name" placeholder="Ej: Totalplay">
+                    </div>
+                    <div class="brand-field">
+                        <label>Nombre completo</label>
+                        <input type="text" data-brand="fullName" placeholder="Ej: Totalplay Telecomunicaciones">
+                    </div>
+                    <div class="brand-field">
+                        <label>Tipo de servicio</label>
+                        <input type="text" data-brand="serviceType" placeholder="Ej: Telecomunicaciones">
+                    </div>
+                    <div class="brand-field">
+                        <label>Nombre del plan</label>
+                        <input type="text" data-brand="planName" placeholder="Ej: Plan Hogar 200 Mbps">
+                    </div>
+                    <div class="brand-field">
+                        <label>Logo (ruta relativa)</label>
+                        <input type="text" data-brand="logo" placeholder="assets/brand/logo.png">
+                    </div>
+                </div>
+
+                <!-- Tab: Contacto -->
+                <div class="brand-tab-content" data-tab="contact">
+                    <div class="brand-field">
+                        <label>Dominio</label>
+                        <input type="text" data-brand="domain" placeholder="Ej: totalplay.com.mx">
+                    </div>
+                    <div class="brand-field">
+                        <label>Dominio de pago</label>
+                        <input type="text" data-brand="paymentDomain" placeholder="Ej: pago.totalplay.com.mx">
+                    </div>
+                    <div class="brand-field">
+                        <label>Telefono</label>
+                        <input type="text" data-brand="phone" placeholder="Ej: 800 123 4567">
+                    </div>
+                    <div class="brand-field">
+                        <label>Telefono amigable</label>
+                        <input type="text" data-brand="phoneFriendly" placeholder="Ej: 800 TOTALPLAY">
+                    </div>
+                    <div class="brand-field">
+                        <label>WhatsApp</label>
+                        <input type="text" data-brand="whatsapp" placeholder="Ej: 55 1234 5678">
+                    </div>
+                    <div class="brand-field">
+                        <label>Deep link param</label>
+                        <input type="text" data-brand="deepLinkServiceParam" placeholder="Ej: totalplay">
+                    </div>
+                </div>
+
+                <!-- Tab: Cuenta / Factura -->
+                <div class="brand-tab-content" data-tab="account">
+                    <div class="brand-field">
+                        <label>Numero de cuenta</label>
+                        <input type="text" data-brand="account.number" placeholder="0073-4120-58">
+                    </div>
+                    <div class="brand-field">
+                        <label>Periodo</label>
+                        <input type="text" data-brand="account.period" placeholder="01 Mar - 31 Mar 2026">
+                    </div>
+                    <div class="brand-field">
+                        <label>Fecha de vencimiento</label>
+                        <input type="text" data-brand="account.dueDate" placeholder="20 de Marzo 2026">
+                    </div>
+                    <div class="brand-field">
+                        <label>Fecha vencimiento corta</label>
+                        <input type="text" data-brand="account.dueDateShort" placeholder="20 Mar 2026">
+                    </div>
+                    <div class="brand-field brand-field-row">
+                        <div class="brand-field">
+                            <label>Monto del plan</label>
+                            <input type="number" step="0.01" data-brand="account.planAmount" placeholder="405.00">
+                        </div>
+                        <div class="brand-field">
+                            <label>Descuento</label>
+                            <input type="number" step="0.01" data-brand="account.discount" placeholder="-30.00">
+                        </div>
+                    </div>
+                    <div class="brand-field">
+                        <label>Etiqueta del descuento</label>
+                        <input type="text" data-brand="account.discountLabel" placeholder="Descuento pronto pago">
+                    </div>
+                    <div class="brand-field brand-field-row">
+                        <div class="brand-field">
+                            <label>Saldo anterior</label>
+                            <input type="number" step="0.01" data-brand="account.previousBalance" placeholder="0.00">
+                        </div>
+                        <div class="brand-field">
+                            <label>Total a pagar</label>
+                            <input type="number" step="0.01" data-brand="account.totalAmount" placeholder="375.00">
+                        </div>
+                    </div>
+                    <div class="brand-field">
+                        <label>Referencia de pago</label>
+                        <input type="text" data-brand="account.reference" placeholder="0073 0001 4120 5800 7">
+                    </div>
+                </div>
+
+                <!-- Tab: Colores -->
+                <div class="brand-tab-content" data-tab="colors">
+                    <div class="brand-field brand-field-color">
+                        <label>Color primario</label>
+                        <div class="color-input-group">
+                            <input type="color" data-brand="colors.primary" data-color-for="colors-primary-hex">
+                            <input type="text" id="colors-primary-hex" data-brand="colors.primary" placeholder="#0077B6">
+                        </div>
+                    </div>
+                    <div class="brand-field brand-field-color">
+                        <label>Color primario oscuro</label>
+                        <div class="color-input-group">
+                            <input type="color" data-brand="colors.primaryDark" data-color-for="colors-primaryDark-hex">
+                            <input type="text" id="colors-primaryDark-hex" data-brand="colors.primaryDark" placeholder="#005F8A">
+                        </div>
+                    </div>
+                    <div class="brand-field brand-field-color">
+                        <label>Color primario claro</label>
+                        <div class="color-input-group">
+                            <input type="color" data-brand="colors.primaryLight" data-color-for="colors-primaryLight-hex">
+                            <input type="text" id="colors-primaryLight-hex" data-brand="colors.primaryLight" placeholder="#E6F4FA">
+                        </div>
+                    </div>
+                    <div class="brand-field brand-field-color">
+                        <label>Color accent</label>
+                        <div class="color-input-group">
+                            <input type="color" data-brand="colors.accent" data-color-for="colors-accent-hex">
+                            <input type="text" id="colors-accent-hex" data-brand="colors.accent" placeholder="#00A5CF">
+                        </div>
+                    </div>
+                    <div class="brand-field brand-field-color">
+                        <label>Fondo</label>
+                        <div class="color-input-group">
+                            <input type="color" data-brand="colors.background" data-color-for="colors-background-hex">
+                            <input type="text" id="colors-background-hex" data-brand="colors.background" placeholder="#F0F8FF">
+                        </div>
+                    </div>
+                    <div class="brand-field brand-field-color">
+                        <label>Header</label>
+                        <div class="color-input-group">
+                            <input type="color" data-brand="colors.headerBg" data-color-for="colors-headerBg-hex">
+                            <input type="text" id="colors-headerBg-hex" data-brand="colors.headerBg" placeholder="#2A3444">
+                        </div>
+                    </div>
+                    <div class="brand-field brand-field-color">
+                        <label>Texto de botones</label>
+                        <div class="color-input-group">
+                            <input type="color" data-brand="colors.btnText" data-color-for="colors-btnText-hex">
+                            <input type="text" id="colors-btnText-hex" data-brand="colors.btnText" placeholder="#ffffff">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Barra de acciones -->
+                <div class="brand-editor-actions">
+                    <button class="brand-btn brand-btn-secondary" id="brandReset">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                        Resetear
+                    </button>
+                    <button class="brand-btn brand-btn-secondary" id="brandExport">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Exportar JSON
+                    </button>
+                    <button class="brand-btn brand-btn-secondary" id="brandImport">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        Importar JSON
+                    </button>
+                    <button class="brand-btn brand-btn-primary" id="brandSave">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        Guardar cambios
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input file oculto para importar JSON -->
+        <input type="file" id="brandImportFile" accept=".json" style="display:none">
 
         <!-- Builder de 3 columnas — se genera dinamicamente desde DEMO_STAGES -->
         <div class="builder-grid" id="builderGrid"></div>
@@ -417,6 +628,317 @@
             updateSummary();
             updateForcedPayment();
             updateGroupLocking();
+        })();
+    </script>
+
+    <script>
+        // ============================================
+        // BRAND EDITOR: Visual brand editor panel
+        // ============================================
+        (function initBrandEditor() {
+            var editor = document.getElementById('brandEditor');
+            var toggle = document.getElementById('brandEditorToggle');
+            var body = document.getElementById('brandEditorBody');
+            var badge = document.getElementById('brandEditorBadge');
+
+            // Helper: read BRAND['colors']['primary'] from path 'colors.primary'
+            function getNestedValue(obj, path) {
+                return path.split('.').reduce(function(o, key) {
+                    return o && o[key] !== undefined ? o[key] : undefined;
+                }, obj);
+            }
+
+            // Helper: write to BRAND['colors']['primary'] from path 'colors.primary'
+            function setNestedValue(obj, path, value) {
+                var keys = path.split('.');
+                var target = obj;
+                for (var i = 0; i < keys.length - 1; i++) {
+                    if (!target[keys[i]]) target[keys[i]] = {};
+                    target = target[keys[i]];
+                }
+                target[keys[keys.length - 1]] = value;
+            }
+
+            // 1. Populate inputs with current BRAND values
+            function populateEditorFields() {
+                var inputs = document.querySelectorAll('#brandEditorBody [data-brand]');
+                inputs.forEach(function(input) {
+                    var path = input.getAttribute('data-brand');
+                    var value = getNestedValue(BRAND, path);
+                    if (value !== undefined) {
+                        input.value = value;
+                    }
+                });
+            }
+
+            // 2. Show/hide badge based on active overrides
+            function updateBadge() {
+                if (typeof BrandOverride !== 'undefined' && BrandOverride.has()) {
+                    badge.style.display = '';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+
+            // 3. Update visible brand elements on index.html
+            function refreshIndexBrand() {
+                var logo = document.getElementById('indexLogo');
+                if (logo) { logo.src = BRAND.logo; logo.alt = BRAND.name; }
+
+                document.querySelectorAll('[data-brand="name"]').forEach(function(el) {
+                    if (el.tagName === 'INPUT') return;
+                    el.textContent = BRAND.name;
+                });
+
+                document.title = BRAND.name + ' - Demo Portal de Pagos';
+            }
+
+            // 4. Tab switching
+            function setupTabs() {
+                var tabsContainer = document.getElementById('brandEditorTabs');
+                tabsContainer.addEventListener('click', function(e) {
+                    var btn = e.target.closest('.brand-tab');
+                    if (!btn) return;
+                    var tabId = btn.getAttribute('data-tab');
+
+                    // Update active tab button
+                    tabsContainer.querySelectorAll('.brand-tab').forEach(function(t) {
+                        t.classList.toggle('active', t === btn);
+                    });
+
+                    // Update active tab content
+                    var contents = document.querySelectorAll('#brandEditorBody .brand-tab-content');
+                    contents.forEach(function(c) {
+                        c.classList.toggle('active', c.getAttribute('data-tab') === tabId);
+                    });
+                });
+            }
+
+            // 5. Live preview on input changes
+            function setupLivePreview() {
+                var inputs = document.querySelectorAll('#brandEditorBody [data-brand]');
+                inputs.forEach(function(input) {
+                    input.addEventListener('input', function() {
+                        var path = input.getAttribute('data-brand');
+                        var value = input.value;
+
+                        // Convert to number for number inputs
+                        if (input.type === 'number') {
+                            value = parseFloat(value) || 0;
+                        }
+
+                        // Update BRAND in memory
+                        setNestedValue(BRAND, path, value);
+
+                        // Re-apply colors if a color changed
+                        if (path.startsWith('colors.')) {
+                            applyBrandColors();
+                        }
+
+                        // Refresh visible brand elements on index.html
+                        refreshIndexBrand();
+                    });
+                });
+            }
+
+            // 6. Sync color picker with hex text input
+            function setupColorSync() {
+                var colorInputs = document.querySelectorAll('input[type="color"][data-color-for]');
+                colorInputs.forEach(function(picker) {
+                    var hexInputId = picker.getAttribute('data-color-for');
+                    var hexInput = document.getElementById(hexInputId);
+                    if (!hexInput) return;
+
+                    // Color picker -> hex text
+                    picker.addEventListener('input', function() {
+                        hexInput.value = picker.value;
+                        hexInput.dispatchEvent(new Event('input', { bubbles: true }));
+                    });
+
+                    // Hex text -> color picker
+                    hexInput.addEventListener('input', function() {
+                        if (/^#[0-9A-Fa-f]{6}$/.test(hexInput.value)) {
+                            picker.value = hexInput.value;
+                        }
+                    });
+                });
+            }
+
+            // 7. Build override object from current form values
+            function buildOverridesFromInputs() {
+                var overrides = {};
+                var inputs = document.querySelectorAll('#brandEditorBody [data-brand]');
+                var seen = {};
+                inputs.forEach(function(input) {
+                    var path = input.getAttribute('data-brand');
+                    if (seen[path]) return;
+                    seen[path] = true;
+
+                    var value = input.value;
+                    if (input.type === 'number') value = parseFloat(value) || 0;
+
+                    setNestedValue(overrides, path, value);
+                });
+                return overrides;
+            }
+
+            // 8. Toast notification
+            function showToast(message) {
+                var toast = document.createElement('div');
+                toast.className = 'brand-toast';
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                toast.offsetHeight; // trigger reflow for animation
+                toast.classList.add('visible');
+                setTimeout(function() {
+                    toast.classList.remove('visible');
+                    setTimeout(function() { toast.remove(); }, 300);
+                }, 2000);
+            }
+
+            // 9. Action buttons
+            function setupActions() {
+                // Save
+                document.getElementById('brandSave').addEventListener('click', function() {
+                    var overrides = buildOverridesFromInputs();
+                    BrandOverride.save(overrides);
+                    updateBadge();
+                    showToast('Marca guardada');
+                });
+
+                // Reset
+                document.getElementById('brandReset').addEventListener('click', function() {
+                    if (!confirm('Esto eliminara todas las personalizaciones. Continuar?')) return;
+                    BrandOverride.clear();
+                    window.location.reload();
+                });
+
+                // Export
+                document.getElementById('brandExport').addEventListener('click', function() {
+                    var json = BrandOverride.export();
+                    var blob = new Blob([json], { type: 'application/json' });
+                    var url = URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'brand-config-' + BRAND.name.toLowerCase().replace(/\s+/g, '-') + '.json';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                });
+
+                // Import trigger
+                document.getElementById('brandImport').addEventListener('click', function() {
+                    document.getElementById('brandImportFile').click();
+                });
+
+                // Import file handler
+                document.getElementById('brandImportFile').addEventListener('change', function(e) {
+                    var file = e.target.files[0];
+                    if (!file) return;
+                    var reader = new FileReader();
+                    reader.onload = function(ev) {
+                        try {
+                            BrandOverride.import(ev.target.result);
+                            populateEditorFields();
+                            refreshIndexBrand();
+                            updateBadge();
+                            showToast('Marca importada: ' + BRAND.name);
+                        } catch (err) {
+                            alert('Error al importar: ' + err.message);
+                        }
+                    };
+                    reader.readAsText(file);
+                    e.target.value = '';
+                });
+            }
+
+            // Toggle expand/collapse
+            toggle.addEventListener('click', function() {
+                editor.classList.toggle('open');
+            });
+
+            // 10. Preset management
+            function refreshPresetSelect() {
+                var select = document.getElementById('brandPresetSelect');
+                var activePreset = BrandOverride.presets.getActive();
+                var presets = BrandOverride.presets.list();
+                var deleteBtn = document.getElementById('brandPresetDelete');
+
+                // Limpiar opciones (excepto la default)
+                while (select.options.length > 1) {
+                    select.remove(1);
+                }
+
+                presets.forEach(function(preset) {
+                    var option = document.createElement('option');
+                    option.value = preset.name;
+                    option.textContent = preset.name;
+                    if (preset.name === activePreset) option.selected = true;
+                    select.appendChild(option);
+                });
+
+                // Mostrar boton eliminar solo si hay un preset activo seleccionado
+                deleteBtn.style.display = activePreset ? '' : 'none';
+            }
+
+            function setupPresets() {
+                // Cambiar de preset
+                document.getElementById('brandPresetSelect').addEventListener('change', function() {
+                    var selectedName = this.value;
+
+                    if (!selectedName) {
+                        // Volver a default
+                        BrandOverride.clear();
+                        try { localStorage.removeItem('brandActivePreset'); } catch (e) {}
+                        window.location.reload();
+                        return;
+                    }
+
+                    BrandOverride.presets.activate(selectedName);
+                    window.location.reload();
+                });
+
+                // Guardar como preset nuevo
+                document.getElementById('brandPresetSaveAs').addEventListener('click', function() {
+                    var name = prompt('Nombre del preset:');
+                    if (!name || !name.trim()) return;
+                    name = name.trim();
+
+                    // Construir overrides desde los inputs actuales del editor
+                    var overrides = buildOverridesFromInputs();
+
+                    // Guardar el preset
+                    BrandOverride.presets.save(name, overrides);
+
+                    // Tambien activarlo y guardar como override actual
+                    BrandOverride.save(overrides);
+                    try { localStorage.setItem('brandActivePreset', name); } catch (e) {}
+
+                    refreshPresetSelect();
+                    updateBadge();
+                    showToast('Preset "' + name + '" guardado');
+                });
+
+                // Eliminar preset
+                document.getElementById('brandPresetDelete').addEventListener('click', function() {
+                    var activePreset = BrandOverride.presets.getActive();
+                    if (!activePreset) return;
+                    if (!confirm('Eliminar el preset "' + activePreset + '"?')) return;
+
+                    BrandOverride.presets.delete(activePreset);
+                    BrandOverride.clear();
+                    window.location.reload();
+                });
+            }
+
+            // Initialize
+            populateEditorFields();
+            updateBadge();
+            setupTabs();
+            setupLivePreview();
+            setupColorSync();
+            setupActions();
+            setupPresets();
+            refreshPresetSelect();
         })();
     </script>
 </body>

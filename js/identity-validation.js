@@ -34,7 +34,7 @@ let currentInlineFlow = null;
 function showIdentityValidationInline(bank, flow = 'deeplink') {
     currentInlineBank = bank;
     currentInlineFlow = flow;
-    
+
     // Get inline elements
     const inlineContainer = document.getElementById('identityValidationInline');
     const selectedBankLogo = document.getElementById('selectedBankLogo');
@@ -47,21 +47,48 @@ function showIdentityValidationInline(bank, flow = 'deeplink') {
     const tycCheckboxInline = document.getElementById('tycCheckboxInline');
     const tycErrorInline = document.getElementById('tycErrorInline');
     const btnValidateInline = document.getElementById('btnValidateInline');
-    
+    const formGroupInline = document.querySelector('.form-group-inline');
+    const tycContainerInline = document.querySelector('.tyc-checkbox-inline');
+
     // Hide banks grid
     const banksGrid = document.querySelector('.banks-grid-desktop');
     const bankSelector = document.querySelector('.bank-selector-mobile');
     if (banksGrid) banksGrid.style.display = 'none';
     if (bankSelector) bankSelector.style.display = 'none';
-    
+
+    // Nubank special case: skip identity validation, show only continue button
+    if (bank === 'nubank') {
+        selectedBankLogo.innerHTML = '<img src="assets/banks/nu.jpeg" alt="Nubank" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">';
+        selectedBankName.textContent = 'Nubank';
+        identityValidationTitle.textContent = 'Continuar con Nubank';
+
+        // Hide form fields
+        if (formGroupInline) formGroupInline.style.display = 'none';
+        if (tycContainerInline) tycContainerInline.style.display = 'none';
+
+        // Enable continue button immediately
+        btnValidateInline.disabled = false;
+
+        // Show inline container
+        inlineContainer.style.display = 'block';
+        setTimeout(() => {
+            inlineContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+        return;
+    }
+
+    // Restore form fields (in case they were hidden by nubank flow)
+    if (formGroupInline) formGroupInline.style.display = '';
+    if (tycContainerInline) tycContainerInline.style.display = '';
+
     // Determine identity type based on bank
     const identityType = bankIdentityRequirements[bank] || bankIdentityRequirements.default;
-    
+
     // Update bank logo
     // BRAND: fallback color for bank logo
     selectedBankLogo.innerHTML = bankLogos[bank] || `<span style="color: ${BRAND.colors.primary}; font-size: 20px; font-weight: 700;">${bankNames[bank].substring(0, 2)}</span>`;
     selectedBankName.textContent = bankNames[bank];
-    
+
     // Configure form based on identity type
     if (identityType === 'rfc') {
         identityValidationTitle.textContent = 'Ingresa tu RFC';
@@ -85,7 +112,7 @@ function showIdentityValidationInline(bank, flow = 'deeplink') {
         identityInputInline.style.textTransform = 'uppercase';
         identityHintInline.textContent = '18 caracteres alfanuméricos';
     }
-    
+
     // Reset form
     identityInputInline.value = '';
     identityInputInline.classList.remove('error', 'success');
@@ -93,16 +120,16 @@ function showIdentityValidationInline(bank, flow = 'deeplink') {
     tycCheckboxInline.checked = false;
     tycErrorInline.style.display = 'none';
     btnValidateInline.disabled = true;
-    
+
     // Show inline container
     inlineContainer.style.display = 'block';
-    
+
     // Scroll to form
     setTimeout(() => {
         inlineContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         identityInputInline.focus();
     }, 100);
-    
+
     // Store identity type
     currentIdentityType = identityType;
 }
@@ -165,8 +192,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     btnValidateInline.addEventListener('click', () => {
+        // Nubank direct flow: skip validation, navigate to video player
+        if (currentInlineBank === 'nubank') {
+            var embeddedParam = isCheckoutEmbedded ? '&embedded=1' : '';
+            var baseUrl = window.location.origin + window.location.pathname.replace('checkout.html', '');
+            window.location.href = baseUrl + 'video-player.html?bank=video&action=play' + embeddedParam + '&session=' + Date.now();
+            return;
+        }
+
         const value = identityInputInline.value.trim();
-        
+
         if (!validateIdentity(value)) {
             const errorMessages = {
                 'rfc': 'El formato del RFC no es válido',

@@ -120,8 +120,8 @@ function showPushSentMessage(bank) {
     pushMessage.innerHTML = `
         <div class="success-content">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#820AD1" stroke-width="2" fill="#820AD1" fill-opacity="0.2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" stroke="#820AD1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="${BRAND.colors.primary}" stroke-width="2" fill="${BRAND.colors.primary}" fill-opacity="0.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" stroke="${BRAND.colors.primary}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <h3>¡Push enviado!</h3>
             <p>Revisa tu app de ${bankNames[bank]}</p>
@@ -148,19 +148,23 @@ function showPushSentMessage(bank) {
 function openBankAppWithPush(bank) {
     const isPagaDomicilia = selectedMethod === 'paga-domicilia';
     const action = isPagaDomicilia ? 'pay-domiciliar' : 'domiciliar';
-    
-    // Build URL to auth-mobile page with push parameter
-    const baseUrl = window.location.origin + window.location.pathname.replace('checkout.html', '');
+
+    var authPage = 'auth-mobile.html';
+    if (typeof getOptionById === 'function') {
+        var payOpt = getOptionById('payment', bank);
+        if (payOpt && payOpt.authPage) authPage = payOpt.authPage;
+    }
+
+    const baseUrl = window.location.origin + window.location.pathname.replace(/[^\/]*$/, '');
 
     if (isCheckoutEmbedded) {
-        // In mobile viewer: navigate directly (already in a phone frame)
-        const authUrl = `${baseUrl}auth-mobile.html?bank=${bank}&action=${action}&flow=push&embedded=1&session=${Date.now()}`;
+        const authUrl = `${baseUrl}${authPage}?bank=${bank}&action=${action}&flow=push&embedded=1&session=${Date.now()}`;
         window.location.href = authUrl;
         return;
     }
 
-    const authUrl = `${baseUrl}auth-mobile.html?bank=${bank}&action=${action}&flow=push&session=${Date.now()}`;
-    
+    const authUrl = `${baseUrl}${authPage}?bank=${bank}&action=${action}&flow=push&session=${Date.now()}`;
+
     // Open in new window with mobile dimensions
     window.open(authUrl, '_blank', 'width=420,height=900,resizable=yes,scrollbars=yes');
 }

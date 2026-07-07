@@ -23,6 +23,7 @@ Convertir este repositorio de demos de portal de pagos en una base escalable y L
 - [x] **Fase 4** - Split de script.js (`FASE-4-split-scripts.md`) — Media
 - [x] **Fase 5** - Limpieza y documentacion (`FASE-5-cleanup-docs.md`) — Baja
 - [x] **Fase 6** - Demo builder por bloques (`FASE-6-demo-builder.md`) — Alta
+- [x] **Fase 7** - Editor visual de marca (`FASE-7-brand-editor.md`) — Alta
 
 ## Orden de ejecucion
 
@@ -34,6 +35,7 @@ Las fases deben ejecutarse en orden (0 -> 1 -> 2 -> 3 -> 4 -> 5) porque cada fas
 - Fase 4 splitea `js/script.js` en modulos dentro de `js/`.
 - Fase 5 documenta la estructura final y crea la skill /rebrand.
 - Fase 6 transforma `index.html` en un builder de demos por bloques (3 etapas: llegada, checkout, pago). Depende de Fases 0-5 completadas.
+- Fase 7 agrega editor visual de marca en index.html para que usuarios no tecnicos personalicen demos sin tocar codigo. Depende de Fases 1-6 completadas.
 
 ## Estructura actual (post-Fase 6)
 
@@ -82,11 +84,34 @@ tapi-demos-hub/
 └── README.md
 ```
 
+## Estructura actual (post-Fase 7 planificada)
+
+Ademas de la estructura existente, Fase 7 agrega:
+
+```
+js/brand-override.js              # Override de marca via localStorage (TASK-007)
+                                   # Cargado en TODOS los HTML despues de brand-config.js
+```
+
+Y modifica `index.html` para incluir el panel editor visual de marca.
+
 ## Criterio de exito
 
-Despues de completar las 6 fases, un rebranding completo (ej: de Totalplay a Telmex) debe requerir:
+Despues de completar las 7 fases:
+
+### Rebranding via codigo (Fases 1-6)
+Un rebranding completo (ej: de Totalplay a Telmex) debe requerir:
 1. Editar `config/brand-config.js` con los nuevos valores.
 2. Reemplazar `assets/brand/totalplay.png` con el nuevo logo (y actualizar el nombre en brand-config.js).
 3. (Opcional) Reemplazar `assets/brand/factura-totalplay.pdf` si se usa la demo QR.
 4. Verificar con `grep -r "Totalplay" --include="*.{html,js,css}" . | grep -v tasks/ | grep -v config/brand-config.js` que no queden restos.
 5. Tiempo estimado: < 5 minutos para un LLM, < 10 minutos para un humano.
+
+### Rebranding via UI (Fase 7)
+Un rebranding desde el navegador debe requerir:
+1. Abrir `index.html` y expandir el panel "Personalizar marca".
+2. Editar los campos deseados (nombre, colores, montos, contacto).
+3. Click "Guardar cambios".
+4. Iniciar la demo — todas las paginas reflejan los cambios.
+5. Opcionalmente guardar como preset para reusar o compartir como JSON.
+6. Tiempo estimado: < 2 minutos para cualquier persona.

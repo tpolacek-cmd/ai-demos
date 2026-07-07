@@ -6,6 +6,12 @@
     <title>Checkout de Pago</title>
     <link rel="stylesheet" href="css/styles.css">
     <script src="config/brand-config.js"></script>
+    <script src="js/brand-override.js"></script>
+    <script>
+        if (typeof BrandOverride !== 'undefined' && BrandOverride.has()) {
+            document.documentElement.setAttribute('data-brand-custom', 'true');
+        }
+    </script>
     <script>
         // Embedded mode (inside mobile viewer iframe)
         var isEmbedded = new URLSearchParams(window.location.search).get('embedded') === '1';
@@ -189,6 +195,7 @@
                             <select id="bankSelectMobile" class="bank-select" data-method="paga-domicilia">
                                 <option value="">Elige tu banco...</option>
                                 <option value="hey-banco">Hey Banco</option>
+                                <option value="nubank">Nubank</option>
                                 <option value="santander">Santander</option>
                                 <option value="stori">Stori</option>
                                 <option value="bbva">BBVA</option>
@@ -201,11 +208,17 @@
                         
                         <!-- Desktop: Cards grid -->
                         <div class="banks-grid banks-grid-desktop">
-                            <div class="bank-card nu-featured" data-bank="hey-banco" data-method="paga-domicilia">
-                                <div class="bank-logo nu-logo-featured" style="background: white; padding: 4px;">
+                            <div class="bank-card" data-bank="hey-banco" data-method="paga-domicilia">
+                                <div class="bank-logo" style="background: white; padding: 4px;">
                                     <img src="assets/banks/Hey_Banco.svg" alt="Hey Banco" class="bank-logo-img">
                                 </div>
                                 <span class="bank-name">Hey Banco</span>
+                            </div>
+                            <div class="bank-card" data-bank="nubank" data-method="paga-domicilia">
+                                <div class="bank-logo">
+                                    <img src="assets/banks/nu.jpeg" alt="Nubank" class="bank-logo-img" style="border-radius: 8px;">
+                                </div>
+                                <span class="bank-name">Nubank</span>
                             </div>
                             <div class="bank-card" data-bank="santander" data-method="paga-domicilia">
                                 <div class="bank-logo">

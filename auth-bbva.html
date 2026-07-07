@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BBVA Mexico - Autenticacion</title>
     <script src="config/brand-config.js"></script>
+    <script src="js/brand-override.js"></script>
+    <script>
+        if (typeof BrandOverride !== 'undefined' && BrandOverride.has()) {
+            document.documentElement.setAttribute('data-brand-custom', 'true');
+        }
+    </script>
     <link rel="stylesheet" href="css/auth-bbva-styles.css?v=2">
 </head>
 <body>

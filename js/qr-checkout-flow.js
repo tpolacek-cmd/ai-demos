@@ -16,7 +16,10 @@ const qrLoading = document.getElementById('qrLoading');
 function showBankQRFlow(bank, identityValue) {
     // Close CURP modal
     closeCurpModal();
-    
+
+    // Store bank for simulateQRScan and openBankApp to use
+    window.currentBank = bank;
+
     // Show QR modal after a brief delay
     setTimeout(() => {
         tapiQRModal.classList.add('show');
@@ -64,9 +67,14 @@ function redirectToBankApp(bank, identityValue) {
     // Redirect after animation completes
     setTimeout(() => {
         const actionType = isPagaDomicilia ? 'pay-domiciliar' : 'domiciliar';
-        const baseUrl = window.location.origin + window.location.pathname.replace('checkout.html', '');
+        const baseUrl = window.location.origin + window.location.pathname.replace(/[^\/]*$/, '');
         const embeddedParam = isCheckoutEmbedded ? '&embedded=1' : '';
-        const authUrl = `${baseUrl}auth-mobile.html?bank=${bank}&action=${actionType}&${config.paramName}=${encodeURIComponent(identityValue)}${embeddedParam}&session=${Date.now()}`;
+        var authPage = 'auth-mobile.html';
+        if (typeof getOptionById === 'function') {
+            var payOpt = getOptionById('payment', bank);
+            if (payOpt && payOpt.authPage) authPage = payOpt.authPage;
+        }
+        const authUrl = `${baseUrl}${authPage}?bank=${bank}&action=${actionType}&${config.paramName}=${encodeURIComponent(identityValue)}${embeddedParam}&session=${Date.now()}`;
         
         // BRAND: deep link service parameter
         // In production: const deepLink = `${bank}://auth?service=${BRAND.deepLinkServiceParam}&action=${actionType}&${config.paramName}=${encodeURIComponent(identityValue)}`;
@@ -138,9 +146,14 @@ function generateBankQR(bank, identityValue) {
     
     // Build the URL that will open when scanning the QR
     // Use current location dynamically - works on localhost, IP, or any domain
-    const baseUrl = window.location.origin + window.location.pathname.replace('checkout.html', '');
+    const baseUrl = window.location.origin + window.location.pathname.replace(/[^\/]*$/, '');
     const action = selectedMethod === 'paga-domicilia' ? 'pay-domiciliar' : 'domiciliar';
-    const mobileUrl = `${baseUrl}auth-mobile.html?bank=${bank}&action=${action}&${config.paramName}=${encodeURIComponent(identityValue)}&session=${Date.now()}`;
+    var qrAuthPage = 'auth-mobile.html';
+    if (typeof getOptionById === 'function') {
+        var qrPayOpt = getOptionById('payment', bank);
+        if (qrPayOpt && qrPayOpt.authPage) qrAuthPage = qrPayOpt.authPage;
+    }
+    const mobileUrl = `${baseUrl}${qrAuthPage}?bank=${bank}&action=${action}&${config.paramName}=${encodeURIComponent(identityValue)}&session=${Date.now()}`;
     
     // Store in sessionStorage for the mobile page to access
     sessionStorage.setItem(`${bank}Identity`, identityValue);

@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Demo Mobile</title>
     <script src="config/brand-config.js"></script>
+    <script src="js/brand-override.js"></script>
+    <script>
+        if (typeof BrandOverride !== 'undefined' && BrandOverride.has()) {
+            document.documentElement.setAttribute('data-brand-custom', 'true');
+        }
+    </script>
     <script src="config/demo-builder-config.js"></script>
     <link rel="stylesheet" href="config/variables.css">
     <link rel="stylesheet" href="css/mobile-viewer-styles.css">

@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="config/variables.css">
     <link rel="stylesheet" href="css/checkout-bbva-styles.css?v=7">
     <script src="config/brand-config.js"></script>
+    <script src="js/brand-override.js"></script>
+    <script>
+        if (typeof BrandOverride !== 'undefined' && BrandOverride.has()) {
+            document.documentElement.setAttribute('data-brand-custom', 'true');
+        }
+    </script>
     <script src="config/demo-builder-config.js"></script>
     <script src="js/demo-router.js"></script>
     <script>
@@ -35,7 +41,7 @@
                     <div class="cb-header-left">
                         <img class="cb-brand-logo" id="cbBrandLogoS1" src="" alt="Logo">
                     </div>
-                    <div class="cb-header-right">Portal de Pagos</div>
+                    <div class="cb-header-right" data-brand="name"></div>
                 </header>
 
                 <!-- Desktop: Nav bar with greeting + Pagar -->
@@ -141,7 +147,7 @@
                     <div class="cb-header-left">
                         <img class="cb-brand-logo" id="cbBrandLogoS2Desktop" src="" alt="Logo">
                     </div>
-                    <div class="cb-header-right">Portal de Pagos</div>
+                    <div class="cb-header-right" data-brand="name"></div>
                 </header>
 
                 <!-- Header Screen 2 (mobile only) -->
@@ -614,6 +620,11 @@
     // ==========================================
     (function initCheckoutBbvaBrand() {
         document.title = BRAND.name + ' - Portal de Pagos';
+
+        // Populate data-brand="name" elements
+        document.querySelectorAll('[data-brand="name"]').forEach(function(el) {
+            el.textContent = BRAND.name;
+        });
 
         var total = BRAND.formattedTotal();
         var concept = BRAND.serviceType + ' - ' + BRAND.planName;

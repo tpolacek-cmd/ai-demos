@@ -97,6 +97,29 @@
     </script>
     <link rel="stylesheet" href="config/variables.css">
     <link rel="stylesheet" href="css/whatsapp-styles.css">
+    <style>
+        /* Fondo blanco para logo Compartamos (PNG-8 colormap) */
+        .brand-logo-sidebar, .brand-logo-header { background-color: #ffffff; border-radius: 4px; padding: 3px; }
+
+        /* Animación de tipeo del cliente */
+        @keyframes typing-cursor {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 14px;
+            background: rgba(255,255,255,0.8);
+            margin-left: 1px;
+            vertical-align: middle;
+            animation: typing-cursor 0.7s ease-in-out infinite;
+        }
+        .chat-input.animating {
+            color: #111b21;
+            font-style: normal;
+        }
+    </style>
 </head>
 <body>
     <div class="wa-top-bar"></div>
@@ -231,7 +254,7 @@
             <div class="chat-input-bar">
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="9.5" r="1" fill="currentColor"/><circle cx="15" cy="9.5" r="1" fill="currentColor"/></svg>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" stroke="currentColor" stroke-width="1.5"/></svg>
-                <input type="text" class="chat-input" placeholder="Escribe un mensaje">
+                <input type="text" class="chat-input" id="chatInput" placeholder="Escribe un mensaje">
                 <button class="send-btn">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 20V4M12 4l7 7M12 4L5 11" stroke="#8696A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
@@ -247,12 +270,15 @@
                 img.src = BRAND.logo; img.alt = BRAND.name;
             });
             document.querySelectorAll('.brand-preview').forEach(function(el) {
-                el.textContent = 'Tienes un pago pendiente de ' + BRAND.formattedTotal() + '...';
+                el.textContent = 'Tienes un crédito pendiente de ' + BRAND.formattedTotal() + '...';
             });
         })();
 
         const chatMessages = document.getElementById('chatMessages');
-        const flow = 'curp-deeplink';
+        const chatInput = document.getElementById('chatInput');
+
+        // Numero de credito que "escribe" el cliente en la demo
+        const CREDIT_NUMBER = BRAND.account.number;
 
         function createMessage(type, content, time, options = {}) {
             const msg = document.createElement('div');
@@ -309,42 +335,97 @@
             if (t) t.remove();
         }
 
-        // Animate messages sequentially
+        // Simula al cliente escribiendo el número de crédito en el input
+        function animateClientTyping(text, callback) {
+            chatInput.value = '';
+            chatInput.classList.add('animating');
+            let i = 0;
+            const interval = setInterval(() => {
+                chatInput.value += text[i];
+                i++;
+                if (i >= text.length) {
+                    clearInterval(interval);
+                    setTimeout(callback, 500);
+                }
+            }, 80);
+        }
+
+        // Limpia el input después de "enviar"
+        function clearInput() {
+            chatInput.value = '';
+            chatInput.classList.remove('animating');
+        }
+
+        // =====================
+        // FLUJO DE MENSAJES
+        // Bot de cobranza Compartamos:
+        // 1. Bot saluda
+        // 2. Bot pide número de crédito
+        // 3. Cliente "escribe" número de crédito (animación en input)
+        // 4. Cliente "envía" → mensaje sent en chat
+        // 5. Bot localiza cuenta y envía portal personalizado
+        // =====================
+
+        // 1. Bot saluda
         setTimeout(() => {
-            createMessage('received', 'Hola, te saludamos de *' + BRAND.fullName + '* 👋', '17:30');
+            createMessage('received', 'Hola 👋 Bienvenido al servicio de pagos de *' + BRAND.fullName + '*.', '17:30');
         }, 800);
 
+        // 2. Bot pide número de crédito
         setTimeout(() => {
             showTyping();
         }, 2000);
 
         setTimeout(() => {
             removeTyping();
-            createMessage('received', 'Te informamos que tienes un <b>pago pendiente</b> en tu servicio de ' + BRAND.serviceType + ':', '17:31');
-        }, 3500);
+            createMessage('received', 'Para continuar, por favor ingresa tu <b>número de crédito</b>.', '17:31');
+        }, 3200);
 
+        // 3. Cliente anima escritura del número de crédito en el input
         setTimeout(() => {
-            showTyping();
-        }, 4500);
+            animateClientTyping(CREDIT_NUMBER, () => {
+                // 4. Input "se envía" → aparece mensaje sent
+                clearInput();
+                createMessage('sent', CREDIT_NUMBER, '17:31');
 
-        setTimeout(() => {
-            removeTyping();
-            createMessage('received',
-                'Realiza tu pago de forma rápida y segura a través del siguiente enlace. También puedes <b>domiciliar tus pagos</b> para que se realicen automáticamente cada mes.',
-                '17:32',
-                {
-                    linkPreview: true,
-                    linkTitle: 'Pago pendiente — Cuenta ' + BRAND.account.number,
-                    linkDesc: BRAND.planName + ' • Período: ' + BRAND.account.period + ' • Vencimiento: ' + BRAND.account.dueDateShort + ' • Total: ' + BRAND.formattedTotal() + ' MXN',
-                    hasLink: true,
-                    linkUrl: 'https://' + BRAND.paymentDomain + '/s/' + BRAND.account.number.replace(/-/g, '')
-                }
-            );
-        }, 6000);
+                // 5a. Bot procesa
+                setTimeout(() => { showTyping(); }, 600);
 
-        setTimeout(() => {
-            createMessage('received', 'Si tienes dudas, responde a este mensaje o llama al *' + BRAND.phoneFriendly + '* (' + BRAND.phone + ').', '17:32');
-        }, 7200);
+                // 5b. Bot localiza cuenta
+                setTimeout(() => {
+                    removeTyping();
+                    createMessage('received',
+                        '✅ Hemos localizado tu cuenta. Tu cuota de *' + BRAND.account.period + '* es de *' + BRAND.formattedTotal() + ' MXN*, con vencimiento el ' + BRAND.account.dueDate + '.',
+                        '17:32'
+                    );
+                }, 2500);
+
+                // 5c. Bot envía portal personalizado
+                setTimeout(() => {
+                    showTyping();
+                }, 3800);
+
+                setTimeout(() => {
+                    removeTyping();
+                    createMessage('received',
+                        'Accede a tu portal de pago personalizado. Puedes pagar con transferencia SPEI, tarjeta de débito, efectivo en tiendas o configurar domiciliación:',
+                        '17:32',
+                        {
+                            linkPreview: true,
+                            linkTitle: 'Pago de crédito — ' + BRAND.account.number,
+                            linkDesc: BRAND.serviceType + ' • Período: ' + BRAND.account.period + ' • Vence: ' + BRAND.account.dueDateShort + ' • Total: ' + BRAND.formattedTotal() + ' MXN',
+                            hasLink: true,
+                            linkUrl: 'https://' + BRAND.paymentDomain + '/s/' + BRAND.account.number.replace(/-/g, '')
+                        }
+                    );
+                }, 5500);
+
+                // 5d. Bot cierra con soporte
+                setTimeout(() => {
+                    createMessage('received', 'Si tienes dudas, responde a este mensaje o llama al *' + BRAND.phoneFriendly + '* (' + BRAND.phone + ').', '17:33');
+                }, 7000);
+            });
+        }, 5000);
 
         function redirectToCheckout() {
             const overlay = document.createElement('div');

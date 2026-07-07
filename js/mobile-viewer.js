@@ -61,6 +61,12 @@
             window.location.href = 'index.html';
         }
 
+        // Ocultar Dynamic Island (cuando el video ya lo contiene)
+        if (event.data.type === 'hide-notch') {
+            var notch = document.querySelector('.mv-phone-notch');
+            if (notch) notch.style.display = 'none';
+        }
+
         // El iframe de auth-mobile puede enviar phone-mockup-close,
         // pero en mobile viewer no hacemos nada (ya estamos en el phone)
     });

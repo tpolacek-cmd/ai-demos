@@ -47,6 +47,7 @@ config/variables.css      <-- CSS custom properties (sync manual con brand-confi
 | App bancaria | `auth-mobile.html` | Simulacion de app bancaria (Hey Banco, etc.) |
 | Auth BBVA | `auth-bbva.html` | Simulacion de app BBVA |
 | Mobile viewer | `mobile-viewer.html` | Wrapper con frame de iPhone |
+| Nubank Impuestos | `nubank-impuestos.html` | Demo independiente (NO usa branding centralizado) |
 
 ## Procedimiento paso a paso
 
@@ -237,8 +238,11 @@ Abrir http://localhost:8000 y verificar:
 | `auth-mobile.html` | Lee todo de BRAND.* dinamicamente |
 | `auth-bbva.html` | Lee todo de BRAND.* dinamicamente |
 | `mobile-viewer.html` | Wrapper iframe, sin datos de marca |
-| Todos los `.css` | Usan CSS custom properties sincronizadas desde JS |
-| Todos los `.js` en `js/` | Leen de BRAND.* o usan CSS variables |
+| `nubank-impuestos.html` | Demo independiente, no usa sistema de branding |
+| `css/nubank-impuestos-styles.css` | Estilos propios de Nubank, no usa CSS variables de marca |
+| `js/nubank-impuestos-script.js` | Logica propia de Nubank, no lee BRAND.* |
+| Todos los demas `.css` | Usan CSS custom properties sincronizadas desde JS |
+| Todos los demas `.js` en `js/` | Leen de BRAND.* o usan CSS variables |
 
 ## Guia de colores
 

@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Video</title>
+    <script src="config/brand-config.js"></script>
+    <script src="js/brand-override.js"></script>
+    <script>
+        if (typeof BrandOverride !== 'undefined' && BrandOverride.has()) {
+            document.documentElement.setAttribute('data-brand-custom', 'true');
+        }
+    </script>
+    <script src="config/demo-builder-config.js"></script>
+    <script src="js/demo-router.js"></script>
+    <link rel="stylesheet" href="config/variables.css">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background: #0a0a0f;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(var(--primary-rgb, 0, 119, 182), 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 50%, rgba(var(--accent-rgb, 0, 165, 207), 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 0%, rgba(var(--primary-rgb, 0, 119, 182), 0.05) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* === Container === */
+        .vp-container {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            max-height: 100vh;
+            padding: 16px;
+        }
+
+        /* === Header === */
+        .vp-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 420px;
+            padding: 0 4px;
+        }
+
+        .vp-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .vp-back-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .vp-back-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .vp-title {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .vp-subtitle {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 12px;
+            font-weight: 400;
+            margin-top: 2px;
+        }
+
+        .vp-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .vp-badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #22c55e;
+            animation: vp-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes vp-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* === iPhone Frame — NO notch/Dynamic Island === */
+        .vp-phone-device {
+            width: 390px;
+            height: 844px;
+            background: #1a1a1a;
+            border-radius: 50px;
+            padding: 12px;
+            box-shadow:
+                0 0 0 3px #333,
+                0 0 0 6px #1a1a1a,
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                0 0 120px rgba(var(--primary-rgb, 0, 119, 182), 0.04),
+                inset 0 0 4px rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+            animation: vp-phone-enter 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+        }
+
+        @keyframes vp-phone-enter {
+            from {
+                opacity: 0;
+                transform: scale(0.92) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Side buttons (decorative) */
+        .vp-phone-device::before {
+            content: '';
+            position: absolute;
+            top: 140px;
+            right: -3px;
+            width: 3px;
+            height: 80px;
+            background: #333;
+            border-radius: 0 2px 2px 0;
+        }
+
+        .vp-phone-device::after {
+            content: '';
+            position: absolute;
+            top: 180px;
+            left: -3px;
+            width: 3px;
+            height: 50px;
+            background: #333;
+            border-radius: 2px 0 0 2px;
+        }
+
+        /* Screen */
+        .vp-phone-screen {
+            width: 100%;
+            height: 100%;
+            border-radius: 40px;
+            overflow: hidden;
+            background: #000;
+            position: relative;
+        }
+
+        .vp-phone-screen video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Play overlay */
+        .vp-play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.35);
+            z-index: 5;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .vp-play-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .vp-play-btn {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.92);
+            color: #1a1a1a;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .vp-play-btn:hover {
+            transform: scale(1.08);
+            background: #fff;
+        }
+
+        /* Home indicator */
+        .vp-phone-home-indicator {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            z-index: 10;
+        }
+
+        /* === Nubank Face ID screen === */
+        .vp-faceid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #820AD1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0 32px;
+            text-align: center;
+            color: white;
+            z-index: 8;
+            border-radius: inherit;
+            transition: opacity 0.4s ease;
+        }
+
+        .vp-faceid.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .vp-faceid__brand {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+            max-width: 85%;
+            margin-bottom: auto;
+            padding-top: 100%;
+        }
+
+        .vp-faceid__logo {
+            width: 72px;
+            margin-bottom: 16px;
+        }
+
+        .vp-faceid__logo svg {
+            width: 72px;
+            height: auto;
+            display: block;
+        }
+
+        .vp-faceid__text {
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.5;
+            color: white;
+            text-align: left;
+            margin-top: 12px;
+        }
+
+        .vp-faceid__actions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin-top: auto;
+            padding-bottom: 80px;
+            gap: 16px;
+        }
+
+        .vp-faceid__btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 85%;
+            height: 48px;
+            background: white;
+            color: #820AD1;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        .vp-faceid__btn:active {
+            opacity: 0.85;
+        }
+
+        .vp-faceid__btn-icon {
+            width: 22px;
+            height: 22px;
+        }
+
+        .vp-faceid__link {
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            background: none;
+            border: none;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .vp-faceid__footer {
+            position: absolute;
+            bottom: 32px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* === Face ID scanning animation (iOS-style) === */
+        .vp-faceid-scan {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            z-index: 9;
+            border-radius: inherit;
+            transition: opacity 0.4s ease;
+        }
+
+        .vp-faceid-scan.active {
+            display: flex;
+        }
+
+        .vp-faceid-scan.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .vp-faceid-scan__lock {
+            animation: vp-lock-pulse 1.2s ease-in-out infinite;
+        }
+
+        .vp-faceid-scan__unlocked {
+            display: none;
+            animation: vp-unlock-pop 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
+        }
+
+        .vp-faceid-scan.success .vp-faceid-scan__lock {
+            display: none;
+        }
+
+        .vp-faceid-scan.success .vp-faceid-scan__unlocked {
+            display: block;
+        }
+
+        @keyframes vp-lock-pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.06); }
+        }
+
+        @keyframes vp-unlock-pop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .vp-faceid-scan__text {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px;
+            font-weight: 500;
+            min-height: 18px;
+        }
+
+        /* === Embedded mode (inside mobile-viewer iframe) === */
+        body.embedded {
+            background: #000;
+        }
+
+        body.embedded::before {
+            display: none;
+        }
+
+        body.embedded .vp-container {
+            padding: 0;
+            gap: 0;
+            max-height: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        body.embedded .vp-header {
+            display: none;
+        }
+
+        body.embedded .vp-phone-device {
+            width: 100%;
+            height: 100%;
+            border-radius: 0;
+            padding: 0;
+            box-shadow: none;
+            animation: none;
+        }
+
+        body.embedded .vp-phone-device::before,
+        body.embedded .vp-phone-device::after {
+            display: none;
+        }
+
+        body.embedded .vp-phone-screen {
+            border-radius: 0;
+        }
+
+        body.embedded .vp-phone-home-indicator {
+            display: none;
+        }
+
+        body.embedded .vp-faceid,
+        body.embedded .vp-faceid-scan {
+            border-radius: 0;
+        }
+
+        /* === Responsive === */
+        @media (max-height: 960px) {
+            .vp-phone-device {
+                width: 360px;
+                height: 780px;
+                border-radius: 46px;
+                padding: 11px;
+            }
+            .vp-phone-screen {
+                border-radius: 37px;
+            }
+        }
+
+        @media (max-height: 860px) {
+            .vp-phone-device {
+                width: 330px;
+                height: 710px;
+                border-radius: 42px;
+                padding: 10px;
+            }
+            .vp-phone-screen {
+                border-radius: 34px;
+            }
+            .vp-phone-home-indicator {
+                width: 120px;
+                bottom: 16px;
+            }
+        }
+
+        @media (max-height: 750px) {
+            .vp-container {
+                gap: 10px;
+                padding: 10px;
+            }
+            .vp-phone-device {
+                width: 290px;
+                height: 628px;
+                border-radius: 38px;
+                padding: 9px;
+            }
+            .vp-phone-screen {
+                border-radius: 30px;
+            }
+            .vp-header {
+                max-width: 320px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="vp-container">
+        <!-- Header -->
+        <div class="vp-header">
+            <div class="vp-header-left">
+                <a href="index.html" class="vp-back-btn" title="Volver al launcher">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+                <div>
+                    <div class="vp-title" id="vpTitle">Video Demo</div>
+                    <div class="vp-subtitle">Flujo de pago</div>
+                </div>
+            </div>
+            <div class="vp-badge">
+                <span class="vp-badge-dot"></span>
+                iPhone 15 Pro
+            </div>
+        </div>
+
+        <!-- iPhone Device — NO notch -->
+        <div class="vp-phone-device">
+            <div class="vp-phone-screen">
+                <!-- Nubank Face ID screen (shown first) -->
+                <div class="vp-faceid" id="vpFaceId">
+                    <div class="vp-faceid__brand">
+                        <div class="vp-faceid__logo">
+                            <svg viewBox="0 0 80 32" fill="white" width="72" height="29">
+                                <path d="M7.5 25.5V13.5C7.5 10.5 9.5 8 13 8C16.5 8 18 10.5 18 13.5V25.5H24.5V13C24.5 6.5 20.5 2 14 2C10 2 7.5 4 6 6.5V2.5H0V25.5H7.5Z"/>
+                                <path d="M38 2.5V14.5C38 17.5 36 20 32.5 20C29 20 27.5 17.5 27.5 14.5V2.5H21V15C21 21.5 25 26 31.5 26C35.5 26 38 24 39.5 21.5V25.5H45.5V2.5H38Z"/>
+                            </svg>
+                        </div>
+                        <p class="vp-faceid__text">Hola, Daniel, por tu seguridad cerramos la sesion cuando hay 5 minutos de inactividad.</p>
+                    </div>
+                    <div class="vp-faceid__actions">
+                        <button class="vp-faceid__btn" id="vpFaceIdBtn">
+                            <span class="vp-faceid__btn-icon">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M7 3H5a2 2 0 00-2 2v2M17 3h2a2 2 0 012 2v2M7 21H5a2 2 0 01-2-2v-2M17 21h2a2 2 0 002-2v-2"/>
+                                    <circle cx="9" cy="10" r="0.5" fill="currentColor"/>
+                                    <circle cx="15" cy="10" r="0.5" fill="currentColor"/>
+                                    <path d="M12 10v3.5c0 .5-.5 1-1 1"/>
+                                    <path d="M8.5 16c1 1.5 5.5 1.5 7 0"/>
+                                </svg>
+                            </span>
+                            Ingresar con Face ID
+                        </button>
+                        <button class="vp-faceid__link">Ingresar con contrasena</button>
+                    </div>
+                    <div class="vp-faceid__footer">Nu Mexico Financiera, S.A. de C.V., S.F.P.</div>
+                </div>
+
+                <!-- Face ID scanning animation overlay -->
+                <div class="vp-faceid-scan" id="vpFaceIdScan">
+                    <!-- Face ID lock icon (like iOS) -->
+                    <div class="vp-faceid-scan__lock" id="vpScanLock">
+                        <svg width="44" height="44" viewBox="0 0 24 24" fill="none">
+                            <rect x="5" y="11" width="14" height="10" rx="2" stroke="white" stroke-width="1.5"/>
+                            <path d="M8 11V7a4 4 0 018 0v4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <!-- Success unlocked icon -->
+                    <div class="vp-faceid-scan__unlocked" id="vpScanUnlocked">
+                        <svg width="44" height="44" viewBox="0 0 24 24" fill="none">
+                            <rect x="5" y="11" width="14" height="10" rx="2" stroke="white" stroke-width="1.5"/>
+                            <path d="M8 11V7a4 4 0 018 0" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <p class="vp-faceid-scan__text" id="vpScanText"></p>
+                </div>
+
+                <video id="vpVideo" playsinline preload="auto"></video>
+                <!-- Play/replay overlay -->
+                <div class="vp-play-overlay hidden" id="vpOverlay">
+                    <button class="vp-play-btn" id="vpPlayBtn" title="Reproducir">
+                        <svg id="vpPlayIcon" width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="6 3 20 12 6 21 6 3"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="vp-phone-home-indicator"></div>
+        </div>
+    </div>
+
+    <script>
+        (function initVideoPlayer() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var isEmbedded = urlParams.get('embedded') === '1';
+
+            // Embedded mode: strip phone frame chrome and hide parent notch
+            if (isEmbedded) {
+                document.body.classList.add('embedded');
+                // Tell mobile-viewer parent to hide the Dynamic Island
+                if (window.parent !== window) {
+                    window.parent.postMessage({ type: 'hide-notch' }, '*');
+                }
+            }
+
+            // Read video source from payment option config
+            var config = getDemoConfig();
+            var paymentOption = getOptionById('payment', config.payment);
+            var videoSrc = (paymentOption && paymentOption.videoSrc)
+                ? paymentOption.videoSrc
+                : 'assets/videos/segiagua_cut.mp4';
+
+            // Update page title
+            document.title = BRAND.name + ' - Video Demo';
+            var titleEl = document.getElementById('vpTitle');
+            if (titleEl) titleEl.textContent = BRAND.name + ' - Video';
+
+            // Setup video
+            var video = document.getElementById('vpVideo');
+            var overlay = document.getElementById('vpOverlay');
+            var playBtn = document.getElementById('vpPlayBtn');
+            var playIcon = document.getElementById('vpPlayIcon');
+
+            video.src = videoSrc;
+
+            // Nubank Face ID → Scan Animation → Video transition
+            var faceIdScreen = document.getElementById('vpFaceId');
+            var faceIdBtn = document.getElementById('vpFaceIdBtn');
+            var scanScreen = document.getElementById('vpFaceIdScan');
+            var scanText = document.getElementById('vpScanText');
+
+            if (faceIdBtn) {
+                faceIdBtn.addEventListener('click', function() {
+                    // 1. Hide Face ID purple screen, show black lock screen
+                    faceIdScreen.classList.add('hidden');
+                    scanScreen.classList.add('active');
+
+                    // 2. After 1.2s lock pulse, unlock
+                    setTimeout(function() {
+                        scanScreen.classList.add('success');
+                        scanText.textContent = 'Desbloqueado';
+
+                        // 3. After 0.6s, fade out and start video
+                        setTimeout(function() {
+                            scanScreen.classList.add('fade-out');
+                            setTimeout(function() {
+                                playVideo();
+                            }, 400);
+                        }, 600);
+                    }, 1200);
+                });
+            }
+
+            function showOverlay(isReplay) {
+                overlay.classList.remove('hidden');
+                if (isReplay) {
+                    playIcon.innerHTML = '<path d="M1 4v6h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.51 15a9 9 0 105.64-8.36L1 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+                } else {
+                    playIcon.innerHTML = '<polygon points="6 3 20 12 6 21 6 3"/>';
+                }
+            }
+
+            function hideOverlay() {
+                overlay.classList.add('hidden');
+            }
+
+            function playVideo() {
+                video.play().then(function() {
+                    hideOverlay();
+                }).catch(function() {
+                    // Autoplay blocked — keep overlay visible
+                    showOverlay(false);
+                });
+            }
+
+            // Click overlay or video to toggle play/pause
+            overlay.addEventListener('click', function() {
+                if (video.ended) {
+                    video.currentTime = 0;
+                }
+                playVideo();
+            });
+
+            video.addEventListener('click', function() {
+                if (!video.paused) {
+                    video.pause();
+                    showOverlay(false);
+                }
+            });
+
+            // When video ends, show replay overlay
+            video.addEventListener('ended', function() {
+                showOverlay(true);
+            });
+
+            // Try auto-play only if Face ID screen is not showing
+            video.addEventListener('loadeddata', function() {
+                if (!faceIdScreen || faceIdScreen.classList.contains('hidden')) {
+                    playVideo();
+                }
+            });
+
+            // Listen for close messages (from mobile-viewer parent)
+            window.addEventListener('message', function(event) {
+                if (event.data && event.data.type === 'mobile-viewer-close') {
+                    window.location.href = 'index.html';
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

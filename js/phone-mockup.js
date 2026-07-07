@@ -19,17 +19,23 @@ function simulateQRScan() {
     
     closeTapiQRModal();
 
+    var authPage = 'auth-mobile.html';
+    if (typeof getOptionById === 'function') {
+        var payOpt = getOptionById('payment', bank);
+        if (payOpt && payOpt.authPage) authPage = payOpt.authPage;
+    }
+
     // If embedded in mobile viewer, navigate directly (already in a phone frame)
     if (isCheckoutEmbedded) {
-        const baseUrl = window.location.origin + window.location.pathname.replace('checkout.html', '');
-        const authUrl = `${baseUrl}auth-mobile.html?bank=${bank}&action=${actionType}&${paramName}=${encodeURIComponent(identityValue)}&embedded=1&session=${Date.now()}`;
+        const baseUrl = window.location.origin + window.location.pathname.replace(/[^\/]*$/, '');
+        const authUrl = `${baseUrl}${authPage}?bank=${bank}&action=${actionType}&${paramName}=${encodeURIComponent(identityValue)}&embedded=1&session=${Date.now()}`;
         setTimeout(() => { window.location.href = authUrl; }, 300);
         return;
     }
-    
+
     setTimeout(() => {
-        const baseUrl = window.location.origin + window.location.pathname.replace('checkout.html', '');
-        const authUrl = `${baseUrl}auth-mobile.html?bank=${bank}&action=${actionType}&${paramName}=${encodeURIComponent(identityValue)}&embedded=1&session=${Date.now()}`;
+        const baseUrl = window.location.origin + window.location.pathname.replace(/[^\/]*$/, '');
+        const authUrl = `${baseUrl}${authPage}?bank=${bank}&action=${actionType}&${paramName}=${encodeURIComponent(identityValue)}&embedded=1&session=${Date.now()}`;
         
         const phoneOverlay = document.getElementById('phoneMockupOverlay');
         const phoneIframe = document.getElementById('phoneIframe');

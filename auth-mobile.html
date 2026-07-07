@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Autenticación</title>
     <script src="config/brand-config.js"></script>
+    <script src="js/brand-override.js"></script>
+    <script>
+        if (typeof BrandOverride !== 'undefined' && BrandOverride.has()) {
+            document.documentElement.setAttribute('data-brand-custom', 'true');
+        }
+    </script>
     <script src="config/banks-config.js"></script>
     <script>
         // Apply bank theme IMMEDIATELY (blocks rendering for correct colors)
@@ -124,7 +130,7 @@
                         </svg>
                     </div>
                     <div class="push-app-info">
-                        <strong>Hey Banco</strong>
+                        <strong></strong>
                         <span>ahora</span>
                     </div>
                 </div>
@@ -315,7 +321,7 @@
                             </div>
                             <div class="detail-row">
                                 <span>Forma de pago</span>
-                                <span class="detail-value" id="paymentMethodAccount">Cuenta Hey Banco **** 4829</span>
+                                <span class="detail-value" id="paymentMethodAccount"></span>
                             </div>
                         </div>
                     </div>
@@ -520,11 +526,11 @@
                     <div class="account-card-new">
                         <div class="account-header">
                             <div class="bank-avatar" id="bankAvatarNew" style="background: white; padding: 6px;">
-                                <img src="assets/banks/Hey_Banco.svg" alt="Hey Banco" style="width: 100%; height: 100%; object-fit: contain;">
+                                <img src="" alt="" style="width: 100%; height: 100%; object-fit: contain;">
                             </div>
                             <div>
-                                <strong>Juan Carlos Pérez García</strong>
-                                <p id="accountCardInfo">**** 4829 • Hey Banco México</p>
+                                <strong></strong>
+                                <p id="accountCardInfo"></p>
                             </div>
                         </div>
                         <button class="details-btn" onclick="toggleAccountDetails()">
@@ -534,11 +540,11 @@
                         <div id="accountDetails" class="account-details-new" style="display: none;">
                             <div class="detail-row">
                                 <span>CLABE</span>
-                                <strong>646180157012345829</strong>
+                                <strong></strong>
                             </div>
                             <div class="detail-row">
                                 <span>Teléfono</span>
-                                <strong>55 1234 5678</strong>
+                                <strong></strong>
                             </div>
                         </div>
                     </div>
@@ -747,7 +753,7 @@
                     
                     <div class="form-group">
                         <label for="accountHolderOld">Nombre completo del titular</label>
-                        <input type="text" id="accountHolderOld" value="Juan Carlos Pérez García" readonly>
+                        <input type="text" id="accountHolderOld" value="" readonly>
                         <small>Información obtenida automáticamente de tu cuenta</small>
                     </div>
                     
@@ -757,8 +763,8 @@
                             <div class="account-info">
                                 <div class="bank-icon bank-gradient" id="bankIconOld"></div>
                                 <div>
-                                    <strong id="accountNameOld">Cuenta Hey Banco</strong>
-                                    <p id="cardNumberOld">**** **** **** 4829</p>
+                                    <strong id="accountNameOld"></strong>
+                                    <p id="cardNumberOld"></p>
                                 </div>
                             </div>
                             <div class="account-details-toggle" onclick="toggleAccountDetails()">
@@ -769,15 +775,15 @@
                         <div class="account-details-expanded" id="accountDetailsOld" style="display: none;">
                             <div class="detail-item">
                                 <span class="detail-label">CLABE</span>
-                                <span class="detail-value">646180157012345829</span>
+                                <span class="detail-value"></span>
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label">Teléfono asociado</span>
-                                <span class="detail-value">55 1234 5678</span>
+                                <span class="detail-value"></span>
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label">Institución Financiera</span>
-                                <span class="detail-value" id="institutionNameOld">Hey Banco México</span>
+                                <span class="detail-value" id="institutionNameOld"></span>
                             </div>
                         </div>
                     </div>
