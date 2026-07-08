@@ -44,7 +44,7 @@ const BRAND = {
     },
 
     // Factura PDF para la demo QR (no aplica para Compartamos)
-    invoicePdf: null,
+    invoicePdf: 'assets/brand/factura-totalplay.pdf',
 
     // Deep link scheme (usado en simulacion de apps bancarias)
     deepLinkServiceParam: 'compartamos',
