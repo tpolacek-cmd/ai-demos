@@ -365,7 +365,7 @@
                             <div class="m"><div class="v dark">4 horas</div><div class="k">Vigencia</div></div>
                             <div class="price">$25</div>
                         </div>
-                        <div class="opt-cta"><button class="btn-purple" onclick="showScreen('pago')">Lo quiero</button></div>
+                        <div class="opt-cta"><button class="btn-purple" onclick="goToPortal()">Lo quiero</button></div>
                     </div>
                 </div>
 
@@ -394,52 +394,6 @@
                 </div>
 
                 <div class="iva-note">Las tarifas publicadas incluyen el 16% de IVA.</div>
-            </div>
-        </div>
-
-        <!-- ============ SCREEN 4: FORMA DE PAGO ============ -->
-        <div class="screen" id="screen-pago">
-            <div class="app-header flat">
-                <div class="ah-row">
-                    <button class="ah-icon-btn" onclick="showScreen('internet')" aria-label="Volver">
-                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
-                    </button>
-                    <div class="ah-title" style="margin-left:8px;">Internet por tiempo</div>
-                    <div style="width:26px;"></div>
-                </div>
-            </div>
-
-            <div class="screen-body">
-                <div class="fp-summary">
-                    <span class="fp-check"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg></span>
-                    <div>
-                        <h4>Paquete</h4>
-                        <div class="p-name">Internet por tiempo 4 Horas</div>
-                        <div class="p-amt-l">Monto a pagar</div>
-                        <div class="p-amt">$25</div>
-                    </div>
-                </div>
-                <div class="fp-hr"></div>
-
-                <div class="fp-heading">Elige tu forma de pago</div>
-
-                <button class="pay-opt" data-pay="tarjeta" onclick="selectPay(this)">
-                    <span class="pay-radio"></span>
-                    <span class="pay-ico"><svg width="30" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span>
-                    <span class="pay-label">Tarjeta de crédito o débito</span>
-                </button>
-
-                <button class="pay-opt" data-pay="codi" onclick="selectPay(this)">
-                    <span class="pay-radio"></span>
-                    <span class="pay-ico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 20h1M17 20v1"/></svg></span>
-                    <span class="pay-label">Pago con CoDi®</span>
-                </button>
-
-                <div class="fp-terms">Consulta Condiciones de Uso del Servicio.</div>
-
-                <div style="padding: 4px 16px 20px;">
-                    <button class="btn-purple" id="continuarBtn" onclick="goToPortal()" style="opacity:.45;pointer-events:none;">Continuar</button>
-                </div>
             </div>
         </div>
 
@@ -504,14 +458,6 @@
                 g.appendChild(line);
             }
         })();
-
-        // ---- Forma de pago selection ----
-        function selectPay(btn) {
-            document.querySelectorAll('.pay-opt').forEach(function(o) { o.classList.remove('selected'); });
-            btn.classList.add('selected');
-            var cta = document.getElementById('continuarBtn');
-            cta.style.opacity = '1'; cta.style.pointerEvents = 'auto';
-        }
 
         // ---- Handoff to payment portal (stage 2) ----
         function goToPortal() {
