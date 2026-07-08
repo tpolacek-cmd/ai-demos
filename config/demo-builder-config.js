@@ -57,6 +57,14 @@ const DEMO_STAGES = [
                 mobileSupported: true,
                 icon: '<img src="assets/brand/compartamos.png" alt="Compartamos" style="width: 28px; height: 28px; object-fit: contain; border-radius: 6px; background: white; padding: 2px;">',
             },
+            {
+                id: 'telcel',
+                name: 'Telcel',
+                description: 'App Mi Telcel — compra de paquete Internet por tiempo',
+                page: 'telcel.html',
+                mobileSupported: true,
+                icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="18" rx="4" fill="#0b5fc0"/><text x="12" y="15.5" font-family="Arial,sans-serif" font-size="8" font-weight="bold" fill="white" text-anchor="middle">tel</text></svg>',
+            },
         ]
     },
     {
