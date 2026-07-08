@@ -17,6 +17,122 @@
     <div class="bbva-container">
 
         <!-- ================================================================
+             STEP CLABE — Datos de la cuenta (domiciliacion)
+             ================================================================ -->
+        <div class="bbva-step bbva-domi" id="bbva-step-clabe">
+            <!-- iOS Status Bar (dark on white) -->
+            <div class="bbva-domi__statusbar">
+                <span class="bbva-domi__statusbar-time">9:41</span>
+                <div class="bbva-domi__statusbar-icons">
+                    <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+                        <rect x="0" y="9" width="3" height="3" rx="0.5" fill="#1a1a2e"/>
+                        <rect x="4.5" y="6" width="3" height="6" rx="0.5" fill="#1a1a2e"/>
+                        <rect x="9" y="3" width="3" height="9" rx="0.5" fill="#1a1a2e"/>
+                        <rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="#1a1a2e"/>
+                    </svg>
+                    <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                        <path d="M8 11.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" fill="#1a1a2e"/>
+                        <path d="M5.17 8.33a4 4 0 0 1 5.66 0" stroke="#1a1a2e" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M2.34 5.5a8 8 0 0 1 11.32 0" stroke="#1a1a2e" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <svg width="27" height="12" viewBox="0 0 27 12" fill="none">
+                        <rect x="0.5" y="0.5" width="22" height="11" rx="2" stroke="rgba(26,26,46,0.4)" stroke-width="1"/>
+                        <rect x="23.5" y="3.5" width="2" height="5" rx="1" fill="rgba(26,26,46,0.4)"/>
+                        <rect x="2" y="2" width="19" height="8" rx="1" fill="#1a1a2e"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="bbva-domi__scroll">
+                <div class="bbva-domi-card">
+                    <h2 class="bbva-domi-card__title">Datos de la cuenta</h2>
+                    <p class="bbva-domi-card__subtitle">Introduce la Cuenta CLABE</p>
+
+                    <input type="text" class="bbva-clabe-input" id="bbva-clabe-input" placeholder="CLABE" inputmode="numeric" autocomplete="off">
+
+                    <label class="bbva-clabe-check" for="bbva-clabe-tyc">
+                        <span class="bbva-clabe-check__box" id="bbva-clabe-checkbox">
+                            <svg viewBox="0 0 12 10" fill="none" width="12" height="10" style="display:none" id="bbva-clabe-check-svg">
+                                <path d="M1 5.5L4 8.5L11 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                        <input type="checkbox" id="bbva-clabe-tyc" style="position:absolute;opacity:0;width:0;height:0;">
+                        <span class="bbva-clabe-check__text">Lei y acepto los <a href="#" onclick="return false;">Terminos y Condiciones</a></span>
+                    </label>
+
+                    <div class="bbva-domi-note">
+                        <span class="bbva-domi-note__icon">!</span>
+                        <span>Recuerda que tu cuenta bancaria tiene que ser de una entidad mexicana y debes ser el propietario de la cuenta.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bbva-domi__footer">
+                <button class="bbva-btn bbva-btn--blue" id="bbva-clabe-continuar" onclick="onClabeContinuar()">Continuar</button>
+            </div>
+        </div>
+
+        <!-- ================================================================
+             STEP FORMATO — Formato de Domiciliacion (firma)
+             ================================================================ -->
+        <div class="bbva-step bbva-domi" id="bbva-step-formato">
+            <!-- iOS Status Bar (dark on white) -->
+            <div class="bbva-domi__statusbar">
+                <span class="bbva-domi__statusbar-time">9:41</span>
+                <div class="bbva-domi__statusbar-icons">
+                    <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+                        <rect x="0" y="9" width="3" height="3" rx="0.5" fill="#1a1a2e"/>
+                        <rect x="4.5" y="6" width="3" height="6" rx="0.5" fill="#1a1a2e"/>
+                        <rect x="9" y="3" width="3" height="9" rx="0.5" fill="#1a1a2e"/>
+                        <rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="#1a1a2e"/>
+                    </svg>
+                    <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                        <path d="M8 11.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" fill="#1a1a2e"/>
+                        <path d="M5.17 8.33a4 4 0 0 1 5.66 0" stroke="#1a1a2e" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M2.34 5.5a8 8 0 0 1 11.32 0" stroke="#1a1a2e" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <svg width="27" height="12" viewBox="0 0 27 12" fill="none">
+                        <rect x="0.5" y="0.5" width="22" height="11" rx="2" stroke="rgba(26,26,46,0.4)" stroke-width="1"/>
+                        <rect x="23.5" y="3.5" width="2" height="5" rx="1" fill="rgba(26,26,46,0.4)"/>
+                        <rect x="2" y="2" width="19" height="8" rx="1" fill="#1a1a2e"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="bbva-domi__scroll">
+                <div class="bbva-domi-card">
+                    <h2 class="bbva-domi-card__title bbva-domi-card__title--center">Formato de Domiciliacion</h2>
+                    <p class="bbva-domi-card__subtitle bbva-domi-card__subtitle--center">Autorizacion de cargos recurrentes</p>
+
+                    <div class="bbva-domi-skeleton">
+                        <span class="bbva-domi-skeleton__line" style="width:100%"></span>
+                        <span class="bbva-domi-skeleton__line" style="width:92%"></span>
+                        <span class="bbva-domi-skeleton__line" style="width:97%"></span>
+                        <span class="bbva-domi-skeleton__line" style="width:80%"></span>
+                        <span class="bbva-domi-skeleton__line" style="width:95%"></span>
+                        <span class="bbva-domi-skeleton__line" style="width:70%"></span>
+                        <span class="bbva-domi-skeleton__line" style="width:88%"></span>
+                        <span class="bbva-domi-skeleton__line" style="width:60%"></span>
+                        <span class="bbva-domi-skeleton__line" style="width:90%"></span>
+                    </div>
+
+                    <div class="bbva-domi-sign">
+                        <div class="bbva-domi-sign__row">
+                            <span class="bbva-domi-sign__signature">Luis R.</span>
+                            <span class="bbva-domi-sign__tag">&#9998; Firmar</span>
+                        </div>
+                        <div class="bbva-domi-sign__label">[Firma del titular]</div>
+                        <div class="bbva-domi-sign__hint">Toca para completar la firma</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bbva-domi__footer">
+                <button class="bbva-btn bbva-btn--blue" id="bbva-firmar-btn" onclick="onFirmarDomiciliacion()">Aceptar y firmar</button>
+            </div>
+        </div>
+
+        <!-- ================================================================
              STEP 0 — iPhone Home Screen with Push Notification
              ================================================================ -->
         <div class="bbva-step bbva-home" id="bbva-step-0">

@@ -819,21 +819,29 @@
         if (!selected) return;
 
         var method = selected.getAttribute('data-method');
-        if (method !== 'bbva-directo') return;
+        // Pago Directo BBVA and Pago Automatico Bancario (domiciliacion) both proceed
+        if (method !== 'bbva-directo' && method !== 'automatico-bancario') return;
+
+        var isDomi = method === 'automatico-bancario';
 
         var nextUrl = getNextPageUrl('checkout');
         if (!nextUrl) return;
 
         // If embedded (mobile viewer) or small screen, navigate directly
-        // Add direct=1 to skip the phone home/push notification screens
+        // Add direct=1 to skip the phone home/push notification screens.
+        // For domiciliacion, flow=domiciliacion forces the CLABE screen first
+        // (auth-bbva starts at 'clabe' even when direct=1 is present).
         if (isEmbedded || window.innerWidth <= 768) {
             var sep = nextUrl.indexOf('?') > -1 ? '&' : '?';
-            window.location.href = nextUrl + sep + 'direct=1';
+            var mobileUrl = nextUrl + sep + 'direct=1';
+            if (isDomi) mobileUrl += '&flow=domiciliacion';
+            window.location.href = mobileUrl;
             return;
         }
 
         // Desktop: open in phone mockup overlay
         var authUrl = nextUrl + (nextUrl.indexOf('?') > -1 ? '&' : '?') + 'embedded=1';
+        if (isDomi) authUrl += '&flow=domiciliacion';
         var overlay = document.getElementById('cbPhoneOverlay');
         var iframe = document.getElementById('cbPhoneIframe');
         if (overlay && iframe) {

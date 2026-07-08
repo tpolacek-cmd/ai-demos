@@ -11,6 +11,7 @@ var bankParam = urlParams.get('bank') || 'bbva';
 var actionParam = urlParams.get('action') || 'pay-domiciliar';
 var isEmbedded = urlParams.get('embedded') === '1';
 var isDirect = urlParams.get('direct') === '1';
+var isDomiciliacion = urlParams.get('flow') === 'domiciliacion' || actionParam === 'domiciliacion';
 
 // ---------------------------------------------------------------------------
 // Random data (generated once)
@@ -98,6 +99,39 @@ function onPushClick() {
     push.style.opacity = '0';
     setTimeout(function() { showStep(1); }, 350);
 }
+
+// ---------------------------------------------------------------------------
+// Domiciliacion flow: CLABE screen → Formato screen → app BBVA (step 1)
+// ---------------------------------------------------------------------------
+function onClabeContinuar() {
+    showStep('formato');
+}
+
+function onFirmarDomiciliacion() {
+    // Open the app BBVA and continue the existing flow (splash → ... → receipt)
+    showStep(1);
+}
+
+// CLABE T&C checkbox toggle (visual)
+(function initClabeCheckbox() {
+    var checkbox = document.getElementById('bbva-clabe-tyc');
+    var box = document.getElementById('bbva-clabe-checkbox');
+    var svg = document.getElementById('bbva-clabe-check-svg');
+    if (!checkbox || !box) return;
+
+    function updateVisual() {
+        if (checkbox.checked) {
+            box.classList.add('checked');
+            if (svg) svg.style.display = '';
+        } else {
+            box.classList.remove('checked');
+            if (svg) svg.style.display = 'none';
+        }
+    }
+
+    checkbox.addEventListener('change', updateVisual);
+    updateVisual(); // init
+})();
 
 // ---------------------------------------------------------------------------
 // Step 2: Hotspot click → skip Face ID, go straight to loading
@@ -358,6 +392,12 @@ document.addEventListener('DOMContentLoaded', function() {
         statTotal.textContent = '$' + total.toLocaleString('es-MX', { minimumFractionDigits: 2 });
     }
 
-    // Direct mode (mobile): skip phone home/push notification, go straight to app splash
-    showStep(isDirect ? 1 : 0);
+    // Domiciliacion flow: always start at the CLABE screen (even if direct=1),
+    // then Formato, then the app BBVA. Otherwise keep the existing behavior.
+    if (isDomiciliacion) {
+        showStep('clabe');
+    } else {
+        // Direct mode (mobile): skip phone home/push notification, go straight to app splash
+        showStep(isDirect ? 1 : 0);
+    }
 });
