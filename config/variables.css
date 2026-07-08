@@ -5,20 +5,20 @@
 
 :root {
     /* Colores de marca */
-    --primary-color: #C81566;
-    --primary-dark: #A01050;
-    --primary-light: #F9EBF3;
-    --secondary-color: #C81566;
-    --accent-color: #D4921A;
-    --background: #FDF5F9;
-    --gradient-start: #C81566;
-    --gradient-end: #D4921A;
-    --header-bg: #1a1a2e;
+    --primary-color: #0B5FC0;
+    --primary-dark: #094BA0;
+    --primary-light: #EAF3FD;
+    --secondary-color: #0B5FC0;
+    --accent-color: #2E86E0;
+    --background: #F5FAFF;
+    --gradient-start: #0B5FC0;
+    --gradient-end: #2E86E0;
+    --header-bg: #0A3E7A;
     --btn-text-color: #ffffff;
 
     /* Aliases --tp-* (usados en index.html y qr-styles) */
-    --tp-primary: #C81566;
-    --tp-dark: #1a1a2e;
+    --tp-primary: #0B5FC0;
+    --tp-dark: #0A3E7A;
     --tp-text: #1a1a2e;
     --tp-text-secondary: #6c757d;
     --tp-border: #e2e8f0;
@@ -34,10 +34,10 @@
     --success: #28a745;
 
     /* Sombras (usan color de marca) */
-    --shadow-sm: 0 2px 8px rgba(200, 21, 102, 0.10);
-    --shadow-md: 0 4px 12px rgba(200, 21, 102, 0.15);
-    --shadow-lg: 0 8px 24px rgba(200, 21, 102, 0.18);
-    --shadow-xl: 0 12px 32px rgba(200, 21, 102, 0.22);
+    --shadow-sm: 0 2px 8px rgba(11, 95, 192, 0.10);
+    --shadow-md: 0 4px 12px rgba(11, 95, 192, 0.15);
+    --shadow-lg: 0 8px 24px rgba(11, 95, 192, 0.18);
+    --shadow-xl: 0 12px 32px rgba(11, 95, 192, 0.22);
 }
 
 /* Indicador sutil de marca personalizada */

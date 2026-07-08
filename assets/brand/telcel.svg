@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="200" height="60">
+  <rect x="0" y="0" width="200" height="60" rx="12" fill="#ffffff"/>
+  <text x="98" y="41" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="800" fill="#0B5FC0" text-anchor="middle" letter-spacing="-1.2">Telcel</text>
+  <circle cx="169" cy="20" r="3.4" fill="#0B5FC0"/>
+  <circle cx="178" cy="20" r="3.4" fill="#2E86E0"/>
+</svg>

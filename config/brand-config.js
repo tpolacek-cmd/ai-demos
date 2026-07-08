@@ -5,49 +5,49 @@
 
 const BRAND = {
     // Identidad
-    name: 'Banco Compartamos',
-    fullName: 'Banco Compartamos',
-    serviceType: 'Credito personal',
-    planName: 'Credito CR-2024-084521',
-    logo: 'assets/brand/compartamos.png',
+    name: 'Telcel',
+    fullName: 'Telcel',
+    serviceType: 'Internet por tiempo',
+    planName: '4 Horas',
+    logo: 'assets/brand/telcel.svg',
 
     // Contacto y dominio
-    domain: 'compartamos.com.mx',
-    paymentDomain: 'pago.compartamos.com.mx',
-    phone: '800 290 1100',
-    phoneFriendly: '800 COMPARTAMOS',
-    whatsapp: '55 7568 4000',
+    domain: 'telcel.com',
+    paymentDomain: 'pago.telcel.com',
+    phone: '800 710 5000',
+    phoneFriendly: '*111 desde tu Telcel',
+    whatsapp: '55 7100 0000',
 
-    // Datos de cuenta/credito para la demo
+    // Datos de cuenta/servicio para la demo
     account: {
-        number: 'CR-2024-084521',
-        period: 'Marzo 2026',
-        dueDate: '15 de Abril 2026',
-        dueDateShort: '15 Abr 2026',
-        planAmount: 8000.00,
+        number: '33 3667 9407',
+        period: 'Julio 2026',
+        dueDate: '20 de Julio 2026',
+        dueDateShort: '20 Jul 2026',
+        planAmount: 25.00,
         discount: 0.00,
         discountLabel: '',
         previousBalance: 0.00,
-        totalAmount: 8000.00,
+        totalAmount: 25.00,
         reference: '0900 0002 0845 2100 4',
     },
 
     // Colores de la marca
     colors: {
-        primary: '#C81566',
-        primaryDark: '#A01050',
-        primaryLight: '#F9EBF3',
-        accent: '#D4921A',
-        background: '#FDF5F9',
-        headerBg: '#1a1a2e',
+        primary: '#0B5FC0',
+        primaryDark: '#094BA0',
+        primaryLight: '#EAF3FD',
+        accent: '#2E86E0',
+        background: '#F5FAFF',
+        headerBg: '#0A3E7A',
         btnText: '#ffffff',
     },
 
-    // Factura PDF para la demo QR (no aplica para Compartamos)
+    // Factura PDF para la demo QR (no aplica al flujo Telcel)
     invoicePdf: 'assets/brand/factura-totalplay.pdf',
 
     // Deep link scheme (usado en simulacion de apps bancarias)
-    deepLinkServiceParam: 'compartamos',
+    deepLinkServiceParam: 'telcel',
 };
 
 // Helpers de formato
