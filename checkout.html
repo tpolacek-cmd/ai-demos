@@ -964,7 +964,38 @@
         
         // Store in sessionStorage for future reference
         sessionStorage.setItem('selectedFlow', flow);
-        
+
+        // ============================================
+        // AUTO-START desde deep-link (QR escaneado)
+        // ============================================
+        // Si el portal se abre por un QR de factura (autopay=1), forzamos la
+        // experiencia de pago (Paso 3) configurada: revelamos "Pago Automatico"
+        // y disparamos el banco configurado, reusando el handler real de .bank-card
+        // (que rutea por currentFlow). Backward-compat: sin autopay=1, todo manual.
+        (function autoStartFromQR() {
+            if (urlParams.get('autopay') !== '1') return;
+            if (typeof getDemoConfig !== 'function' || typeof getOptionById !== 'function') return;
+
+            var config = getDemoConfig();
+            var payOpt = getOptionById('payment', config.payment);
+            if (!payOpt || !payOpt.bank) return;
+
+            var bank = payOpt.bank;
+            // Nubank y video son flujos autocontenidos / sin bank-card estandar → no forzar
+            if (bank === 'nubank' || bank === 'video') return;
+
+            // 1) Seleccionar metodo "Pago Automatico" (revela bancos + setea selectedMethod)
+            var methodOpt = document.querySelector('.payment-option[data-method="paga-domicilia"]');
+            if (!methodOpt) return;
+            methodOpt.click();
+
+            // 2) Tras una pausa visible (que se vea el portal), disparar el banco configurado
+            setTimeout(function() {
+                var card = document.querySelector('#banksSelectionPagaDomicilia .bank-card[data-bank="' + bank + '"]')
+                        || document.querySelector('.bank-card[data-bank="' + bank + '"]');
+                if (card) card.click();
+            }, 1300);
+        })();
 
     </script>
 </body>

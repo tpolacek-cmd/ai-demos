@@ -450,3 +450,23 @@ body {
         font-size: 9px;
     }
 }
+
+/* Dropdown de seleccion de factura (canal QR en Factura) */
+.factura-select {
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--tp-text, #1a1a2e);
+    background: #fff;
+    border: 1px solid var(--tp-border, #e2e8f0);
+    border-radius: 8px;
+    padding: 7px 12px;
+    margin-right: 14px;
+    cursor: pointer;
+    outline: none;
+    max-width: 220px;
+}
+.factura-select:focus {
+    border-color: var(--tp-primary, #0b5fc0);
+    box-shadow: 0 0 0 2px rgba(11, 95, 192, 0.15);
+}

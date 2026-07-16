@@ -1,8 +1,15 @@
 // PDF.js configuration
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-const PDF_URL = (typeof BRAND !== 'undefined' && BRAND.invoicePdf) ? BRAND.invoicePdf : 'assets/brand/factura.pdf';
+// Factura activa (del catalogo FACTURAS en config/facturas-config.js).
+// El dropdown en qr.html la cambia; el QR NO depende de esto (la marca del portal va por rebrand).
+let currentPdfUrl = (typeof FACTURAS !== 'undefined' && FACTURAS.length)
+    ? FACTURAS[0].pdf
+    : ((typeof BRAND !== 'undefined' && BRAND.invoicePdf) ? BRAND.invoicePdf : 'assets/brand/factura.pdf');
 const QR_TARGET_PAGE = 2; // Page where we overlay the QR
+
+// Origen de produccion (para que el QR sea escaneable desde un telefono real aun demando en local)
+const PROD_ORIGIN = 'https://ai-demos-lime.vercel.app';
 
 let pdfDoc = null;
 let currentPage = 1;
@@ -25,32 +32,55 @@ const scanOverlay = document.getElementById('scanOverlay');
 // PDF LOADING AND RENDERING
 // ============================================
 
-async function loadPDF() {
+// Limpia el viewer para poder cargar otra factura (dropdown)
+function resetViewer() {
+    pdfDoc = null;
+    currentPage = 1;
+    totalPages = 0;
+    pageCanvases = [];
+    if (pdfPages) pdfPages.innerHTML = '';
+    if (qrOverlay) qrOverlay.style.display = 'none';
+    if (pdfLoading) pdfLoading.style.display = '';
+}
+
+async function loadPDF(url) {
+    currentPdfUrl = url || currentPdfUrl;
+    resetViewer();
     try {
-        pdfDoc = await pdfjsLib.getDocument(PDF_URL).promise;
+        pdfDoc = await pdfjsLib.getDocument(currentPdfUrl).promise;
         totalPages = pdfDoc.numPages;
-        
+
         pageInfo.textContent = `Pág 1 / ${totalPages}`;
-        
-        // Render all pages
-        for (let i = 1; i <= totalPages; i++) {
-            await renderPage(i);
-        }
-        
-        // Hide loading
+
+        // Crear el wrapper de la pagina 1 y REVELAR ya el viewer + QR.
+        // El QR (lo que se escanea) NO debe depender de que el canvas del PDF termine
+        // de pintarse: en algunos browsers el render de PDF.js es lento o se cuelga.
+        const first = await createPageWrapper(1);
         pdfLoading.style.display = 'none';
-        
-        // Position QR overlay on page 2
         positionQROverlay();
-        
-        // Generate QR code
-        generateQR();
-        
-        // Update button states
         updatePageButtons();
-        
+
+        // Pintar el canvas de la pagina 1 + crear/pintar las demas paginas en segundo
+        // plano (best-effort). Si el render se cuelga/falla, el wrapper + el QR ya estan
+        // visibles y la demo funciona igual.
+        (async function renderRest() {
+            renderPageCanvas(first).catch(function(e) { console.warn('canvas pag 1:', e); });
+            for (let i = 2; i <= totalPages; i++) {
+                try {
+                    const item = await createPageWrapper(i);
+                    positionQROverlay(); // reposicionar QR sobre la pagina target si ya llego
+                    updatePageButtons();
+                    await renderPageCanvas(item);
+                } catch (e) {
+                    console.warn('No se pudo preparar/pintar la pagina', i, e);
+                    break;
+                }
+            }
+        })();
+
     } catch (error) {
         console.error('Error loading PDF:', error);
+        pdfLoading.style.display = '';
         pdfLoading.innerHTML = `
             <p style="color: #ff6b6b;">Error al cargar la factura</p>
             <p style="color: rgba(255,255,255,0.5); font-size: 13px; margin-top: 8px;">${error.message}</p>
@@ -58,40 +88,41 @@ async function loadPDF() {
     }
 }
 
-async function renderPage(pageNum) {
+// Crea el wrapper + canvas de una pagina (usa getPage, que resuelve bien) SIN pintar.
+// Devuelve lo necesario para pintar el canvas despues.
+async function createPageWrapper(pageNum) {
     const page = await pdfDoc.getPage(pageNum);
     const viewport = page.getViewport({ scale: scale });
-    
-    // Create wrapper
+
     const wrapper = document.createElement('div');
     wrapper.className = 'pdf-page-wrapper';
     wrapper.id = `page-${pageNum}`;
     wrapper.dataset.page = pageNum;
     wrapper.style.width = viewport.width + 'px';
     wrapper.style.height = viewport.height + 'px';
-    
-    // Create canvas
+
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     canvas.width = viewport.width;
     canvas.height = viewport.height;
-    
-    // Page number label
+
     const pageLabel = document.createElement('div');
     pageLabel.className = 'page-number-label';
     pageLabel.textContent = `Página ${pageNum} de ${totalPages}`;
-    
+
     wrapper.appendChild(canvas);
     wrapper.appendChild(pageLabel);
     pdfPages.appendChild(wrapper);
-    
-    // Store reference
     pageCanvases.push(wrapper);
-    
-    // Render
-    await page.render({
-        canvasContext: ctx,
-        viewport: viewport
+
+    return { page: page, ctx: ctx, viewport: viewport };
+}
+
+// Pinta el canvas de una pagina (el render puede ser lento/colgarse en algunos browsers).
+async function renderPageCanvas(item) {
+    await item.page.render({
+        canvasContext: item.ctx,
+        viewport: item.viewport
     }).promise;
 }
 
@@ -100,9 +131,11 @@ async function renderPage(pageNum) {
 // ============================================
 
 function positionQROverlay() {
-    const page2Wrapper = document.getElementById(`page-${QR_TARGET_PAGE}`);
+    // Preferir la pagina target del QR; si aun no renderizo (o falla), caer a la pagina 1
+    // para que el QR SIEMPRE sea visible y escaneable.
+    const page2Wrapper = document.getElementById(`page-${QR_TARGET_PAGE}`) || document.getElementById('page-1');
     if (!page2Wrapper) return;
-    
+
     // Show the overlay
     qrOverlay.style.display = 'block';
     
@@ -130,11 +163,33 @@ window.addEventListener('resize', () => {
 // QR CODE GENERATION
 // ============================================
 
+// Construye el deep-link ABSOLUTO al portal+pago configurados en el builder.
+// Toda la config viaja en la URL (checkout/payment/flow) para que un celular
+// que escanea el QR (sesion nueva, sin sessionStorage) caiga en la experiencia correcta.
+// forPhone=true fuerza PROD_ORIGIN en localhost (para que un telefono real alcance la URL).
+function buildCheckoutDeepLink(forPhone) {
+    var config = (typeof getDemoConfig === 'function') ? getDemoConfig() : {};
+    var checkoutOpt = (typeof getOptionById === 'function')
+        ? (getOptionById('checkout', config.checkout) || getOptionById('checkout', 'portal-standard'))
+        : null;
+    var page = checkoutOpt ? checkoutOpt.page : 'checkout.html';
+    var flow = (checkoutOpt && checkoutOpt.flow) ? checkoutOpt.flow : 'curp-deeplink';
+
+    var isLocal = (location.hostname === 'localhost' || location.hostname === '127.0.0.1');
+    var origin = (forPhone && isLocal) ? PROD_ORIGIN : window.location.origin;
+    var basePath = window.location.pathname.replace(/[^\/]*$/, '');
+
+    return origin + basePath + page
+        + '?flow=' + flow
+        + '&checkout=' + (config.checkout || 'portal-standard')
+        + '&payment=' + (config.payment || 'hey-banco')
+        + '&source=qr&autopay=1';
+}
+
 function generateQR() {
-    // Build checkout URL dynamically
-    const baseUrl = window.location.origin + window.location.pathname.replace('qr.html', '');
-    const checkoutUrl = `${baseUrl}checkout.html?flow=curp-deeplink&source=qr`;
-    
+    // El QR codifica el deep-link absoluto (escaneable desde un telefono real)
+    const checkoutUrl = buildCheckoutDeepLink(true);
+
     // Generate QR using QR Server API
     const qrSize = 200;
     const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${encodeURIComponent(checkoutUrl)}&margin=8`;
@@ -184,9 +239,10 @@ function simulateQRScan() {
         scanOverlay.classList.add('show');
     });
     
-    // Redirect after animation
+    // Redirect after animation. Usa el MISMO deep-link que el QR (con la config
+    // en la URL + autopay), pero con el origin actual para que funcione same-device.
     setTimeout(() => {
-        window.location.href = getNextPageUrl('arrival');
+        window.location.href = buildCheckoutDeepLink(false);
     }, 2300);
 }
 
@@ -249,7 +305,37 @@ function trackCurrentPage() {
 window.addEventListener('scroll', trackCurrentPage);
 
 // ============================================
+// FACTURA DROPDOWN
+// ============================================
+
+(function initFacturaSelect() {
+    var sel = document.getElementById('facturaSelect');
+    if (!sel || typeof FACTURAS === 'undefined') return;
+
+    FACTURAS.forEach(function(f) {
+        var opt = document.createElement('option');
+        opt.value = f.id;
+        opt.textContent = f.label;
+        sel.appendChild(opt);
+    });
+
+    // Seleccionar la que corresponde al PDF activo
+    for (var i = 0; i < FACTURAS.length; i++) {
+        if (FACTURAS[i].pdf === currentPdfUrl) { sel.value = FACTURAS[i].id; break; }
+    }
+
+    sel.addEventListener('change', function() {
+        var f = getFacturaById(sel.value);
+        loadPDF(f.pdf); // el QR no cambia; solo re-renderiza el PDF y reposiciona el overlay
+    });
+
+    // Ocultar el dropdown si hay una sola factura (no aporta)
+    if (FACTURAS.length <= 1) sel.style.display = 'none';
+})();
+
+// ============================================
 // INIT
 // ============================================
 
-loadPDF();
+generateQR();            // genera el QR una sola vez (deep-link desde la config)
+loadPDF(currentPdfUrl);  // renderiza la factura activa

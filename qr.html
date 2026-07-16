@@ -13,6 +13,7 @@
         }
     </script>
     <script src="config/demo-builder-config.js"></script>
+    <script src="config/facturas-config.js"></script>
     <script src="js/demo-router.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
@@ -28,6 +29,7 @@
             </div>
         </div>
         <div class="header-right">
+            <select id="facturaSelect" class="factura-select" aria-label="Elegir factura"></select>
             <div class="page-indicator">
                 <button class="page-btn" id="prevPage" disabled>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -106,6 +108,6 @@
             if (periodEl) periodEl.textContent = 'Periodo: ' + BRAND.account.period;
         })();
     </script>
-    <script src="js/qr-script.js"></script>
+    <script src="js/qr-script.js?v=2"></script>
 </body>
 </html>
