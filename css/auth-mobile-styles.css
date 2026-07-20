@@ -2408,15 +2408,21 @@ body {
 }
 
 /* Responsive for smaller devices */
-@media (max-width: 420px) {
+/* Celular real (sin embedded): app full-screen, sin marco de telefono.
+   Desktop (>480px) conserva el marco/tarjeta. */
+@media (max-width: 480px) {
     body {
         padding: 0;
+        min-height: 100dvh;
     }
-    
+
     .mobile-container {
         max-width: 100%;
+        width: 100%;
         height: 100vh;
+        height: 100dvh;
         border-radius: 0;
+        box-shadow: none;
     }
 }
 

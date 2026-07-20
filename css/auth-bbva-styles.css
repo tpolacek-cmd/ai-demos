@@ -1918,3 +1918,24 @@ body.bbva-embedded .bbva-container {
     color: rgba(255,255,255,0.35);
     pointer-events: none;
 }
+
+/* ==========================================================================
+   Celular real (sin embedded): app BBVA full-screen, sin marco de telefono.
+   Desktop (>480px) conserva el marco/tarjeta centrada.
+   ========================================================================== */
+@media (max-width: 480px) {
+    body {
+        padding: 0;
+        min-height: 100dvh;
+    }
+
+    .bbva-container {
+        max-width: none;
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        max-height: none;
+        border-radius: 0;
+        box-shadow: none;
+    }
+}
