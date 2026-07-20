@@ -90,15 +90,18 @@ function getNextPageUrl(currentStage) {
     var isEmbedded = new URLSearchParams(window.location.search).get('embedded') === '1';
     var embeddedParam = isEmbedded ? '&embedded=1' : '';
     var cfgParam = configQuery(config);
+    // Propagar la marca (param `b`) al siguiente paso, para que sobreviva la cadena en el celular
+    var _bp = new URLSearchParams(window.location.search).get('b');
+    var bParam = _bp ? ('&b=' + encodeURIComponent(_bp)) : '';
 
     if (currentStage === 'arrival') {
         // Siguiente: checkout
         var checkoutOption = getOptionById('checkout', config.checkout);
-        if (!checkoutOption) return 'checkout.html?flow=curp-deeplink' + cfgParam + embeddedParam;
+        if (!checkoutOption) return 'checkout.html?flow=curp-deeplink' + cfgParam + bParam + embeddedParam;
 
         var flow = checkoutOption.flow || 'curp-deeplink';
         var source = config.arrival === 'qr' ? '&source=qr' : '';
-        return checkoutOption.page + '?flow=' + flow + source + cfgParam + embeddedParam;
+        return checkoutOption.page + '?flow=' + flow + source + cfgParam + bParam + embeddedParam;
     }
 
     if (currentStage === 'checkout') {
@@ -107,12 +110,13 @@ function getNextPageUrl(currentStage) {
         // If checkout forces a specific payment, use that instead of user's selection
         var paymentId = (checkoutOption && checkoutOption.forcedPayment) ? checkoutOption.forcedPayment : config.payment;
         var paymentOption = getOptionById('payment', paymentId);
-        if (!paymentOption) return 'auth-mobile.html?bank=hey-banco&action=pay-domiciliar' + cfgParam + embeddedParam + '&session=' + Date.now();
+        if (!paymentOption) return 'auth-mobile.html?bank=hey-banco&action=pay-domiciliar' + cfgParam + bParam + embeddedParam + '&session=' + Date.now();
 
         var authPage = paymentOption.authPage || 'auth-mobile.html';
         return authPage + '?bank=' + paymentOption.bank
             + '&action=' + paymentOption.action
             + cfgParam
+            + bParam
             + embeddedParam
             + '&session=' + Date.now();
     }

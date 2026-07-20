@@ -207,11 +207,16 @@ function buildCheckoutDeepLink(forPhone) {
     var origin = (forPhone && isLocal) ? PROD_ORIGIN : window.location.origin;
     var basePath = window.location.pathname.replace(/[^\/]*$/, '');
 
+    // Marca actual codificada, para que viaje al celular que escanea (nombre/colores/logo-hosteado)
+    var brandParam = (typeof BrandOverride !== 'undefined' && BrandOverride.encode)
+        ? ('&b=' + encodeURIComponent(BrandOverride.encode())) : '';
+
     return origin + basePath + page
         + '?flow=' + flow
         + '&checkout=' + (config.checkout || 'portal-standard')
         + '&payment=' + (config.payment || 'hey-banco')
-        + '&source=qr&autopay=1';
+        + '&source=qr&autopay=1'
+        + brandParam;
 }
 
 function generateQR() {

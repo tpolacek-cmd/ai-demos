@@ -93,6 +93,52 @@
     }
 
     // ============================================
+    // MARCA POR URL (para que la marca viaje en el QR a otro dispositivo)
+    // ============================================
+
+    // Recorta BRAND a los campos que valen la pena viajar (texto chico).
+    // El logo SOLO se incluye si es una RUTA hosteada (un data: URL no entra en el QR).
+    function trimBrandForUrl(b) {
+        var out = {};
+        // Solo lo que se muestra en el portal/pago del celular (mantener el QR poco denso).
+        ['name','fullName','serviceType','planName'].forEach(function(k){
+            if (b[k] != null) out[k] = b[k];
+        });
+        if (b.logo && String(b.logo).indexOf('data:') !== 0) out.logo = b.logo;
+        if (b.colors) out.colors = b.colors;
+        if (b.account) {
+            out.account = {};
+            ['number','dueDate','dueDateShort','totalAmount','reference'].forEach(function(k){
+                if (b.account[k] != null) out.account[k] = b.account[k];
+            });
+        }
+        return out;
+    }
+
+    // Codifica la marca ACTUAL (con overrides ya aplicados) a un string base64 para la URL.
+    function encodeBrandParam() {
+        try {
+            return btoa(unescape(encodeURIComponent(JSON.stringify(trimBrandForUrl(BRAND)))));
+        } catch (e) {
+            console.warn('brand-override: no se pudo codificar la marca', e);
+            return '';
+        }
+    }
+
+    // Lee el param `b` de la URL y aplica esa marca sobre BRAND (para el celular que escanea).
+    function applyUrlBrand() {
+        try {
+            var p = new URLSearchParams(window.location.search).get('b');
+            if (!p) return;
+            var obj = JSON.parse(decodeURIComponent(escape(atob(p))));
+            deepMerge(BRAND, obj);
+            if (typeof applyBrandColors === 'function') applyBrandColors();
+        } catch (e) {
+            console.warn('brand-override: param `b` invalido', e);
+        }
+    }
+
+    // ============================================
     // PRESETS: Named brand configurations
     // ============================================
 
@@ -173,6 +219,8 @@
         export: exportBrandConfig,
         import: importBrandConfig,
         apply: applyOverrides,
+        encode: encodeBrandParam,
+        applyUrlBrand: applyUrlBrand,
         STORAGE_KEY: STORAGE_KEY,
         presets: {
             list: getPresets,
@@ -183,6 +231,8 @@
         }
     };
 
-    // Auto-aplicar al cargar el script
+    // Auto-aplicar al cargar el script: primero localStorage, luego la URL (la URL gana,
+    // para que un celular que escanea el QR vea la marca embebida en el link).
     applyOverrides();
+    applyUrlBrand();
 })();
