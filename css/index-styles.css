@@ -865,3 +865,33 @@ body {
         width: 100%;
     }
 }
+
+/* ==========================================================================
+   Logo file picker (editor de marca) — buscar archivo en vez de escribir ruta
+   ========================================================================== */
+.brand-logo-picker { display: flex; align-items: center; gap: 12px; }
+.brand-logo-preview {
+    width: 56px; height: 56px; flex-shrink: 0;
+    border: 1px solid var(--tp-border, #e2e8f0); border-radius: 10px;
+    background-color: #fff;
+    background-position: center; background-repeat: no-repeat; background-size: contain;
+}
+.brand-logo-preview:not(.has-img) {
+    display: flex; align-items: center; justify-content: center;
+    color: #b8c2cc;
+}
+.brand-logo-preview:not(.has-img)::after { content: '🖼'; font-size: 22px; opacity: 0.5; }
+.brand-logo-picker-main { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.brand-logo-btn {
+    display: inline-flex; align-items: center; gap: 8px; align-self: flex-start;
+    font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+    color: var(--tp-primary, #0b5fc0); background: #fff;
+    border: 1.5px solid var(--tp-primary, #0b5fc0); border-radius: 8px; padding: 8px 14px;
+    transition: background .15s, color .15s;
+}
+.brand-logo-btn:hover { background: var(--tp-primary, #0b5fc0); color: #fff; }
+.brand-logo-name {
+    font-size: 13px; color: var(--tp-text-secondary, #6c757d);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 240px;
+}
+.brand-logo-hint { font-size: 12px; color: var(--tp-text-secondary, #6c757d); margin: 8px 0 0; line-height: 1.4; }

@@ -95,8 +95,20 @@
                         <input type="text" data-brand="planName" placeholder="Ej: Plan Hogar 200 Mbps">
                     </div>
                     <div class="brand-field">
-                        <label>Logo (ruta relativa)</label>
-                        <input type="text" data-brand="logo" placeholder="assets/brand/logo.png">
+                        <label>Logo</label>
+                        <div class="brand-logo-picker">
+                            <div class="brand-logo-preview" id="brandLogoPreview" aria-hidden="true"></div>
+                            <div class="brand-logo-picker-main">
+                                <button type="button" class="brand-logo-btn" id="brandLogoBtn">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                    Elegir imagen…
+                                </button>
+                                <span class="brand-logo-name" id="brandLogoName">Ninguna imagen</span>
+                            </div>
+                            <input type="file" id="brandLogoFile" accept="image/png,image/jpeg,image/svg+xml,image/webp" hidden>
+                            <input type="hidden" data-brand="logo" id="brandLogoValue">
+                        </div>
+                        <p class="brand-logo-hint">Buscá el logo en tu compu (PNG, JPG o SVG). Se incrusta en la demo, no hace falta ninguna ruta.</p>
                     </div>
                 </div>
 
@@ -690,6 +702,17 @@
                 target[keys[keys.length - 1]] = value;
             }
 
+            // Actualiza el preview + nombre del logo en el editor
+            function setLogoPreview(src, name) {
+                var prev = document.getElementById('brandLogoPreview');
+                var nm = document.getElementById('brandLogoName');
+                if (prev) {
+                    prev.style.backgroundImage = src ? ('url("' + src + '")') : '';
+                    prev.classList.toggle('has-img', !!src);
+                }
+                if (nm) nm.textContent = name || (src ? 'Imagen cargada' : 'Ninguna imagen');
+            }
+
             // 1. Populate inputs with current BRAND values
             function populateEditorFields() {
                 var inputs = document.querySelectorAll('#brandEditorBody [data-brand]');
@@ -700,6 +723,12 @@
                         input.value = value;
                     }
                 });
+                // Sincronizar el preview del logo con el valor actual
+                var lv = document.getElementById('brandLogoValue');
+                if (lv) {
+                    var nm = lv.value ? (/^data:/.test(lv.value) ? 'Imagen cargada' : lv.value.split('/').pop()) : '';
+                    setLogoPreview(lv.value, nm);
+                }
             }
 
             // 2. Show/hide badge based on active overrides
@@ -829,6 +858,26 @@
 
             // 9. Action buttons
             function setupActions() {
+                // Logo: file picker (buscar archivo en vez de escribir la ruta)
+                var logoBtn = document.getElementById('brandLogoBtn');
+                var logoFile = document.getElementById('brandLogoFile');
+                var logoValue = document.getElementById('brandLogoValue');
+                if (logoBtn && logoFile && logoValue) {
+                    logoBtn.addEventListener('click', function() { logoFile.click(); });
+                    logoFile.addEventListener('change', function(e) {
+                        var file = e.target.files && e.target.files[0];
+                        if (!file) return;
+                        if (!/^image\//.test(file.type)) { showToast('Elegí una imagen (PNG, JPG o SVG)'); logoFile.value = ''; return; }
+                        if (file.size > 2 * 1024 * 1024) { showToast('Imagen muy grande (máx 2MB)'); logoFile.value = ''; return; }
+                        var reader = new FileReader();
+                        reader.onload = function(ev) {
+                            logoValue.value = ev.target.result; // data URL — se incrusta en la marca
+                            setLogoPreview(ev.target.result, file.name);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                }
+
                 // Save
                 document.getElementById('brandSave').addEventListener('click', function() {
                     var overrides = buildOverridesFromInputs();
