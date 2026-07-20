@@ -33,8 +33,8 @@ const DEMO_STAGES = [
             },
             {
                 id: 'qr',
-                name: 'QR en Factura',
-                description: 'Factura PDF con codigo QR integrado',
+                name: 'Factura QR con marca',
+                description: 'Elegi la marca de la factura; el QR lleva al portal',
                 page: 'qr.html',
                 mobileSupported: false,
                 icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/><rect x="5" y="5" width="2" height="2" fill="currentColor" stroke="none"/><rect x="17" y="5" width="2" height="2" fill="currentColor" stroke="none"/><rect x="5" y="17" width="2" height="2" fill="currentColor" stroke="none"/><line x1="14" y1="14" x2="14" y2="16"/><line x1="18" y1="14" x2="22" y2="14"/><line x1="14" y1="20" x2="14" y2="22"/><line x1="18" y1="18" x2="18" y2="22"/><line x1="22" y1="18" x2="22" y2="22"/></svg>',

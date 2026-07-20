@@ -48,6 +48,19 @@ function getDemoConfig() {
         config.flow = stored.flow;
     }
 
+    // factura: marca de la factura elegida en el builder (solo la usa qr.html para el PDF).
+    // Validar contra el catalogo si esta disponible.
+    var fromUrlFactura = params ? params.get('factura') : null;
+    var facturaCandidate = fromUrlFactura || stored.factura;
+    if (facturaCandidate) {
+        if (typeof getFacturaById === 'function') {
+            var fm = getFacturaById(facturaCandidate);
+            if (fm) config.factura = fm.id;
+        } else {
+            config.factura = facturaCandidate;
+        }
+    }
+
     // Persistir el merge para continuidad de navegacion en el mismo dispositivo
     try { sessionStorage.setItem('demoConfig', JSON.stringify(config)); } catch (e) {}
 

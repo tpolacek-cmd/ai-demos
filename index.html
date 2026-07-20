@@ -9,6 +9,7 @@
     <script src="config/brand-config.js"></script>
     <script src="js/brand-override.js"></script>
     <script src="config/demo-builder-config.js"></script>
+    <script src="config/facturas-config.js"></script>
     <script src="js/demo-router.js"></script>
 </head>
 <body>
@@ -342,6 +343,23 @@
                     optionsContainer.appendChild(label);
                 });
 
+                // Selector de marca de factura (solo etapa arrival; visible al elegir "QR en Factura")
+                if (stage.id === 'arrival' && typeof FACTURAS !== 'undefined' && FACTURAS.length) {
+                    var facturaPicker = document.createElement('div');
+                    facturaPicker.id = 'facturaPicker';
+                    facturaPicker.style.cssText = 'display:none;margin-top:10px;padding:14px;border:1px solid var(--tp-border,#e2e8f0);border-radius:12px;background:#f8fafc;';
+                    var facturaOpts = FACTURAS.map(function(f) {
+                        return '<option value="' + f.id + '">' + f.label + '</option>';
+                    }).join('');
+                    facturaPicker.innerHTML =
+                        '<label for="builderFacturaSelect" style="display:block;font-size:13px;font-weight:700;color:var(--tp-text,#1a1a2e);margin-bottom:6px;">Marca de la factura</label>' +
+                        '<select id="builderFacturaSelect" style="width:100%;font-family:inherit;font-size:14px;font-weight:600;color:var(--tp-text,#1a1a2e);background:#fff;border:1px solid var(--tp-border,#e2e8f0);border-radius:8px;padding:9px 12px;cursor:pointer;">' + facturaOpts + '</select>' +
+                        '<p style="font-size:12px;color:var(--tp-text-secondary,#6c757d);margin:8px 0 0;">El QR de esta factura lleva al portal + pago que elijas en los Pasos 2 y 3.</p>';
+                    // Insertar el selector justo debajo del card "Factura QR con marca"
+                    var qrCard = optionsContainer.querySelector('.option-card[data-option="qr"]');
+                    if (qrCard) { qrCard.after(facturaPicker); } else { optionsContainer.appendChild(facturaPicker); }
+                }
+
                 column.appendChild(optionsContainer);
                 builderGrid.appendChild(column);
             });
@@ -382,6 +400,13 @@
                 stageCards.forEach(function(card) {
                     card.classList.toggle('selected', card.getAttribute('data-option') === optionId);
                 });
+
+                // Mostrar el selector de marca de factura solo si el arrival es "QR en Factura"
+                var facturaPickerEl = document.getElementById('facturaPicker');
+                if (facturaPickerEl) {
+                    var arrChecked = builderGrid.querySelector('input[name="stage-arrival"]:checked');
+                    facturaPickerEl.style.display = (arrChecked && arrChecked.value === 'qr') ? 'block' : 'none';
+                }
 
                 updateSummary();
                 updateMobileRestrictions();
@@ -601,6 +626,12 @@
                     var selected = builderGrid.querySelector('input[name="stage-' + stage.id + '"]:checked');
                     config[stage.id] = selected ? selected.value : stage.options[0].id;
                 });
+
+                // Marca de factura (solo aplica al canal QR en Factura)
+                if (config.arrival === 'qr') {
+                    var facturaSel = document.getElementById('builderFacturaSelect');
+                    if (facturaSel) config.factura = facturaSel.value;
+                }
 
                 // Save config for other pages to read
                 saveDemoConfig(config);

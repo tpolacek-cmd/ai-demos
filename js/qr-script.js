@@ -1,11 +1,15 @@
 // PDF.js configuration
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-// Factura activa (del catalogo FACTURAS en config/facturas-config.js).
-// El dropdown en qr.html la cambia; el QR NO depende de esto (la marca del portal va por rebrand).
-let currentPdfUrl = (typeof FACTURAS !== 'undefined' && FACTURAS.length)
-    ? FACTURAS[0].pdf
-    : ((typeof BRAND !== 'undefined' && BRAND.invoicePdf) ? BRAND.invoicePdf : 'assets/brand/factura.pdf');
+// Factura activa. La marca se elige en el builder (config.factura); el dropdown en
+// esta pagina permite cambiarla en vivo. El QR NO depende de esto (la marca del portal
+// va por rebrand aparte).
+let currentPdfUrl = (function() {
+    var cfg = (typeof getDemoConfig === 'function') ? getDemoConfig() : {};
+    if (cfg.factura && typeof getFacturaById === 'function') return getFacturaById(cfg.factura).pdf;
+    if (typeof FACTURAS !== 'undefined' && FACTURAS.length) return FACTURAS[0].pdf;
+    return (typeof BRAND !== 'undefined' && BRAND.invoicePdf) ? BRAND.invoicePdf : 'assets/brand/factura.pdf';
+})();
 const QR_TARGET_PAGE = 2; // Page where we overlay the QR
 
 // Origen de produccion (para que el QR sea escaneable desde un telefono real aun demando en local)
