@@ -149,7 +149,8 @@ function positionQROverlay() {
     var _targetPage = (_qrcfg && _qrcfg.page != null) ? _qrcfg.page : QR_TARGET_PAGE;
     // Preferir la pagina target del QR; si aun no renderizo (o falla), caer a la pagina 1
     // para que el QR SIEMPRE sea visible y escaneable.
-    const page2Wrapper = document.getElementById('page-' + _targetPage) || document.getElementById('page-1');
+    var _targetEl = document.getElementById('page-' + _targetPage);
+    const page2Wrapper = _targetEl || document.getElementById('page-1');
     if (!page2Wrapper) return;
 
     // Show the overlay
@@ -165,8 +166,10 @@ function positionQROverlay() {
     // Position QR in the empty bottom area of page 2
     // Horizontally: center within pdfPages (which is itself centered via flexbox)
     qrOverlay.style.position = 'absolute';
-    if (_qrcfg) {
+    if (_qrcfg && _targetEl) {
         // Posicion por marca: `top` = fraccion del alto de la pagina (centro vertical del bloque).
+        // Solo se aplica si la pagina configurada realmente renderizo (evita poner el `top`
+        // de una pagina sobre otra cuando el render multipagina falla).
         // Horizontal siempre centrado (lo natural para un QR de factura).
         qrOverlay.style.top = (offsetTop + pageHeight * _qrcfg.top) + 'px';
         qrOverlay.style.left = '50%';

@@ -199,8 +199,8 @@ body {
     pointer-events: all;
     cursor: pointer;
     transition: all 0.3s ease;
-    width: 190px;
-    max-width: 190px;
+    width: 158px;
+    max-width: 158px;
 }
 
 .qr-block:hover {
@@ -214,13 +214,7 @@ body {
 }
 
 .qr-block-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    margin-bottom: 8px;
-    padding-bottom: 7px;
-    border-bottom: 1px solid var(--tp-border);
+    display: none;
 }
 
 .qr-block-header span {
@@ -230,9 +224,9 @@ body {
 }
 
 .qr-code-area {
-    width: 120px;
-    height: 120px;
-    margin: 0 auto 8px;
+    width: 104px;
+    height: 104px;
+    margin: 0 auto 6px;
     display: flex;
     align-items: center;
     justify-content: center;
