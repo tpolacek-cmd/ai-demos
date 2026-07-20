@@ -20,7 +20,7 @@ var FACTURAS = [
     { id: 'natura',    label: 'Natura',    pdf: 'assets/facturas/factura-natura.pdf' },
     { id: 'naturgy',   label: 'Naturgy',   pdf: 'assets/facturas/factura-naturgy.pdf' },
     { id: 'pase',      label: 'PASE',      pdf: 'assets/facturas/factura-pase.pdf' },
-    { id: 'sky',       label: 'Sky',       pdf: 'assets/facturas/factura-sky.pdf' },
+    { id: 'sky',       label: 'Sky',       pdf: 'assets/facturas/factura-sky.pdf', qr: { page: 2, top: 0.81 } },
     { id: 'telnor',    label: 'Telnor',    pdf: 'assets/facturas/factura-telnor.pdf' },
 ];
 

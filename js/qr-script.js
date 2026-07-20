@@ -134,10 +134,22 @@ async function renderPageCanvas(item) {
 // QR OVERLAY POSITIONING
 // ============================================
 
+// Config de posicion del QR para la factura activa (o null). Formato en
+// facturas-config.js: qr: { page:N, top:0..1, left:0..1 } (fracciones; centro del bloque).
+function getActiveFacturaQR() {
+    if (typeof FACTURAS === 'undefined') return null;
+    for (var i = 0; i < FACTURAS.length; i++) {
+        if (FACTURAS[i].pdf === currentPdfUrl && FACTURAS[i].qr) return FACTURAS[i].qr;
+    }
+    return null;
+}
+
 function positionQROverlay() {
+    var _qrcfg = getActiveFacturaQR();
+    var _targetPage = (_qrcfg && _qrcfg.page != null) ? _qrcfg.page : QR_TARGET_PAGE;
     // Preferir la pagina target del QR; si aun no renderizo (o falla), caer a la pagina 1
     // para que el QR SIEMPRE sea visible y escaneable.
-    const page2Wrapper = document.getElementById(`page-${QR_TARGET_PAGE}`) || document.getElementById('page-1');
+    const page2Wrapper = document.getElementById('page-' + _targetPage) || document.getElementById('page-1');
     if (!page2Wrapper) return;
 
     // Show the overlay
@@ -153,9 +165,18 @@ function positionQROverlay() {
     // Position QR in the empty bottom area of page 2
     // Horizontally: center within pdfPages (which is itself centered via flexbox)
     qrOverlay.style.position = 'absolute';
-    qrOverlay.style.top = (offsetTop + pageHeight * 0.52) + 'px';
-    qrOverlay.style.left = '50%';
-    qrOverlay.style.transform = 'translateX(-50%)';
+    if (_qrcfg) {
+        // Posicion por marca: `top` = fraccion del alto de la pagina (centro vertical del bloque).
+        // Horizontal siempre centrado (lo natural para un QR de factura).
+        qrOverlay.style.top = (offsetTop + pageHeight * _qrcfg.top) + 'px';
+        qrOverlay.style.left = '50%';
+        qrOverlay.style.transform = 'translate(-50%, -50%)';
+    } else {
+        // Default (sin config): comportamiento previo — 52% de alto, centrado horizontal
+        qrOverlay.style.top = (offsetTop + pageHeight * 0.52) + 'px';
+        qrOverlay.style.left = '50%';
+        qrOverlay.style.transform = 'translateX(-50%)';
+    }
 }
 
 // Reposition on resize

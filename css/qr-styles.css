@@ -193,13 +193,14 @@ body {
     background: white;
     border: 2px solid var(--tp-primary);
     border-radius: 12px;
-    padding: 20px;
+    padding: 12px;
     text-align: center;
     box-shadow: 0 4px 20px rgba(var(--primary-rgb, 0, 119, 182), 0.2);
     pointer-events: all;
     cursor: pointer;
     transition: all 0.3s ease;
-    max-width: 280px;
+    width: 190px;
+    max-width: 190px;
 }
 
 .qr-block:hover {
@@ -216,9 +217,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    margin-bottom: 12px;
-    padding-bottom: 10px;
+    gap: 6px;
+    margin-bottom: 8px;
+    padding-bottom: 7px;
     border-bottom: 1px solid var(--tp-border);
 }
 
@@ -229,9 +230,9 @@ body {
 }
 
 .qr-code-area {
-    width: 160px;
-    height: 160px;
-    margin: 0 auto 12px;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 8px;
     display: flex;
     align-items: center;
     justify-content: center;
