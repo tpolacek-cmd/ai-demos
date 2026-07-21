@@ -1,0 +1,10 @@
+{
+  "name": "ai-demos-hub",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Demo Hub de portales de pago (sitio estatico + funcion de subida de logo).",
+  "dependencies": {
+    "@vercel/blob": "^2.6.1"
+  }
+}

@@ -713,6 +713,35 @@
                 if (nm) nm.textContent = name || (src ? 'Imagen cargada' : 'Ninguna imagen');
             }
 
+            // Sube el logo (data URL) al backend y devuelve la URL hosteada.
+            // Por que: un data: URL vive solo en esta compu y no entra en el QR.
+            // La URL hosteada SI viaja en el QR, asi el logo aparece en el celular.
+            // Si el backend no esta disponible (ej. server local sin funciones),
+            // se conserva el data URL: el logo se ve en esta compu pero no en el celular.
+            function uploadLogo(dataUrl, fileName) {
+                var logoValue = document.getElementById('brandLogoValue');
+                return fetch('/api/upload-logo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ dataUrl: dataUrl })
+                })
+                .then(function(r) { return r.json().then(function(j) { return { ok: r.ok, j: j }; }); })
+                .then(function(res) {
+                    if (res.ok && res.j && res.j.url) {
+                        if (logoValue) logoValue.value = res.j.url; // URL hosteada -> viaja en el QR
+                        setLogoPreview(res.j.url, 'Logo hosteado ✓');
+                        showToast('Logo subido — se verá también en el celular');
+                    } else {
+                        setLogoPreview(dataUrl, (fileName || 'Imagen') + ' (solo local)');
+                        showToast('No se pudo hostear el logo: se ve acá, no en el celular');
+                    }
+                })
+                .catch(function() {
+                    setLogoPreview(dataUrl, (fileName || 'Imagen') + ' (solo local)');
+                    showToast('Backend no disponible: el logo se ve acá, no en el celular');
+                });
+            }
+
             // 1. Populate inputs with current BRAND values
             function populateEditorFields() {
                 var inputs = document.querySelectorAll('#brandEditorBody [data-brand]');
@@ -871,8 +900,12 @@
                         if (file.size > 2 * 1024 * 1024) { showToast('Imagen muy grande (máx 2MB)'); logoFile.value = ''; return; }
                         var reader = new FileReader();
                         reader.onload = function(ev) {
-                            logoValue.value = ev.target.result; // data URL — se incrusta en la marca
-                            setLogoPreview(ev.target.result, file.name);
+                            var dataUrl = ev.target.result;
+                            // Preview instantaneo + guardamos el data URL provisorio
+                            logoValue.value = dataUrl;
+                            setLogoPreview(dataUrl, 'Subiendo…');
+                            // Hostear el logo para que viaje en el QR al celular
+                            uploadLogo(dataUrl, file.name);
                         };
                         reader.readAsDataURL(file);
                     });
