@@ -272,6 +272,10 @@
         <!-- Barra de resumen + boton iniciar -->
         <div class="builder-summary" id="builderSummary">
             <div class="summary-flow" id="summaryFlow"></div>
+            <button class="btn-start" id="downloadFacturaBtn" style="display:none;background:#fff;color:var(--tp-primary,#0B5FC0);border:2px solid var(--tp-primary,#0B5FC0);margin-right:10px;" title="Descarga la factura con el QR real para imprimir">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Descargar factura (PDF)
+            </button>
             <button class="btn-start" id="startDemo">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                 Iniciar Demo
@@ -428,12 +432,14 @@
                     card.classList.toggle('selected', card.getAttribute('data-option') === optionId);
                 });
 
-                // Mostrar el selector de marca de factura solo si el arrival es "QR en Factura"
+                // Mostrar el selector de marca de factura + el boton "Descargar factura"
+                // solo si el arrival es "QR en Factura"
+                var arrChecked = builderGrid.querySelector('input[name="stage-arrival"]:checked');
+                var isQr = !!(arrChecked && arrChecked.value === 'qr');
                 var facturaPickerEl = document.getElementById('facturaPicker');
-                if (facturaPickerEl) {
-                    var arrChecked = builderGrid.querySelector('input[name="stage-arrival"]:checked');
-                    facturaPickerEl.style.display = (arrChecked && arrChecked.value === 'qr') ? 'block' : 'none';
-                }
+                if (facturaPickerEl) facturaPickerEl.style.display = isQr ? 'block' : 'none';
+                var dlBtnEl = document.getElementById('downloadFacturaBtn');
+                if (dlBtnEl) dlBtnEl.style.display = isQr ? '' : 'none';
 
                 updateSummary();
                 updateMobileRestrictions();
@@ -650,6 +656,26 @@
 
             btnDesktop.addEventListener('click', function() { applyMode('desktop'); });
             btnMobile.addEventListener('click', function() { applyMode('mobile'); });
+
+            // ============================================
+            // DESCARGAR FACTURA (PDF con QR real quemado)
+            // ============================================
+            // Abre qr.html en modo descarga; la config viaja en la URL (nueva pestania).
+            var downloadFacturaBtn = document.getElementById('downloadFacturaBtn');
+            if (downloadFacturaBtn) downloadFacturaBtn.addEventListener('click', function() {
+                var arr = builderGrid.querySelector('input[name="stage-arrival"]:checked');
+                if (!arr || arr.value !== 'qr') return;
+                var methods = Array.prototype.slice.call(
+                    builderGrid.querySelectorAll('input[name="stage-payment"]:checked')
+                ).map(function(i) { return i.value; });
+                var facturaSel = document.getElementById('builderFacturaSelect');
+                var url = 'qr.html?download=1';
+                if (facturaSel && facturaSel.value) url += '&factura=' + encodeURIComponent(facturaSel.value);
+                if (methods.length) url += '&methods=' + encodeURIComponent(methods.join(','));
+                var b = (typeof BrandOverride !== 'undefined' && BrandOverride.encode) ? BrandOverride.encode() : '';
+                if (b) url += '&b=' + encodeURIComponent(b);
+                window.open(url, '_blank');
+            });
 
             // ============================================
             // START DEMO

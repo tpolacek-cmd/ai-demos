@@ -371,8 +371,114 @@ window.addEventListener('scroll', trackCurrentPage);
 })();
 
 // ============================================
+// DESCARGAR FACTURA EN PDF (con el QR real quemado)
+// ============================================
+// El QR se genera LOCAL (qrcodejs) para poder componerlo sobre el canvas del PDF
+// sin taint de CORS (el <img> remoto de qrserver no serviria para exportar).
+function makeQrCanvas(text, size) {
+    var holder = document.createElement('div');
+    holder.style.cssText = 'position:fixed;left:-9999px;top:-9999px;';
+    document.body.appendChild(holder);
+    try {
+        new QRCode(holder, {
+            text: text, width: size, height: size,
+            correctLevel: QRCode.CorrectLevel.M
+        });
+    } catch (e) { console.warn('QR local fallo:', e); }
+    return { holder: holder, canvas: holder.querySelector('canvas'), img: holder.querySelector('img') };
+}
+
+function _roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+}
+
+// Dibuja el bloque del QR (caja blanca + QR + label) sobre un canvas de pagina.
+function drawQrBox(ctx, qrImg, W, H, topFrac) {
+    var qrSize = Math.round(W * 0.26);
+    var pad = Math.round(qrSize * 0.10);
+    var labelH = Math.round(qrSize * 0.18);
+    var boxW = qrSize + pad * 2;
+    var boxH = qrSize + pad * 2 + labelH;
+    var cx = W / 2;
+    var cy = H * topFrac;
+    var x = Math.round(cx - boxW / 2);
+    var y = Math.round(cy - boxH / 2);
+    ctx.save();
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = Math.max(2, W * 0.002);
+    _roundRect(ctx, x, y, boxW, boxH, Math.round(qrSize * 0.08));
+    ctx.fill();
+    ctx.stroke();
+    ctx.drawImage(qrImg, x + pad, y + pad, qrSize, qrSize);
+    ctx.fillStyle = '#0f172a';
+    ctx.textAlign = 'center';
+    ctx.font = '600 ' + Math.round(qrSize * 0.10) + 'px Inter, Arial, sans-serif';
+    ctx.fillText('Escanea para pagar en linea', cx, y + pad + qrSize + labelH * 0.75);
+    ctx.restore();
+}
+
+async function downloadFacturaPdf() {
+    if (!pdfDoc) { console.warn('PDF no listo'); return; }
+    if (!(window.jspdf && window.jspdf.jsPDF) || typeof QRCode === 'undefined') {
+        alert('No se pudieron cargar las librerias para generar el PDF.');
+        return;
+    }
+    var JsPDF = window.jspdf.jsPDF;
+    var qr = makeQrCanvas(buildCheckoutDeepLink(true), 512);
+    var qrImg = qr.canvas || qr.img;
+
+    var cfg = getActiveFacturaQR();
+    var targetPage = (cfg && cfg.page != null) ? cfg.page : QR_TARGET_PAGE;
+    var topFrac = (cfg && cfg.top != null) ? cfg.top : 0.52;
+
+    var pdf = null;
+    var dlScale = 2; // buena resolucion para impresion
+    try {
+        for (var n = 1; n <= totalPages; n++) {
+            var page = await pdfDoc.getPage(n);
+            var vp = page.getViewport({ scale: dlScale });
+            var c = document.createElement('canvas');
+            c.width = vp.width; c.height = vp.height;
+            var ctx = c.getContext('2d');
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, c.width, c.height);
+            await page.render({ canvasContext: ctx, viewport: vp }).promise;
+
+            var drawHere = (n === targetPage) || (targetPage > totalPages && n === 1);
+            if (drawHere && qrImg) drawQrBox(ctx, qrImg, c.width, c.height, topFrac);
+
+            var imgData = c.toDataURL('image/jpeg', 0.92);
+            var orient = c.width >= c.height ? 'l' : 'p';
+            if (!pdf) pdf = new JsPDF({ orientation: orient, unit: 'px', format: [c.width, c.height] });
+            else pdf.addPage([c.width, c.height], orient);
+            pdf.addImage(imgData, 'JPEG', 0, 0, c.width, c.height);
+        }
+        var slug = (typeof BRAND !== 'undefined' && BRAND.name)
+            ? BRAND.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'demo';
+        pdf.save('factura-' + slug + '.pdf');
+    } catch (e) {
+        console.error('Error generando PDF:', e);
+        alert('No se pudo generar el PDF: ' + e.message);
+    } finally {
+        if (qr.holder && qr.holder.parentNode) qr.holder.parentNode.removeChild(qr.holder);
+    }
+}
+window.downloadFacturaPdf = downloadFacturaPdf;
+
+// ============================================
 // INIT
 // ============================================
 
 generateQR();            // genera el QR una sola vez (deep-link desde la config)
-loadPDF(currentPdfUrl);  // renderiza la factura activa
+var _wantDownload = new URLSearchParams(window.location.search).get('download') === '1';
+loadPDF(currentPdfUrl).then(function () {
+    // Si se abrio con ?download=1 (boton "Descargar factura" del builder), generar el PDF.
+    if (_wantDownload) setTimeout(downloadFacturaPdf, 400);
+});
