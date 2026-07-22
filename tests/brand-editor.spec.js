@@ -454,12 +454,6 @@ test.describe('TASK-010: Override on all demo pages', () => {
         );
         expect(attr).toBeNull();
     });
-
-    test('nubank page does NOT have BrandOverride', async ({ page }) => {
-        await page.goto(BASE + '/nubank-impuestos.html');
-        const has = await page.evaluate(() => typeof window.BrandOverride);
-        expect(has).toBe('undefined');
-    });
 });
 
 // =============================================

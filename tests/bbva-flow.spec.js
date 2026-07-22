@@ -6,7 +6,7 @@ test('BBVA in checkout standard → navigate to auth-bbva', async ({ page }) => 
     await page.goto(BASE + '/checkout.html?flow=curp-deeplink');
     await page.evaluate(() => {
         sessionStorage.setItem('demoConfig', JSON.stringify({
-            arrival: 'compartamos-whatsapp',
+            arrival: 'whatsapp',
             checkout: 'portal-standard',
             payment: 'bbva'
         }));

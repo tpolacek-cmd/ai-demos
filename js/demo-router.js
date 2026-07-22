@@ -11,7 +11,7 @@
 // ============================================
 
 // Flows validos (para deep-links por URL). Ver demo-builder-config.js.
-var VALID_FLOWS = ['sin-dato', 'curp-deeplink', 'dato-push', 'account-to-account', 'bbva-direct', 'nubank-impuestos'];
+var VALID_FLOWS = ['sin-dato', 'curp-deeplink', 'dato-push', 'account-to-account', 'bbva-direct'];
 
 // Lee la config del demo con precedencia: URL query params > sessionStorage > default.
 // Esto permite deep-links cross-device (ej. QR escaneado en otro celular): la config
