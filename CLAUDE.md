@@ -35,28 +35,24 @@ Ejemplos:
 - "Ajusta el espaciado de la tarjeta de credito"
 - "Quiero que el checkout se vea mas moderno"
 
-### Demo Nubank Impuestos
-Demo independiente que simula pago de impuestos estatales en la app Nubank.
-9 pantallas autocontenidas. **No usa el sistema de branding centralizado** — tiene sus propios archivos:
-- `nubank-impuestos.html` — estructura HTML (9 steps)
-- `css/nubank-impuestos-styles.css` — estilos (tema purple Nubank)
-- `js/nubank-impuestos-script.js` — logica e interacciones
-
-Para modificar esta demo, editar esos 3 archivos directamente.
-Screenshots de referencia visual en `reference/nubank-impuestos/`.
-
 ## Arquitectura
 
 ### Sistema de demos (3 selectores)
 El builder (`index.html`) permite armar demos combinando 3 etapas:
-1. **Canal de llegada**: WhatsApp, QR en Factura, Nubank Impuestos
-2. **Portal de pago**: Portal Estandar, Pago Directo BBVA, Nubank Impuestos
-3. **Flujo de pago**: Hey Banco, BBVA, Nubank
+1. **Canal de llegada**: WhatsApp, QR en Factura
+2. **Portal de pago**: Portal de Cobranzas (unico portal — replica vanilla del portal de `tapi-cobranzas-ai-front`)
+3. **Metodos de pago**: multi-select (checkboxes) — Pago Directo BBVA, Pago Automatico Bancario, Tarjeta, Pago digital, Transferencia SPEI, Efectivo
 
-Algunas opciones se vinculan entre si (BBVA fuerza checkout+payment, Nubank fuerza las 3).
-Esto se controla con `forcedPayment` y `group` en `config/demo-builder-config.js`.
+El Paso 3 es **multi-select**: define que metodos ofrece el portal. Los metodos elegidos viajan
+en el param `methods` de la URL (y del QR). El portal (`checkout.html`) los renderiza como
+acordeones con su flujo inline (tarjeta→exito, SPEI→CLABE, efectivo→codigo de barras,
+wallet→referencia, otros bancos→grid). El metodo BBVA reusa `auth-bbva.html`.
 
-### Branding centralizado (aplica a todas las demos EXCEPTO Nubank)
+**Descargar factura (PDF):** desde el builder (con Paso 1 = Factura QR) hay un boton que abre
+`qr.html?download=1` y descarga la factura con el QR real quemado (QR generado local + jsPDF).
+El QR no expira (URL estatica a prod con la config en los params).
+
+### Branding centralizado
 Toda la marca esta en DOS archivos:
 - `config/brand-config.js` — UNICA fuente de verdad (nombre, colores, montos, contacto)
 - `config/variables.css` — CSS custom properties (sincronizar manualmente con brand-config.js)
@@ -69,13 +65,11 @@ Toda la marca esta en DOS archivos:
 |--------|---------|---------------|
 | Builder (entrada) | `index.html` | Si |
 | WhatsApp | `whatsapp.html` | Si |
-| QR Factura | `qr.html` | Si |
-| Checkout estandar | `checkout.html` | Si |
-| Checkout BBVA | `checkout-bbva.html` | Si |
+| QR Factura (+ descarga PDF) | `qr.html` | Si |
+| Portal de Cobranzas (6 metodos) | `checkout.html` | Si |
 | App bancaria generica | `auth-mobile.html` | Si |
 | App BBVA | `auth-bbva.html` | Si |
 | Mobile viewer (iPhone frame) | `mobile-viewer.html` | Si |
-| **Nubank Impuestos** | `nubank-impuestos.html` | **No** (autocontenida) |
 
 ### Archivos clave
 
