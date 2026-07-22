@@ -198,7 +198,7 @@ window.addEventListener('resize', () => {
 function buildCheckoutDeepLink(forPhone) {
     var config = (typeof getDemoConfig === 'function') ? getDemoConfig() : {};
     var checkoutOpt = (typeof getOptionById === 'function')
-        ? (getOptionById('checkout', config.checkout) || getOptionById('checkout', 'portal-standard'))
+        ? (getOptionById('checkout', config.checkout) || getOptionById('checkout', 'portal-cobranzas'))
         : null;
     var page = checkoutOpt ? checkoutOpt.page : 'checkout.html';
     var flow = (checkoutOpt && checkoutOpt.flow) ? checkoutOpt.flow : 'curp-deeplink';
@@ -211,10 +211,14 @@ function buildCheckoutDeepLink(forPhone) {
     var brandParam = (typeof BrandOverride !== 'undefined' && BrandOverride.encode)
         ? ('&b=' + encodeURIComponent(BrandOverride.encode())) : '';
 
+    // Metodos habilitados del portal (Paso 3 multi-select) → viajan al celular
+    var methodsParam = (config.methods && config.methods.length)
+        ? ('&methods=' + config.methods.join(',')) : '';
+
     return origin + basePath + page
         + '?flow=' + flow
-        + '&checkout=' + (config.checkout || 'portal-standard')
-        + '&payment=' + (config.payment || 'hey-banco')
+        + '&checkout=' + (config.checkout || 'portal-cobranzas')
+        + methodsParam
         + '&source=qr&autopay=1'
         + brandParam;
 }

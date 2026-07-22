@@ -1,1003 +1,1417 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es-MX">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout de Pago</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <script src="config/brand-config.js"></script>
-    <script src="js/brand-override.js"></script>
-    <script>
-        if (typeof BrandOverride !== 'undefined' && BrandOverride.has()) {
-            document.documentElement.setAttribute('data-brand-custom', 'true');
-        }
-    </script>
-    <script>
-        // Embedded mode (inside mobile viewer iframe)
-        var isEmbedded = new URLSearchParams(window.location.search).get('embedded') === '1';
-        if (isEmbedded) {
-            var s = document.createElement('style');
-            s.textContent = `
-                /* iOS Status Bar spacer */
-                .ios-status-bar {
-                    height: 36px;
-                    min-height: 36px;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding: 0 24px;
-                    font-size: 14px;
-                    font-weight: 600;
-                    color: #1a1a1a;
-                    background: white;
-                    flex-shrink: 0;
-                    z-index: 9999;
-                    position: sticky;
-                    top: 0;
-                }
-                .ios-status-bar .ios-time { letter-spacing: 0.5px; }
-                .ios-status-bar .ios-icons {
-                    display: flex;
-                    gap: 5px;
-                    align-items: center;
-                }
-                .ios-status-bar .ios-icons svg { display: block; }
-                html, body {
-                    height: 100% !important;
-                    overflow-x: hidden !important;
-                }
-                .container {
-                    max-width: none !important;
-                    padding: 0 !important;
-                    min-height: 100vh !important;
-                }
-                .header {
-                    padding: 12px 16px !important;
-                    gap: 12px !important;
-                }
-                .header .logo img {
-                    width: 100px !important;
-                }
-                .header-info {
-                    display: none !important;
-                }
-                .main-content {
-                    padding: 16px !important;
-                }
-                .debt-summary {
-                    padding: 16px !important;
-                }
-                .debt-header h2 {
-                    font-size: 16px !important;
-                }
-                .payment-options {
-                    padding: 16px !important;
-                }
-                .payment-options h2 {
-                    font-size: 16px !important;
-                }
-                /* Modals: full screen in embedded */
-                .modal-content {
-                    max-width: none !important;
-                    max-height: none !important;
-                    width: 100% !important;
-                    height: 100% !important;
-                    border-radius: 0 !important;
-                    margin: 0 !important;
-                }
-                .modal-overlay {
-                    padding: 0 !important;
-                    align-items: stretch !important;
-                }
-                /* Hide phone mockup overlay in embedded (already in a phone frame) */
-                .phone-overlay {
-                    display: none !important;
-                }
-            `;
-            document.head.appendChild(s);
-            // Inject iOS status bar when DOM is ready
-            document.addEventListener('DOMContentLoaded', function() {
-                var bar = document.createElement('div');
-                bar.className = 'ios-status-bar';
-                bar.innerHTML = '<span class="ios-time">17:35</span><div class="ios-icons"><svg width="12" height="8" viewBox="0 0 17 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="0.5" fill="#1a1a1a"/><rect x="4.5" y="2" width="3" height="10" rx="0.5" fill="#1a1a1a"/><rect x="9" y="0.5" width="3" height="11.5" rx="0.5" fill="#1a1a1a"/><rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="#1a1a1a" opacity="0.3"/></svg><svg width="12" height="9" viewBox="0 0 16 12" fill="none"><path d="M8 2.4C10.6 2.4 12.9 3.5 14.5 5.2L15.6 4C13.7 2 11 0.8 8 0.8S2.3 2 0.4 4L1.5 5.2C3.1 3.5 5.4 2.4 8 2.4Z" fill="#1a1a1a"/><path d="M8 5.6C9.8 5.6 11.4 6.3 12.5 7.5L13.6 6.3C12.2 4.8 10.2 3.9 8 3.9S3.8 4.8 2.4 6.3L3.5 7.5C4.6 6.3 6.2 5.6 8 5.6Z" fill="#1a1a1a"/><path d="M8 8.8C8.9 8.8 9.8 9.2 10.4 9.8L11.6 8.6C10.6 7.7 9.4 7.1 8 7.1S5.4 7.7 4.4 8.6L5.6 9.8C6.2 9.2 7.1 8.8 8 8.8Z" fill="#1a1a1a"/><circle cx="8" cy="11" r="1.2" fill="#1a1a1a"/></svg><svg width="18" height="9" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="2" stroke="#1a1a1a" stroke-opacity="0.35"/><rect x="2" y="2" width="17" height="9" rx="1" fill="#1a1a1a"/><path d="M24 4.5C24.8 4.8 25.5 5.5 25.5 6.5S24.8 8.2 24 8.5V4.5Z" fill="#1a1a1a" opacity="0.4"/></svg></div>';
-                document.body.insertBefore(bar, document.body.firstChild);
-            });
-        }
-    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal de Pagos · Gobierno del Estado de Chiapas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Sistema de marca de AI_Demos: define BRAND + aplica overrides y marca de la URL (?b=) -->
+  <script src="config/brand-config.js"></script>
+  <script src="js/brand-override.js"></script>
+  <script>
+    if (typeof BrandOverride !== 'undefined' && BrandOverride.has()) {
+      document.documentElement.setAttribute('data-brand-custom', 'true');
+    }
+  </script>
+
+  <style>
+    /* ─────────────────────────────────────────────
+       TAPI DESIGN SYSTEM — CSS Variables (tokens)
+       Derivados de DESIGN.md + temas tapi-light.json
+    ───────────────────────────────────────────── */
+    :root {
+      /* Colors — tapi */
+      --verde-tapi:        #067E20;
+      --verde-tapi-dark:   #055A17;
+      --verde-tapi-light:  #0E9F33;
+      --verde-tapi-50:     #F0FAF2;
+      --verde-tapi-100:    #D6F0DB;
+      --tapi-text:         #0F172A;
+      --tapi-muted:        #64748B;
+      --tapi-border:       #E2E8F0;
+      --tapi-bg:           #F8FAFC;
+      --tapi-white:        #FFFFFF;
+      --tapi-success:      #067E20;
+      --tapi-radius-sm:    4px;
+      --tapi-radius-md:    8px;
+      --tapi-radius-lg:    12px;
+      --tapi-radius-xl:    16px;
+
+      /* Spacing — múltiplo de 8 */
+      --space-1:  8px;
+      --space-2:  16px;
+      --space-3:  24px;
+      --space-4:  32px;
+      --space-5:  40px;
+      --space-6:  48px;
+
+      /* Shadows */
+      --shadow-sm:  0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+      --shadow-md:  0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
+      --shadow-lg:  0 10px 30px rgba(0,0,0,.10), 0 4px 8px rgba(0,0,0,.05);
+
+      /* Colors — Chiapas institucional */
+      --chiapas-guinda:        #7A1F2B;
+      --chiapas-guinda-dark:   #5C1620;
+      --chiapas-guinda-light:  #9A2A38;
+      --chiapas-dorado:        #C9A24B;
+      --chiapas-dorado-light:  #E8D097;
+      --chiapas-dorado-bg:     #FBF6EC;
+
+      /* Typography */
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    /* ─── Reset ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body {
+      font-family: var(--font-body);
+      background-color: var(--tapi-bg);
+      color: var(--tapi-text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { max-width: 100%; display: block; }
+    button { cursor: pointer; font-family: inherit; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ─────────────────────────────────────────────
+       HEADER INSTITUCIONAL CHIAPAS
+    ───────────────────────────────────────────── */
+    .header-chiapas {
+      background: linear-gradient(135deg, var(--chiapas-guinda) 0%, var(--chiapas-guinda-dark) 100%);
+      border-bottom: 4px solid var(--chiapas-dorado);
+      padding: var(--space-3) var(--space-4);
+    }
+    .header-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .header-logo {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--chiapas-dorado);
+      flex-shrink: 0;
+      background: #fff;
+    }
+    .header-text { flex: 1; }
+    .header-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.3;
+      letter-spacing: 0.01em;
+    }
+    .header-subtitle {
+      margin-top: 4px;
+      font-size: 0.8125rem;
+      color: var(--chiapas-dorado-light);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .header-subtitle svg { flex-shrink: 0; }
+    .header-badge {
+      margin-top: var(--space-1);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(201,162,75,.4);
+      border-radius: 100px;
+      padding: 2px 10px;
+      font-size: 0.6875rem;
+      color: var(--chiapas-dorado-light);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    /* ─────────────────────────────────────────────
+       LAYOUT PRINCIPAL
+    ───────────────────────────────────────────── */
+    .page-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: var(--space-4) var(--space-2);
+    }
+    @media (min-width: 640px) {
+      .page-container { padding: var(--space-4); }
+    }
+
+    /* ─────────────────────────────────────────────
+       CARD BASE (tapi)
+    ───────────────────────────────────────────── */
+    .card {
+      background: var(--tapi-white);
+      border-radius: var(--tapi-radius-xl);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--tapi-border);
+      overflow: hidden;
+    }
+
+    /* ─────────────────────────────────────────────
+       RESUMEN DEL TRAMITE
+    ───────────────────────────────────────────── */
+    .resumen-card {
+      margin-bottom: var(--space-3);
+    }
+    .resumen-header {
+      background: linear-gradient(135deg, var(--chiapas-guinda) 0%, var(--chiapas-guinda-light) 100%);
+      padding: var(--space-2) var(--space-3);
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+    .resumen-header-title {
+      font-family: var(--font-display);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: #FFFFFF;
+      letter-spacing: 0.02em;
+    }
+    .resumen-body {
+      padding: var(--space-3);
+    }
+    .resumen-concept {
+      font-size: 1.0625rem;
+      font-weight: 600;
+      color: var(--tapi-text);
+      margin-bottom: var(--space-2);
+    }
+    .resumen-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-1) var(--space-3);
+      margin-bottom: var(--space-3);
+    }
+    @media (max-width: 500px) {
+      .resumen-grid { grid-template-columns: 1fr; }
+    }
+    .resumen-field label {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--tapi-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .resumen-field span {
+      font-size: 0.875rem;
+      color: var(--tapi-text);
+      font-weight: 400;
+    }
+    .resumen-divider {
+      height: 1px;
+      background: var(--tapi-border);
+      margin: var(--space-2) 0;
+    }
+    .resumen-amount-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-2);
+    }
+    .resumen-amount-label {
+      font-size: 0.875rem;
+      color: var(--tapi-muted);
+      font-weight: 500;
+    }
+    .resumen-amount-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--chiapas-guinda);
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .resumen-amount-currency {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--tapi-muted);
+      margin-left: 4px;
+    }
+    .resumen-vigencia {
+      margin-top: var(--space-1);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.75rem;
+      color: #B45309;
+      background: #FEF3C7;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-weight: 500;
+    }
+
+    /* ─────────────────────────────────────────────
+       SECCION METODOS DE PAGO
+    ───────────────────────────────────────────── */
+    .metodos-section {
+      margin-bottom: var(--space-3);
+    }
+    .metodos-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--tapi-text);
+      margin-bottom: var(--space-2);
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+    .metodos-title svg { color: var(--verde-tapi); }
+
+    /* Radio group — CSS only interactions */
+    .payment-radio { display: none; }
+
+    .payment-option {
+      background: var(--tapi-white);
+      border-radius: var(--tapi-radius-lg);
+      border: 2px solid var(--tapi-border);
+      margin-bottom: var(--space-2);
+      overflow: hidden;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .payment-option:has(.payment-radio:checked) {
+      border-color: var(--verde-tapi);
+      box-shadow: 0 0 0 3px var(--verde-tapi-100);
+    }
+    .payment-option.featured {
+      border-color: var(--verde-tapi-light);
+      background: linear-gradient(to bottom right, #FAFFFE, var(--verde-tapi-50));
+    }
+    .payment-option.featured:has(.payment-radio:checked) {
+      border-color: var(--verde-tapi);
+      box-shadow: 0 0 0 3px var(--verde-tapi-100);
+    }
+
+    .payment-label {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      cursor: pointer;
+      user-select: none;
+    }
+    @media (max-width: 500px) {
+      .payment-label { padding: var(--space-2); gap: var(--space-1); }
+    }
+
+    /* Custom radio indicator */
+    .radio-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--tapi-border);
+      flex-shrink: 0;
+      transition: border-color 0.15s, background 0.15s;
+      position: relative;
+    }
+    .payment-radio:checked ~ .payment-label .radio-dot {
+      border-color: var(--verde-tapi);
+      background: var(--verde-tapi);
+    }
+    .payment-radio:checked ~ .payment-label .radio-dot::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #fff;
+    }
+
+    .payment-logo-wrap {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .payment-logo-wrap img {
+      height: 28px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .payment-info { flex: 1; min-width: 0; }
+    .payment-info-name {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--tapi-text);
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      flex-wrap: wrap;
+    }
+    .payment-info-desc {
+      margin-top: 2px;
+      font-size: 0.8125rem;
+      color: var(--tapi-muted);
+      line-height: 1.4;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 100px;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+    .badge-green {
+      background: var(--verde-tapi-100);
+      color: var(--verde-tapi-dark);
+    }
+    .badge-blue {
+      background: #DBEAFE;
+      color: #1E40AF;
+    }
+    .badge-gray {
+      background: #F1F5F9;
+      color: #475569;
+    }
+
+    /* Expanded content — visible when radio checked */
+    .payment-expand {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .payment-radio:checked ~ .payment-expand {
+      max-height: 1200px;
+    }
+    .payment-expand-inner {
+      padding: 0 var(--space-3) var(--space-3);
+      border-top: 1px solid var(--tapi-border);
+    }
+    @media (max-width: 500px) {
+      .payment-expand-inner { padding: 0 var(--space-2) var(--space-2); }
+    }
+
+    /* CTA Buttons — tapi button-primary */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: var(--verde-tapi);
+      color: #FFFFFF;
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--tapi-radius-md);
+      transition: background 0.15s ease, transform 0.1s ease;
+      width: 100%;
+      letter-spacing: 0.01em;
+    }
+    .btn-primary:hover {
+      background: var(--verde-tapi-dark);
+      transform: translateY(-1px);
+    }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: transparent;
+      color: var(--verde-tapi);
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      border: 2px solid var(--verde-tapi);
+      border-radius: var(--tapi-radius-md);
+      transition: background 0.15s, color 0.15s;
+      width: 100%;
+    }
+    .btn-secondary:hover {
+      background: var(--verde-tapi-50);
+    }
+
+    /* ─────────────────────────────────────────────
+       METODO: BBVA (featured)
+    ───────────────────────────────────────────── */
+    .bbva-expand-intro {
+      padding-top: var(--space-2);
+      font-size: 0.875rem;
+      color: var(--tapi-muted);
+      margin-bottom: var(--space-2);
+    }
+    .bbva-features {
+      display: flex;
+      gap: var(--space-2);
+      margin-bottom: var(--space-3);
+      flex-wrap: wrap;
+    }
+    .bbva-feature {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--verde-tapi-dark);
+    }
+
+    /* ─────────────────────────────────────────────
+       METODO: TARJETA
+    ───────────────────────────────────────────── */
+    .card-brands {
+      display: flex;
+      gap: var(--space-1);
+      margin: var(--space-2) 0;
+      align-items: center;
+    }
+    .card-brand-pill {
+      background: #F1F5F9;
+      border: 1px solid var(--tapi-border);
+      border-radius: var(--tapi-radius-sm);
+      padding: 3px 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+    .card-brand-pill.visa    { color: #1A1F71; }
+    .card-brand-pill.mc     { color: #EB001B; }
+    .card-brand-pill.amex   { color: #2E77BC; }
+
+    .form-row {
+      display: grid;
+      gap: var(--space-1);
+      margin-bottom: var(--space-2);
+    }
+    .form-row-2 { grid-template-columns: 1fr 1fr; }
+    .form-row-3 { grid-template-columns: 2fr 1fr 1fr; }
+    @media (max-width: 480px) {
+      .form-row-3 { grid-template-columns: 1fr 1fr; }
+      .form-row-3 .field-full { grid-column: 1 / -1; }
+    }
+    .form-field { display: flex; flex-direction: column; gap: 4px; }
+    .form-field label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--tapi-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .form-input {
+      padding: 10px 12px;
+      border: 1.5px solid var(--tapi-border);
+      border-radius: var(--tapi-radius-md);
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+      color: var(--tapi-text);
+      background: #FAFAFA;
+      transition: border-color 0.15s;
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: var(--verde-tapi);
+      background: #fff;
+    }
+    .form-input::placeholder { color: #CBD5E1; }
+
+    /* ─────────────────────────────────────────────
+       METODO: SPEI
+    ───────────────────────────────────────────── */
+    .spei-info {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-2);
+      padding: var(--space-2);
+      background: #EFF6FF;
+      border-radius: var(--tapi-radius-md);
+      border: 1px solid #BFDBFE;
+      margin: var(--space-2) 0 var(--space-3);
+    }
+    .spei-info-text { font-size: 0.8125rem; color: #1E40AF; line-height: 1.5; }
+    .spei-steps {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      margin-bottom: var(--space-3);
+    }
+    .spei-step {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      font-size: 0.8125rem;
+      color: var(--tapi-muted);
+    }
+    .spei-step-num {
+      width: 22px;
+      height: 22px;
+      background: var(--verde-tapi-50);
+      border: 1.5px solid var(--verde-tapi-100);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--verde-tapi);
+      flex-shrink: 0;
+    }
+
+    /* ─────────────────────────────────────────────
+       METODO: EFECTIVO
+    ───────────────────────────────────────────── */
+    .stores-grid {
+      display: flex;
+      gap: var(--space-1);
+      margin: var(--space-2) 0;
+      flex-wrap: wrap;
+    }
+    .store-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: #F8FAFC;
+      border: 1.5px solid var(--tapi-border);
+      border-radius: var(--tapi-radius-md);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--tapi-text);
+    }
+    .store-oxxo  { border-color: #E8B800; }
+    .store-7e    { border-color: #E8001C; }
+    .store-farma { border-color: #E8372C; }
+
+    .efectivo-note {
+      font-size: 0.8125rem;
+      color: var(--tapi-muted);
+      margin-bottom: var(--space-3);
+      line-height: 1.5;
+    }
+
+    /* ─────────────────────────────────────────────
+       METODO: OTROS BANCOS
+    ───────────────────────────────────────────── */
+    .bancos-grid {
+      display: flex;
+      gap: 10px;
+      margin: var(--space-2) 0 var(--space-3);
+      flex-wrap: wrap;
+    }
+    .banco-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: #F8FAFC;
+      border: 1.5px solid var(--tapi-border);
+      border-radius: var(--tapi-radius-md);
+    }
+    .banco-chip img {
+      height: 20px;
+      width: auto;
+      object-fit: contain;
+    }
+    .banco-chip span {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--tapi-muted);
+    }
+
+    /* ─────────────────────────────────────────────
+       ICONOS SVG INLINE (helpers)
+    ───────────────────────────────────────────── */
+    .icon { display: inline-flex; align-items: center; flex-shrink: 0; }
+
+    /* ─────────────────────────────────────────────
+       FOOTER — tapi
+    ───────────────────────────────────────────── */
+    .footer-tapipay {
+      background: var(--tapi-white);
+      border-top: 1px solid var(--tapi-border);
+      padding: var(--space-3) var(--space-4);
+      margin-top: var(--space-2);
+    }
+    .footer-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .footer-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-2);
+    }
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      font-size: 0.8125rem;
+      color: var(--tapi-muted);
+    }
+    .footer-brand strong { color: var(--tapi-text); font-weight: 600; }
+    .footer-logo {
+      height: 20px;
+      width: auto;
+    }
+    .footer-security {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .security-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--tapi-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .security-badge svg { color: var(--verde-tapi); }
+    .footer-links {
+      display: flex;
+      gap: var(--space-2);
+      font-size: 0.75rem;
+      color: var(--tapi-muted);
+      border-top: 1px solid var(--tapi-border);
+      padding-top: var(--space-2);
+    }
+    .footer-links a:hover { color: var(--verde-tapi); text-decoration: underline; }
+
+    /* ─────────────────────────────────────────────
+       SCROLL AREAS / Print
+    ───────────────────────────────────────────── */
+    @media print {
+      body { background: #fff; }
+      .payment-expand { max-height: none !important; overflow: visible !important; }
+      .header-chiapas { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    }
+
+    /* ─────────────────────────────────────────────
+       RESPONSIVE — mobile first adjustments
+    ───────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .header-title { font-size: 1rem; }
+      .header-logo { width: 56px; height: 56px; }
+      .resumen-amount-value { font-size: 1.625rem; }
+      .payment-label { gap: 10px; }
+    }
+
+    /* ── Override de marca: el header y el monto usan el color de la marca activa
+       (--primary-color lo setea applyBrandColors desde BRAND.colors). El acento de
+       método seleccionado queda en verde tapi. ── */
+    :root {
+      --chiapas-guinda:       var(--primary-color, #0B5FC0);
+      --chiapas-guinda-dark:  var(--primary-dark, #094BA0);
+      --chiapas-guinda-light: var(--accent-color, #2E86E0);
+      --chiapas-dorado:       var(--accent-color, #2E86E0);
+      --chiapas-dorado-light: #EAF3FD;
+    }
+
+    /* Procesando + pantalla de éxito (flujo tarjeta) */
+    .pay-processing { display:flex; flex-direction:column; align-items:center; gap:var(--space-2); padding:var(--space-3) 0; }
+    .spinner { width:38px; height:38px; border:3px solid var(--verde-tapi-100); border-top-color:var(--verde-tapi); border-radius:50%; animation:spin .8s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .success-box { text-align:center; padding:var(--space-2) 0; }
+    .success-check { width:56px; height:56px; margin:0 auto var(--space-2); border-radius:50%; background:var(--verde-tapi-100); color:var(--verde-tapi); display:flex; align-items:center; justify-content:center; }
+    .success-amount { font-size:1.75rem; font-weight:700; color:var(--tapi-text); }
+    .success-rows { margin-top:var(--space-2); border-top:1px solid var(--tapi-border); }
+    .success-row { display:flex; justify-content:space-between; padding:8px 0; font-size:0.8125rem; border-bottom:1px solid var(--tapi-border); }
+    .success-row .k { color:var(--tapi-muted); }
+    .success-row .v { color:var(--tapi-text); font-weight:600; }
+    .success-badge-ok { display:inline-flex; align-items:center; gap:5px; background:var(--verde-tapi-100); color:var(--verde-tapi-dark); padding:2px 10px; border-radius:100px; font-size:0.75rem; font-weight:700; }
+
+    /* Resultado copiable (CLABE / referencia) */
+    .result-box { margin-top:var(--space-1); background:#F8FAFC; border:1px solid var(--tapi-border); border-radius:var(--tapi-radius-md); padding:var(--space-2); }
+    .result-row { display:flex; align-items:center; justify-content:space-between; gap:var(--space-2); padding:8px 0; border-bottom:1px dashed var(--tapi-border); }
+    .result-row:last-child { border-bottom:none; }
+    .result-row .rk { font-size:0.6875rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--tapi-muted); font-weight:600; }
+    .result-row .rv { font-size:0.9375rem; font-weight:700; color:var(--tapi-text); font-variant-numeric:tabular-nums; }
+    .copy-btn { border:1px solid var(--tapi-border); background:#fff; border-radius:var(--tapi-radius-sm); padding:4px 10px; font-size:0.75rem; font-weight:600; color:var(--verde-tapi); }
+    .copy-btn:hover { background:var(--verde-tapi-50); }
+    .ref-code { font-size:1.5rem; font-weight:800; letter-spacing:0.12em; color:var(--tapi-text); text-align:center; font-variant-numeric:tabular-nums; }
+    .barcode { height:56px; margin:var(--space-2) 0; background:repeating-linear-gradient(90deg,#111 0 2px,#fff 2px 4px,#111 4px 5px,#fff 5px 9px); border-radius:4px; }
+    .wallet-logos { display:flex; gap:var(--space-1); margin:var(--space-2) 0; flex-wrap:wrap; }
+    .wallet-logos img { height:22px; width:auto; object-fit:contain; }
+    .hidden { display:none !important; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="logo">
-                <!-- BRAND: company logo -->
-                <img id="brandLogo" src="" alt="Logo" style="width: 140px; height: auto;">
-                <span class="logo-text"></span>
-            </div>
-            <div class="header-info">
-                <span class="header-title">Pago de Servicios</span>
 
-            </div>
-        </header>
+  <!-- ═══════════════════════════════════════════
+       HEADER INSTITUCIONAL — Gobierno de Chiapas
+  ════════════════════════════════════════════ -->
+  <header class="header-chiapas">
+    <div class="header-inner">
+      <img
+        class="header-logo"
+        id="brandLogo"
+        src="assets/brand/telcel.svg"
+        alt="Logo"
+        style="object-fit: contain; background: #fff; padding: 6px;"
+      />
+      <div class="header-text">
+        <div class="header-title"><span data-brand="name">Marca</span> · Portal de Pagos</div>
+        <div class="header-subtitle">
+          <!-- Candado SSL inline SVG -->
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          Pago seguro procesado por tapi
+        </div>
+        <div class="header-badge">
+          <!-- Verificado inline -->
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+          Sitio oficial verificado
+        </div>
+      </div>
+    </div>
+  </header>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Debt Summary -->
-            <div class="debt-summary">
-                <div class="debt-header">
-                    <h2>Resumen de Deuda</h2>
-                    <span class="badge-pending">Pendiente</span>
-                </div>
-                <div class="debt-details">
-                    <div class="detail-row">
-                        <span class="label">Número de Cuenta:</span>
-                        <span class="value" data-brand="account-number"></span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="label">Período:</span>
-                        <span class="value" data-brand="account-period"></span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="label">Fecha de Vencimiento:</span>
-                        <span class="value" data-brand="account-dueDate"></span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="label" data-brand="plan-label"></span>
-                        <span class="value" data-brand="plan-amount"></span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="label" data-brand="discount-label"></span>
-                        <span class="value" style="color: #28a745;" data-brand="discount-amount"></span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="label">Saldo anterior:</span>
-                        <span class="value" data-brand="previous-balance"></span>
-                    </div>
-                    <div class="detail-row total">
-                        <span class="label">Total a Pagar:</span>
-                        <span class="value amount" data-brand="total-amount-mxn"></span>
-                    </div>
-                </div>
-            </div>
+  <!-- ═══════════════════════════════════════════
+       CONTENIDO PRINCIPAL
+  ════════════════════════════════════════════ -->
+  <main class="page-container">
 
-            <!-- Payment Methods -->
-            <div class="payment-methods">
-                <h2>Selecciona tu método de pago</h2>
-                
-                <!-- Super Featured Option: Pago Automático -->
-                <div class="payment-option super-featured" data-method="paga-domicilia">
-                    <div class="option-badge super">¡MEJOR OPCIÓN!</div>
-                    <div class="option-header">
-                        <div class="option-icon super-featured-icon">
-                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M20 12V22H4V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M22 7H2V12H22V7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M12 22V7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M12 7H7.5C6.83696 7 6.20107 6.73661 5.73223 6.26777C5.26339 5.79893 5 5.16304 5 4.5C5 3.83696 5.26339 3.20107 5.73223 2.73223C6.20107 2.26339 6.83696 2 7.5 2C11 2 12 7 12 7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M12 7H16.5C17.163 7 17.7989 6.73661 18.2678 6.26777C18.7366 5.79893 19 5.16304 19 4.5C19 3.83696 18.7366 3.20107 18.2678 2.73223C17.7989 2.26339 17.163 2 16.5 2C13 2 12 7 12 7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                        <div class="option-content">
-                            <h3>Pago Automático</h3>
-                            <p class="option-description">Programa tus pagos automáticos futuros y opcionalmente paga la deuda actual</p>
-                        </div>
-                        <div class="option-check">
-                            <div class="radio"></div>
-                        </div>
-                    </div>
-                    
-                    <!-- Banks Selection for Paga y Domicilia (Hidden by default) -->
-                    <div class="banks-selection" id="banksSelectionPagaDomicilia" style="display: none;">
-                        <h4>Selecciona tu banco:</h4>
-                        
-                        <!-- Mobile: Dropdown selector -->
-                        <div class="bank-selector-mobile">
-                            <select id="bankSelectMobile" class="bank-select" data-method="paga-domicilia">
-                                <option value="">Elige tu banco...</option>
-                                <option value="hey-banco">Hey Banco</option>
-                                <option value="nubank">Nubank</option>
-                                <option value="santander">Santander</option>
-                                <option value="stori">Stori</option>
-                                <option value="bbva">BBVA</option>
-                                <option value="banamex">Banamex</option>
-                                <option value="hsbc">HSBC</option>
-                                <option value="banorte">Banorte</option>
-                                <option value="scotiabank">Scotiabank</option>
-                            </select>
-                        </div>
-                        
-                        <!-- Desktop: Cards grid -->
-                        <div class="banks-grid banks-grid-desktop">
-                            <div class="bank-card" data-bank="hey-banco" data-method="paga-domicilia">
-                                <div class="bank-logo" style="background: white; padding: 4px;">
-                                    <img src="assets/banks/Hey_Banco.svg" alt="Hey Banco" class="bank-logo-img">
-                                </div>
-                                <span class="bank-name">Hey Banco</span>
-                            </div>
-                            <div class="bank-card" data-bank="nubank" data-method="paga-domicilia">
-                                <div class="bank-logo">
-                                    <img src="assets/banks/nu.jpeg" alt="Nubank" class="bank-logo-img" style="border-radius: 8px;">
-                                </div>
-                                <span class="bank-name">Nubank</span>
-                            </div>
-                            <div class="bank-card" data-bank="santander" data-method="paga-domicilia">
-                                <div class="bank-logo">
-                                    <img src="assets/banks/santa.png" alt="Santander" class="bank-logo-img">
-                                </div>
-                                <span class="bank-name">Santander</span>
-                            </div>
-                            <div class="bank-card" data-bank="stori" data-method="paga-domicilia">
-                                <div class="bank-logo">
-                                    <img src="assets/banks/stori.png" alt="Stori" class="bank-logo-img">
-                                </div>
-                                <span class="bank-name">Stori</span>
-                            </div>
-                            <div class="bank-card" data-bank="bbva" data-method="paga-domicilia">
-                                <div class="bank-logo">
-                                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <rect width="40" height="40" rx="8" fill="#004481"/>
-                                        <path d="M15 20L20 15L25 20L20 25L15 20Z" fill="white"/>
-                                        <path d="M20 15L25 20L20 25" fill="#1973B8"/>
-                                    </svg>
-                                </div>
-                                <span class="bank-name">BBVA</span>
-                            </div>
-                            <div class="bank-card" data-bank="banamex" data-method="paga-domicilia">
-                                <div class="bank-logo">
-                                    <img src="assets/banks/banamex.svg" alt="Banamex" class="bank-logo-img">
-                                </div>
-                                <span class="bank-name">Banamex</span>
-                            </div>
-                            <div class="bank-card" data-bank="hsbc" data-method="paga-domicilia">
-                                <div class="bank-logo">
-                                    <img src="assets/banks/hsbc.jpg" alt="HSBC" class="bank-logo-img">
-                                </div>
-                                <span class="bank-name">HSBC</span>
-                            </div>
-                            <div class="bank-card" data-bank="banorte" data-method="paga-domicilia">
-                                <div class="bank-logo">
-                                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <rect width="40" height="40" rx="8" fill="#ED1C27"/>
-                                        <path d="M20 10L14 20H20V30L26 20H20V10Z" fill="white"/>
-                                    </svg>
-                                </div>
-                                <span class="bank-name">Banorte</span>
-                            </div>
-                            <div class="bank-card" data-bank="scotiabank" data-method="paga-domicilia">
-                                <div class="bank-logo">
-                                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <rect width="40" height="40" rx="8" fill="#EC1D24"/>
-                                        <circle cx="20" cy="20" r="8" stroke="white" stroke-width="2"/>
-                                    </svg>
-                                </div>
-                                <span class="bank-name">Scotiabank</span>
-                            </div>
-                        </div>
-                        
-                        <!-- Inline Identity Validation Form -->
-                        <div class="identity-validation-inline" id="identityValidationInline" style="display: none;">
-                            <div class="validation-header">
-                                <div class="selected-bank-info">
-                                    <div class="selected-bank-logo" id="selectedBankLogo"></div>
-                                    <div class="selected-bank-text">
-                                        <h3 id="selectedBankName">Banco</h3>
-                                        <p id="identityValidationTitle">Verificación de identidad</p>
-                                    </div>
-                                </div>
-                                <button class="btn-change-bank" onclick="resetBankSelection()">Cambiar banco</button>
-                            </div>
-                            
-                            <div class="identity-form-inline">
-                                <div class="form-group-inline">
-                                    <label for="identityInputInline" id="identityLabelInline">CURP</label>
-                                    <input 
-                                        type="text" 
-                                        id="identityInputInline" 
-                                        class="identity-input-inline"
-                                        placeholder="Ej: AAAA850101HDFRRL09"
-                                    >
-                                    <small class="input-hint" id="identityHintInline">18 caracteres alfanuméricos</small>
-                                    <div class="error-message" id="identityErrorInline" style="display: none;"></div>
-                                </div>
-                                
-                                <div class="tyc-checkbox-inline">
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" id="tycCheckboxInline">
-                                        <span class="checkbox-custom"></span>
-                                        <span class="checkbox-text">
-                                            Acepto los <a href="#" class="tyc-link">términos y condiciones</a> y autorizo compartir mi información
-                                        </span>
-                                    </label>
-                                    <div class="error-message" id="tycErrorInline" style="display: none;"></div>
-                                </div>
-                                
-                                <button class="btn-primary btn-validate-inline" id="btnValidateInline" disabled>
-                                    Continuar
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Card Payment -->
-                <div class="payment-option" data-method="tarjeta">
-                    <div class="option-header">
-                        <div class="option-icon">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/>
-                                <path d="M2 10H22" stroke="currentColor" stroke-width="2"/>
-                                <rect x="6" y="14" width="4" height="2" fill="currentColor"/>
-                            </svg>
-                        </div>
-                        <div class="option-content">
-                            <h3>Tarjeta de Débito/Crédito</h3>
-                            <p class="option-description">Visa, Mastercard, American Express</p>
-                        </div>
-                        <div class="option-check">
-                            <div class="radio"></div>
-                        </div>
-                    </div>
-                </div>
+    <!-- ─── Resumen del trámite ─── -->
+    <div class="card resumen-card">
+      <div class="resumen-header">
+        <!-- Archivo / Documento icon -->
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+        <span class="resumen-header-title">Detalle del Trámite</span>
+      </div>
+      <div class="resumen-body">
+        <div class="resumen-concept"><span data-brand="concept">Pago de servicio</span></div>
 
-                <!-- Transfer -->
-                <div class="payment-option" data-method="transferencia">
-                    <div class="option-header">
-                        <div class="option-icon">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 2V22M12 2L8 6M12 2L16 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M12 22L8 18M12 22L16 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <circle cx="5" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
-                                <circle cx="19" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
-                            </svg>
-                        </div>
-                        <div class="option-content">
-                            <h3>Transferencia Bancaria</h3>
-                            <p class="option-description">SPEI, transferencia interbancaria</p>
-                        </div>
-                        <div class="option-check">
-                            <div class="radio"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Stores -->
-                <div class="payment-option" data-method="tiendas">
-                    <div class="option-header">
-                        <div class="option-icon">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                        <div class="option-content">
-                            <h3>Pago en Tiendas</h3>
-                            <p class="option-description">OXXO, 7-Eleven, Farmacias del Ahorro</p>
-                        </div>
-                        <div class="option-check">
-                            <div class="radio"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-        </main>
-
-        <!-- Success Modal -->
-        <div class="modal" id="successModal">
-            <div class="modal-content">
-                <div class="modal-icon">
-                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="10" stroke="var(--primary-color)" stroke-width="2"/>
-                        <path d="M8 12L11 15L16 9" stroke="var(--primary-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-                <h2 id="modalTitle">¡Método seleccionado!</h2>
-                <p id="modalMessage">Has elegido el mejor método para tus pagos recurrentes.</p>
-                <button class="btn-primary" onclick="closeModal()">Entendido</button>
-            </div>
+        <div class="resumen-grid">
+          <div class="resumen-field">
+            <label>Folio / Referencia</label>
+            <span data-brand="reference">—</span>
+          </div>
+          <div class="resumen-field">
+            <label>Periodo</label>
+            <span data-brand="period">—</span>
+          </div>
+          <div class="resumen-field" style="grid-column: 1 / -1;">
+            <label>Cuenta / Contrato</label>
+            <span data-brand="account-number">—</span>
+          </div>
         </div>
 
-        <!-- Bank App Modal -->
-        <div class="modal" id="qrModal">
-            <div class="modal-content bank-link-modal">
-                <button class="modal-close" onclick="closeQRModal()">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
-                <div class="bank-link-header">
-                    <div class="bank-logo-large" id="bankLinkLogo"></div>
-                    <h2 id="bankLinkTitle">Continuar en la app del banco</h2>
-                    <p id="bankLinkSubtitle">Abriremos la app de tu banco para completar el proceso</p>
-                </div>
-                
-                <div class="bank-app-preview">
-                    <div class="phone-mockup">
-                        <div class="phone-screen">
-                            <div class="screen-glow"></div>
-                            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="5" y="2" width="14" height="20" rx="2" stroke="currentColor" stroke-width="2"/>
-                                <path d="M5 6H19" stroke="currentColor" stroke-width="2"/>
-                                <circle cx="12" cy="14" r="3" stroke="currentColor" stroke-width="2"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
+        <div class="resumen-divider"></div>
 
-                <div class="bank-link-steps">
-                    <h3>¿Qué pasará a continuación?</h3>
-                    <div class="step-list">
-                        <div class="step-item">
-                            <span class="step-icon">🔐</span>
-                            <div class="step-info">
-                                <strong>Autentícate</strong>
-                                <p>Usa Face ID o tu método de autenticación</p>
-                            </div>
-                        </div>
-                        <div class="step-item">
-                            <span class="step-icon">⚙️</span>
-                            <div class="step-info">
-                                <strong>Configura domiciliación</strong>
-                                <p>Establece tu pago automático</p>
-                            </div>
-                            <span class="step-badge">Paso 1</span>
-                        </div>
-                        <div class="step-item payment-step" id="paymentStepItem">
-                            <span class="step-icon">💰</span>
-                            <div class="step-info">
-                                <strong>Paga tu deuda actual</strong>
-                                <p>Confirma el pago de <span data-brand="total-amount-mxn"></span></p>
-                            </div>
-                            <span class="step-badge">Paso 2 (opcional)</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bank-link-footer">
-                    <button class="btn-open-bank" id="openBankBtn" onclick="openBankApp()">
-                        <span id="bankBtnText">Abrir app de Hey Banco</span>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M15 3h6v6M10 14L21 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
-                    <p class="security-note">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#00c853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        Conexión segura y encriptada
-                    </p>
-                </div>
+        <div class="resumen-amount-row">
+          <div>
+            <div class="resumen-amount-label">Total a pagar</div>
+            <div class="resumen-vigencia">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+              </svg>
+              Vence el <span data-brand="dueDate">—</span>
             </div>
+          </div>
+          <div style="text-align:right;">
+            <div class="resumen-amount-value">
+              <span data-brand="total">$0.00</span><span class="resumen-amount-currency">MXN</span>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
 
-    <!-- CURP Modal -->
-    <div class="modal" id="curpModal">
-        <div class="modal-content curp-modal-content">
-            <button class="modal-close" onclick="closeCurpModal()">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+    <!-- ─── Sección métodos de pago ─── -->
+    <div class="metodos-section">
+      <div class="metodos-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+          <line x1="1" y1="10" x2="23" y2="10"/>
+        </svg>
+        Elegí cómo querés pagar
+      </div>
+
+      <!-- ── A) BBVA Pago Directo ── -->
+      <div class="payment-option featured">
+        <input type="radio" name="metodo" id="bbva" class="payment-radio" checked />
+        <label for="bbva" class="payment-label">
+          <span class="radio-dot"></span>
+          <span class="payment-logo-wrap">
+            <img
+              src="assets/banks/bbva-logo.svg"
+              alt="BBVA"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+            />
+            <span style="display:none; background:#004A97; color:#fff; font-weight:800; font-size:0.875rem; padding:4px 10px; border-radius:4px; letter-spacing:0.04em;">BBVA</span>
+          </span>
+          <span class="payment-info">
+            <span class="payment-info-name">
+              Pago directo BBVA
+              <span class="badge badge-green">Sin comisión</span>
+              <span class="badge badge-green">Recomendado</span>
+            </span>
+            <span class="payment-info-desc">Pagá directo desde tu cuenta BBVA México. Sin comisión, acreditación inmediata.</span>
+          </span>
+        </label>
+        <div class="payment-expand">
+          <div class="payment-expand-inner">
+            <p class="bbva-expand-intro">
+              Al continuar serás redirigido de forma segura a la app o banca en línea de BBVA para autorizar el pago de <strong><span data-brand="total">$0.00</span> MXN</strong> a <span data-brand="name">la marca</span>.
+            </p>
+            <div class="bbva-features">
+              <span class="bbva-feature">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                Cero comisiones
+              </span>
+              <span class="bbva-feature">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                Acreditación inmediata
+              </span>
+              <span class="bbva-feature">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                Comprobante automático
+              </span>
+            </div>
+            <button class="btn-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/>
+              </svg>
+              Pagar con BBVA
             </button>
-            
-            <div class="curp-modal-header">
-                <div class="verification-logos">
-                    <!-- BRAND: company logo in verification modal -->
-                    <div class="service-logo-verification">
-                        <img class="brand-logo" src="" alt="Logo">
-                    </div>
-                    <svg class="logo-connector" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M5 12h14M13 5l7 7-7 7" stroke="#6c757d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <div class="bank-logo-modal" id="curpBankLogo"></div>
-                </div>
-                <h2 id="identityModalTitle">Verificación de identidad</h2>
-                <p id="identityModalSubtitle">Para continuar, necesitamos verificar tu identidad</p>
-            </div>
-            
-            <div class="curp-form">
-                <div class="form-group-modal">
-                    <label for="curpInput" id="identityInputLabel">CURP (Clave Única de Registro de Población)</label>
-                    <input 
-                        type="text" 
-                        id="curpInput" 
-                        placeholder="Ej: AAAA850101HDFRRL09" 
-                        maxlength="18"
-                        autocomplete="off"
-                        style="text-transform: uppercase;">
-                    <small class="input-hint" id="identityInputHint">18 caracteres alfanuméricos</small>
-                    <small class="input-error" id="curpError" style="display: none; color: #dc3545;"></small>
-                </div>
-                
-                <div class="info-box-modal">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#00c853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <div>
-                        <strong id="identityInfoTitle">¿Por qué necesitamos tu CURP?</strong>
-                        <p id="identityInfoText">Para cumplir con regulaciones bancarias y garantizar la seguridad de tus transacciones.</p>
-                    </div>
-                </div>
-                
-                <div class="tyc-checkbox-container">
-                    <label class="tyc-checkbox-label">
-                        <input type="checkbox" id="curpTycCheckbox" class="tyc-checkbox">
-                        <span class="tyc-checkmark"></span>
-                        <span class="tyc-text">
-                            Acepto compartir mi información con TAPI y el banco seleccionado. He leído y acepto los 
-                            <a href="#" onclick="event.preventDefault(); alert('En producción, aquí se abrirían los Términos y Condiciones completos.');" class="tyc-link">Términos y Condiciones</a> 
-                            y el <a href="#" onclick="event.preventDefault(); alert('En producción, aquí se abriría el Aviso de Privacidad.');" class="tyc-link">Aviso de Privacidad</a>.
-                        </span>
-                    </label>
-                    <small class="input-error" id="tycError" style="display: none; color: #dc3545; margin-top: 8px;">Debes aceptar los términos para continuar</small>
-                </div>
-            </div>
-            
-            <div class="curp-modal-footer">
-                <button class="btn-primary-modal" id="continueCurpBtn" onclick="validateAndContinue()" disabled>
-                    Continuar con <span id="curpBankName">el banco</span>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
-            </div>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <!-- CLABE Modal (Account to Account) -->
-    <div class="modal" id="clabeModal">
-        <div class="modal-content clabe-modal-content">
-            <button class="modal-close" onclick="closeClabeModal()">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+      <!-- ── B) Tarjeta crédito/débito ── -->
+      <div class="payment-option">
+        <input type="radio" name="metodo" id="tarjeta" class="payment-radio" />
+        <label for="tarjeta" class="payment-label">
+          <span class="radio-dot"></span>
+          <span class="payment-logo-wrap">
+            <!-- Tarjeta icon SVG inline -->
+            <svg width="36" height="28" viewBox="0 0 36 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="0.5" y="0.5" width="35" height="27" rx="3.5" fill="#F8FAFC" stroke="#E2E8F0"/>
+              <rect x="4" y="9" width="28" height="5" rx="1" fill="#CBD5E1"/>
+              <rect x="4" y="18" width="8" height="3" rx="1" fill="#94A3B8"/>
+              <rect x="14" y="18" width="6" height="3" rx="1" fill="#94A3B8"/>
+            </svg>
+          </span>
+          <span class="payment-info">
+            <span class="payment-info-name">
+              Tarjeta de crédito o débito
+              <span class="badge badge-gray">Comisión incluida</span>
+            </span>
+            <span class="payment-info-desc">Visa, Mastercard o American Express. Pago seguro con 3DSecure.</span>
+          </span>
+        </label>
+        <div class="payment-expand">
+          <div class="payment-expand-inner">
+            <div class="card-brands">
+              <span class="card-brand-pill visa">VISA</span>
+              <span class="card-brand-pill mc">MC</span>
+              <span class="card-brand-pill amex">AMEX</span>
+            </div>
+            <div class="form-row form-row-3">
+              <div class="form-field field-full">
+                <label>Número de tarjeta</label>
+                <input class="form-input" type="text" placeholder="1234 5678 9012 3456" maxlength="19" />
+              </div>
+              <div class="form-field">
+                <label>Vencimiento</label>
+                <input class="form-input" type="text" placeholder="MM/AA" maxlength="5" />
+              </div>
+              <div class="form-field">
+                <label>CVV</label>
+                <input class="form-input" type="text" placeholder="123" maxlength="4" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field">
+                <label>Nombre del titular</label>
+                <input class="form-input" type="text" placeholder="Como aparece en la tarjeta" />
+              </div>
+            </div>
+            <button class="btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              Pagar con tarjeta
             </button>
-            
-            <div class="clabe-modal-header">
-                <div class="bank-logo-modal" id="clabeBankLogo"></div>
-                <h2>Ingresa tu cuenta CLABE</h2>
-                <p>Para verificar tu cuenta, haremos una transferencia de <strong>$1.00 MXN</strong></p>
-            </div>
-            
-            <div class="clabe-form">
-                <div class="form-group-modal">
-                    <label for="clabeInput">CLABE Interbancaria</label>
-                    <input 
-                        type="text" 
-                        id="clabeInput" 
-                        placeholder="123456789012345678" 
-                        maxlength="18"
-                        autocomplete="off"
-                        inputmode="numeric"
-                        pattern="[0-9]*">
-                    <small class="input-hint">18 dígitos de tu cuenta CLABE</small>
-                    <small class="input-error" id="clabeError" style="display: none; color: #dc3545;"></small>
-                </div>
-                
-                <div class="info-box-modal">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#00c853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <div>
-                        <strong>¿Dónde encuentro mi CLABE?</strong>
-                        <p>En tu app bancaria, busca en la sección de "Datos de cuenta" o "Información de cuenta".</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="clabe-modal-footer">
-                <button class="btn-primary-modal" id="continueClabeBtn" onclick="validateClabe()" disabled>
-                    Verificar cuenta
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
-            </div>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <!-- Verification Code Modal -->
-    <div class="modal" id="verificationModal">
-        <div class="modal-content verification-modal-content">
-            <button class="modal-close" onclick="closeVerificationModal()">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+      <!-- ── C) SPEI ── -->
+      <div class="payment-option">
+        <input type="radio" name="metodo" id="spei" class="payment-radio" />
+        <label for="spei" class="payment-label">
+          <span class="radio-dot"></span>
+          <span class="payment-logo-wrap">
+            <!-- Transferencia SVG inline -->
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="18" cy="18" r="17.5" fill="#EFF6FF" stroke="#BFDBFE"/>
+              <text x="18" y="22" font-family="Inter,sans-serif" font-size="10" font-weight="700" fill="#1E40AF" text-anchor="middle">SPEI</text>
+            </svg>
+          </span>
+          <span class="payment-info">
+            <span class="payment-info-name">
+              Transferencia SPEI
+              <span class="badge badge-blue">Todos los bancos</span>
+            </span>
+            <span class="payment-info-desc">Generá una CLABE y transferí desde cualquier banco mexicano.</span>
+          </span>
+        </label>
+        <div class="payment-expand">
+          <div class="payment-expand-inner">
+            <div class="spei-info">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#3B82F6;flex-shrink:0;margin-top:2px;">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <span class="spei-info-text">Se generará una CLABE interbancaria única para este pago. Válida por <strong>72 horas</strong>. Podés transferir desde cualquier banco o app financiera.</span>
+            </div>
+            <div class="spei-steps">
+              <div class="spei-step">
+                <span class="spei-step-num">1</span>
+                Hacé clic en "Generar CLABE" para obtener tu referencia única
+              </div>
+              <div class="spei-step">
+                <span class="spei-step-num">2</span>
+                Copiá la CLABE y realizá la transferencia desde tu banco
+              </div>
+              <div class="spei-step">
+                <span class="spei-step-num">3</span>
+                El pago se confirma automáticamente en minutos
+              </div>
+            </div>
+            <button class="btn-secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+              Generar CLABE
             </button>
-            
-            <div class="verification-header">
-                <div class="check-icon-large">
-                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="10" stroke="#00c853" stroke-width="2" fill="rgba(0, 200, 83, 0.1)"/>
-                        <path d="M8 12L11 15L16 9" stroke="#00c853" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-                <h2>¡Transferencia enviada!</h2>
-                <p>Te enviamos <strong>$1.00 MXN</strong> a tu cuenta</p>
-            </div>
-            
-            <div class="instructivo-box">
-                <h3>Para continuar, sigue estos pasos:</h3>
-                <div class="instructivo-steps">
-                    <div class="instructivo-step">
-                        <div class="step-number">1</div>
-                        <div class="step-text">
-                            <strong>Abre tu app bancaria</strong>
-                            <p>Ve a la sección de movimientos o transacciones</p>
-                        </div>
-                    </div>
-                    <div class="instructivo-step">
-                        <div class="step-number">2</div>
-                        <div class="step-text">
-                            <strong>Busca la transferencia de $1.00</strong>
-                            <p>Verás un depósito con concepto "<span data-brand="name"></span> - Verificación"</p>
-                        </div>
-                    </div>
-                    <div class="instructivo-step">
-                        <div class="step-number">3</div>
-                        <div class="step-text">
-                            <strong>Toca en la transferencia</strong>
-                            <p>Se abrirá el detalle completo de la operación</p>
-                        </div>
-                    </div>
-                    <div class="instructivo-step">
-                        <div class="step-number">4</div>
-                        <div class="step-text">
-                            <strong>Copia los últimos 4 dígitos</strong>
-                            <p>Del número de autorización o referencia bancaria</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="example-box">
-                    <div class="example-header">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 16v-4M12 8h.01M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z" stroke="var(--primary-color)" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                        <strong>Ejemplo</strong>
-                    </div>
-                    <p>Si el número de autorización es <code>123456789012</code>, ingresa los últimos 4 dígitos: <code>9012</code></p>
-                </div>
-            </div>
-            
-            <div class="verification-code-form">
-                <label for="verificationCode">Últimos 4 dígitos de la transferencia</label>
-                <input 
-                    type="text" 
-                    id="verificationCode" 
-                    placeholder="0000" 
-                    maxlength="4"
-                    autocomplete="off"
-                    inputmode="numeric"
-                    pattern="[0-9]*">
-                <small class="input-error" id="verificationError" style="display: none; color: #dc3545;"></small>
-            </div>
-            
-            <div class="verification-modal-footer">
-                <button class="btn-primary-modal" id="verifyCodeBtn" onclick="verifyTransferCode()" disabled>
-                    Verificar
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
-            </div>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <!-- TAPI QR Modal -->
-    <div class="modal" id="tapiQRModal">
-        <div class="modal-content tapi-qr-modal-content">
-            <button class="modal-close" onclick="closeTapiQRModal()">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- ── D) Efectivo ── -->
+      <div class="payment-option">
+        <input type="radio" name="metodo" id="efectivo" class="payment-radio" />
+        <label for="efectivo" class="payment-label">
+          <span class="radio-dot"></span>
+          <span class="payment-logo-wrap">
+            <!-- Billete SVG inline -->
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="18" cy="18" r="17.5" fill="#FEFCE8" stroke="#FDE68A"/>
+              <rect x="8" y="13" width="20" height="10" rx="2" fill="none" stroke="#92400E" stroke-width="1.5"/>
+              <circle cx="18" cy="18" r="3" fill="none" stroke="#92400E" stroke-width="1.5"/>
+              <line x1="8" y1="16" x2="12" y2="16" stroke="#92400E" stroke-width="1.5"/>
+              <line x1="24" y1="20" x2="28" y2="20" stroke="#92400E" stroke-width="1.5"/>
+            </svg>
+          </span>
+          <span class="payment-info">
+            <span class="payment-info-name">
+              Efectivo en tiendas
+            </span>
+            <span class="payment-info-desc">Pagá en efectivo con una referencia en más de 20,000 puntos.</span>
+          </span>
+        </label>
+        <div class="payment-expand">
+          <div class="payment-expand-inner">
+            <div class="stores-grid">
+              <!-- OXXO chip -->
+              <span class="store-chip store-oxxo">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <rect width="14" height="14" rx="2" fill="#E8B800"/>
+                  <text x="7" y="10" font-family="Arial,sans-serif" font-size="6" font-weight="900" fill="#000" text-anchor="middle">OXXO</text>
                 </svg>
+                OXXO
+              </span>
+              <!-- 7-Eleven chip -->
+              <span class="store-chip store-7e">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <rect width="14" height="14" rx="2" fill="#E8001C"/>
+                  <text x="7" y="10" font-family="Arial,sans-serif" font-size="8" font-weight="900" fill="#fff" text-anchor="middle">7</text>
+                </svg>
+                7-Eleven
+              </span>
+              <!-- Farmacias del Ahorro chip -->
+              <span class="store-chip store-farma">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <rect width="14" height="14" rx="2" fill="#E8372C"/>
+                  <path d="M5 4v6M9 4v6M3 7h8" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                Farmacias del Ahorro
+              </span>
+            </div>
+            <p class="efectivo-note">
+              Se generará una referencia numérica que podés imprimir o guardar en tu teléfono. Presentala en cualquier sucursal de las cadenas indicadas y pagá en efectivo. Sin comisión adicional por parte del Gobierno.
+            </p>
+            <button class="btn-secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+              Obtener referencia de pago
             </button>
-            
-            <div class="tapi-qr-header">
-                <div class="tapi-logo-large" id="qrBankLogo">
-                    <!-- Bank logo will be inserted here dynamically -->
-                </div>
-                <h2 id="qrModalTitle">Escanea el código QR</h2>
-                <p id="qrModalSubtitle">Usa la cámara de tu celular para completar el proceso</p>
-            </div>
-            
-            <div class="tapi-qr-container">
-                <div class="qr-left-column">
-                    <div class="qr-code-wrapper qr-clickable" onclick="simulateQRScan()" title="Click para simular escaneo">
-                        <div id="tapiQRCode" class="qr-code-image">
-                            <!-- QR Code will be generated here -->
-                        </div>
-                        <div class="qr-loading hidden" id="qrLoading">
-                            <div class="spinner"></div>
-                            <p>Generando código QR...</p>
-                        </div>
-                        <div class="qr-click-hint">Click en el QR para simular escaneo</div>
-                    </div>
-
-                    <div class="qr-info-box">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path id="qrInfoIcon" d="M12 16v-4M12 8h.01M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z" stroke="#00c853" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                        <div>
-                            <strong>¿Cómo funciona?</strong>
-                            <p id="qrInfoText">Abre la cámara de tu celular y apunta al código QR para completar el proceso.</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tapi-qr-steps">
-                    <h3>¿Qué pasará después de escanear?</h3>
-                    <div class="qr-step-list">
-                        <div class="qr-step-item">
-                            <div class="qr-step-number">1</div>
-                            <div class="qr-step-content">
-                                <strong>Paga tu deuda actual</strong>
-                                <p>Confirma el pago de <span data-brand="total-amount-mxn"></span></p>
-                            </div>
-                        </div>
-                        <div class="qr-step-item">
-                            <div class="qr-step-number">2</div>
-                            <div class="qr-step-content">
-                                <strong>Configura domiciliación</strong>
-                                <p>Autoriza los pagos automáticos futuros</p>
-                            </div>
-                        </div>
-                        <div class="qr-step-item">
-                            <div class="qr-step-number">3</div>
-                            <div class="qr-step-content">
-                                <strong>¡Listo!</strong>
-                                <p>Tu domiciliación quedará activa</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="tapi-qr-footer">
-                <p class="security-note">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path id="qrSecurityIcon" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#00c853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    Código QR seguro y encriptado - Expira en 5 minutos
-                </p>
-            </div>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <!-- Final Confirmation Modal -->
-    <div class="modal" id="finalConfirmationModal">
-        <div class="modal-content final-confirmation-content">
-            <div class="final-confirmation-header">
-                <div class="check-icon-large animated">
-                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="10" stroke="#00c853" stroke-width="2" fill="#00c853"/>
-                        <path d="M8 12L11 15L16 9" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-                <h2>¡Cuenta verificada exitosamente!</h2>
-            </div>
-            
-            <div class="final-info-box">
-                <p class="final-main-text">Tu cuenta CLABE terminada en <strong id="lastClabeDigits">****</strong> ha sido verificada correctamente.</p>
-                
-                <!-- Flow visualization (only for paga-domicilia) -->
-                <div class="flow-steps" id="flowSteps" style="display: none;">
-                    <div class="flow-step-circle">
-                        <div class="flow-circle">1</div>
-                        <div class="flow-step-label">Domiciliación</div>
-                    </div>
-                    <div class="flow-arrow">→</div>
-                    <div class="flow-step-circle">
-                        <div class="flow-circle">2</div>
-                        <div class="flow-step-label">Pago</div>
-                    </div>
-                </div>
-                
-                <div class="domiciliation-info">
-                    <div class="step-badge" id="domiciliationBadge" style="display: none;">PASO 1</div>
-                    <h3>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        Domiciliación automática
-                    </h3>
-                    <div class="info-row">
-                        <span class="info-label">Servicio:</span>
-                        <span class="info-value" data-brand="service-name-type"></span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">No. de cuenta:</span>
-                        <span class="info-value" data-brand="account-number"></span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Cuenta:</span>
-                        <span class="info-value">CLABE ****<span id="lastClabeDigits2">****</span></span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Inicia desde:</span>
-                        <span class="info-value">Próximo mes</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Frecuencia:</span>
-                        <span class="info-value">Mensual - Al vencimiento</span>
-                    </div>
-                </div>
-                
-                <!-- Current Payment Section (only for paga-domicilia) -->
-                <div class="current-payment-box" id="currentPaymentBox" style="display: none;">
-                    <div class="step-badge">PASO 2</div>
-                    <h3>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        Pago de deuda actual (opcional)
-                    </h3>
-                    <div class="info-row">
-                        <span class="info-label">Monto a pagar ahora:</span>
-                        <span class="info-value payment-amount" data-brand="total-amount-mxn"></span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Vencimiento:</span>
-                        <span class="info-value" data-brand="account-dueDate"></span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Se cargará a:</span>
-                        <span class="info-value">CLABE ****<span id="lastClabeDigits3">****</span></span>
-                    </div>
-                </div>
-                
-                <div class="warning-box">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 9v4m0 4h.01M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z" stroke="#ffc107" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                    <div>
-                        <strong>¿Estás de acuerdo?</strong>
-                        <p id="warningTextPagaDomicilia" style="display: none;">Se configurará la domiciliación automática para pagos futuros. <strong>Adicionalmente, se cargará <span data-brand="total-amount-mxn"></span> inmediatamente</strong> para saldar tu deuda actual.</p>
-                        <p id="warningTextDomiciliar">A partir del próximo mes, se debitará automáticamente el monto de tu recibo de <span data-brand="name"></span> de esta cuenta al vencimiento de cada período.</p>
-                        <p class="small-text">Puedes cancelar la domiciliación en cualquier momento desde tu portal de <span data-brand="name"></span>.</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="final-confirmation-footer">
-                <button class="btn-secondary-modal" onclick="closeFinalConfirmation()">
-                    Cancelar
-                </button>
-                <button class="btn-primary-modal" id="confirmDomiciliationBtn" onclick="confirmDomiciliation()">
-                    <span id="confirmBtnText">Confirmar domiciliación y pago</span>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
-            </div>
+      <!-- ── Pago digital (billeteras) ── -->
+      <div class="payment-option">
+        <input type="radio" name="metodo" id="digital" class="payment-radio" />
+        <label for="digital" class="payment-label">
+          <span class="radio-dot"></span>
+          <span class="payment-logo-wrap">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+              <circle cx="18" cy="18" r="17.5" fill="#F5F3FF" stroke="#DDD6FE"/>
+              <rect x="9" y="12" width="18" height="12" rx="2" fill="none" stroke="#7C3AED" stroke-width="1.5"/>
+              <circle cx="22" cy="18" r="2" fill="#7C3AED"/>
+            </svg>
+          </span>
+          <span class="payment-info">
+            <span class="payment-info-name">Pago digital <span class="badge badge-gray">Wallets</span></span>
+            <span class="payment-info-desc">Nubank, Mercadopago, Revolut y más billeteras digitales.</span>
+          </span>
+        </label>
+        <div class="payment-expand">
+          <div class="payment-expand-inner">
+            <p class="efectivo-note" style="margin-top:var(--space-2);">Pagá desde tu billetera digital con el código de referencia. Buscá <strong data-brand="name">la marca</strong> en la sección "Pago de Servicios".</p>
+            <button class="btn-secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              Obtener código de referencia
+            </button>
+          </div>
         </div>
-    </div>
+      </div>
 
-
-    <!-- Phone Mockup Overlay -->
-    <div class="phone-overlay" id="phoneMockupOverlay">
-        <div class="phone-overlay-backdrop" onclick="closePhoneMockup()"></div>
-        <div class="phone-overlay-content">
-            <div class="phone-overlay-header">
-                <h3>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="5" y="2" width="14" height="20" rx="2" stroke="currentColor" stroke-width="2"/>
-                        <path d="M5 6H19" stroke="currentColor" stroke-width="2"/>
-                        <circle cx="12" cy="18" r="1" fill="currentColor"/>
-                    </svg>
-                    Simulación de app Hey en celular
-                </h3>
-                <button class="phone-overlay-close" onclick="closePhoneMockup()">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
+      <!-- ── E) Otros bancos ── -->
+      <div class="payment-option">
+        <input type="radio" name="metodo" id="otros" class="payment-radio" />
+        <label for="otros" class="payment-label">
+          <span class="radio-dot"></span>
+          <span class="payment-logo-wrap">
+            <!-- Banco genérico SVG inline -->
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+              <circle cx="18" cy="18" r="17.5" fill="#F8FAFC" stroke="#E2E8F0"/>
+              <rect x="8" y="22" width="20" height="2" rx="1" fill="#94A3B8"/>
+              <rect x="11" y="16" width="2" height="6" rx="1" fill="#64748B"/>
+              <rect x="17" y="16" width="2" height="6" rx="1" fill="#64748B"/>
+              <rect x="23" y="16" width="2" height="6" rx="1" fill="#64748B"/>
+              <polygon points="18,8 8,14 28,14" fill="#475569"/>
+            </svg>
+          </span>
+          <span class="payment-info">
+            <span class="payment-info-name">Otros bancos</span>
+            <span class="payment-info-desc">Pago directo desde tu banca en línea. Banamex, Santander, HSBC y más.</span>
+          </span>
+        </label>
+        <div class="payment-expand">
+          <div class="payment-expand-inner">
+            <div class="bancos-grid">
+              <div class="banco-chip">
+                <img
+                  src="assets/banks/banamex.svg"
+                  alt="Banamex"
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';"
+                />
+                <span style="display:none;font-size:0.75rem;font-weight:700;color:#D22630;">Banamex</span>
+                <span>Banamex</span>
+              </div>
+              <div class="banco-chip">
+                <img
+                  src="assets/banks/hsbc.jpg"
+                  alt="HSBC"
+                  style="height:20px;border-radius:2px;"
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';"
+                />
+                <span style="display:none;font-size:0.75rem;font-weight:700;color:#DB0011;">HSBC</span>
+                <span>HSBC</span>
+              </div>
+              <div class="banco-chip">
+                <!-- Santander inline SVG placeholder -->
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <circle cx="10" cy="10" r="10" fill="#EB0000"/>
+                  <text x="10" y="14" font-family="Arial,sans-serif" font-size="6" font-weight="700" fill="#fff" text-anchor="middle">SAN</text>
+                </svg>
+                <span>Santander</span>
+              </div>
+              <div class="banco-chip">
+                <img
+                  src="assets/banks/nu.jpeg"
+                  alt="Nu"
+                  style="height:20px;border-radius:50%;"
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';"
+                />
+                <span style="display:none;font-size:0.75rem;font-weight:700;color:#820AD1;">Nu</span>
+                <span>Nu</span>
+              </div>
             </div>
-            <div class="phone-device">
-                <div class="phone-notch"></div>
-                <div class="phone-screen-frame">
-                    <iframe id="phoneIframe" src="" frameborder="0" scrolling="no"></iframe>
-                </div>
-                <div class="phone-home-indicator"></div>
-            </div>
+            <button class="btn-secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              Ver todos los bancos disponibles
+            </button>
+          </div>
         </div>
+      </div>
+
+    </div><!-- /metodos-section -->
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════
+       FOOTER — tapi
+  ════════════════════════════════════════════ -->
+  <footer class="footer-tapipay">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          Procesado de forma segura por
+          <img
+            class="footer-logo"
+            src="https://tapi.la/wp-content/uploads/2025/06/logo_black.svg"
+            alt="tapi"
+            onerror="this.onerror=null; this.style.display='none'; this.insertAdjacentHTML('afterend','<strong style=\'font-weight:700;color:#067E20;font-size:0.9rem;\'>tapi</strong>');"
+          />
+        </div>
+        <div class="footer-security">
+          <span class="security-badge">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            SSL 256-bit
+          </span>
+          <span class="security-badge">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            PCI-DSS
+          </span>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="#">Términos y condiciones</a>
+        <a href="#">Aviso de privacidad</a>
+        <a href="#">Ayuda</a>
+      </div>
     </div>
+  </footer>
 
-    <!-- Configs (deben cargarse primero) -->
-    <script src="config/banks-config.js"></script>
-    <script src="config/demo-builder-config.js"></script>
-    <script src="js/demo-router.js"></script>
+  <script>
+  (function portal() {
+    var $  = function (s, r) { return (r || document).querySelector(s); };
+    var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+    var params = new URLSearchParams(window.location.search);
 
-    <!-- Modulos del checkout (orden importa para dependencias) -->
-    <script src="js/checkout-core.js"></script>
-    <script src="js/identity-validation.js"></script>
-    <script src="js/qr-checkout-flow.js"></script>
-    <script src="js/push-flow.js"></script>
-    <script src="js/account-to-account.js"></script>
-    <script src="js/phone-mockup.js"></script>
-    <script>
-        // BRAND: Initialize all brand values from config
-        (function initBrand() {
-            document.title = BRAND.name + ' - Checkout de Pago';
+    // ── 1) Marca: poblar textos + logo + titulo desde BRAND ──
+    function money() { return (typeof BRAND !== 'undefined' && BRAND.formattedTotal) ? BRAND.formattedTotal() : '$0.00'; }
+    function initBrand() {
+      if (typeof BRAND === 'undefined') return;
+      document.title = BRAND.name + ' · Portal de Pagos';
+      var logo = $('#brandLogo');
+      if (logo) { logo.src = BRAND.logo; logo.alt = BRAND.name; }
+      var map = {
+        'name': BRAND.name,
+        'concept': 'Pago de ' + (BRAND.serviceType || 'servicio'),
+        'reference': (BRAND.account && BRAND.account.reference) || '—',
+        'period': (BRAND.account && BRAND.account.period) || '—',
+        'account-number': (BRAND.account && BRAND.account.number) || '—',
+        'dueDate': (BRAND.account && BRAND.account.dueDate) || '—',
+        'total': money(),
+      };
+      Object.keys(map).forEach(function (k) {
+        $$('[data-brand="' + k + '"]').forEach(function (el) { el.textContent = map[k]; });
+      });
+      if (typeof applyBrandColors === 'function') applyBrandColors();
+    }
 
-            // Update logo
-            var logo = document.getElementById('brandLogo');
-            if (logo) { logo.src = BRAND.logo; logo.alt = BRAND.name; }
+    // ── 2) Multi-select de metodos: mostrar solo los elegidos en el builder (?methods=) ──
+    // Mapea el id del radio de cada metodo -> clave de metodo del Paso 3.
+    var PM_BY_RADIO = {
+      bbva: 'bbva-directo', tarjeta: 'card', spei: 'transferencia',
+      efectivo: 'efectivo', digital: 'digital', otros: 'otros-bancos'
+    };
+    function filterMethods() {
+      var raw = params.get('methods');
+      var allow = raw ? raw.split(',').map(function (s) { return s.trim(); }).filter(Boolean) : null;
+      var visibles = [];
+      $$('.payment-option').forEach(function (opt) {
+        var radio = $('.payment-radio', opt);
+        var pm = radio ? PM_BY_RADIO[radio.id] : null;
+        if (pm) opt.setAttribute('data-pm', pm);
+        var show = !allow || (pm && allow.indexOf(pm) !== -1);
+        opt.style.display = show ? '' : 'none';
+        if (show) visibles.push(opt);
+      });
+      // Asegurar que haya exactamente un metodo expandido (el primero visible)
+      var anyChecked = visibles.some(function (o) { return $('.payment-radio', o).checked; });
+      if (visibles.length && !anyChecked) { $('.payment-radio', visibles[0]).checked = true; }
+      // Si el metodo que estaba checked quedo oculto, pasar el check al primero visible
+      $$('.payment-option').forEach(function (o) {
+        if (o.style.display === 'none') { var r = $('.payment-radio', o); if (r) r.checked = false; }
+      });
+      if (visibles.length && !visibles.some(function (o) { return $('.payment-radio', o).checked; })) {
+        $('.payment-radio', visibles[0]).checked = true;
+      }
+    }
 
-            // Update all .brand-logo images
-            document.querySelectorAll('.brand-logo').forEach(function(img) {
-                img.src = BRAND.logo; img.alt = BRAND.name;
-            });
+    // ── 3) Helpers de flujo ──
+    function carry(base) {
+      var out = [];
+      ['b', 'embedded'].forEach(function (k) { if (params.get(k)) out.push(k + '=' + encodeURIComponent(params.get(k))); });
+      if (!out.length) return base;
+      return base + (base.indexOf('?') >= 0 ? '&' : '?') + out.join('&');
+    }
+    function btnOf(radioId) {
+      var opt = $('#' + radioId);
+      opt = opt && opt.closest('.payment-option');
+      return opt ? $('.payment-expand-inner button', opt) : null;
+    }
+    function innerOf(radioId) {
+      var opt = $('#' + radioId);
+      opt = opt && opt.closest('.payment-option');
+      return opt ? $('.payment-expand-inner', opt) : null;
+    }
+    function copyable(label, value) {
+      return '<div class="result-row"><div><div class="rk">' + label + '</div>' +
+        '<div class="rv">' + value + '</div></div>' +
+        '<button type="button" class="copy-btn" data-copy="' + String(value).replace(/"/g, '') + '">Copiar</button></div>';
+    }
+    document.addEventListener('click', function (e) {
+      var c = e.target.closest && e.target.closest('[data-copy]');
+      if (!c) return;
+      var v = c.getAttribute('data-copy');
+      if (navigator.clipboard) navigator.clipboard.writeText(v);
+      var t = c.textContent; c.textContent = '¡Copiado!';
+      setTimeout(function () { c.textContent = t; }, 1200);
+    });
 
-            // Populate data-brand elements
-            var brandMap = {
-                'name': BRAND.name,
-                'account-number': BRAND.account.number,
-                'account-period': BRAND.account.period,
-                'account-dueDate': BRAND.account.dueDate,
-                'plan-label': BRAND.planName + ':',
-                'plan-amount': BRAND.formattedPlanAmount(),
-                'discount-label': BRAND.account.discountLabel + ':',
-                'discount-amount': BRAND.formattedDiscount(),
-                'previous-balance': BRAND.formattedPreviousBalance(),
-                'total-amount-mxn': BRAND.formattedTotal() + ' MXN',
-                'service-name-type': BRAND.name + ' - ' + BRAND.serviceType,
-            };
-            Object.keys(brandMap).forEach(function(key) {
-                document.querySelectorAll('[data-brand="' + key + '"]').forEach(function(el) {
-                    el.textContent = brandMap[key];
-                });
-            });
-        })();
+    // ── 4) Cablear cada metodo ──
+    function wire() {
+      // BBVA Pago Directo -> app BBVA (reusa auth-bbva.html)
+      var bbva = btnOf('bbva');
+      if (bbva) bbva.addEventListener('click', function (e) {
+        e.preventDefault();
+        window.location.href = carry('auth-bbva.html?bank=bbva&action=pay-domiciliar&direct=1');
+      });
 
-        // Detect flow from URL parameter
-        // NOTE: urlParams ya fue declarado con const en checkout-core.js (mismo scope global).
-        // Reusar esa variable para evitar SyntaxError por redeclaracion de const.
-        const flow = urlParams.get('flow') || sessionStorage.getItem('selectedFlow') || 'sin-dato';
-        
-        // Store in sessionStorage for future reference
-        sessionStorage.setItem('selectedFlow', flow);
+      // Otros bancos -> nota inline (autorizar en la app del banco)
+      var otros = btnOf('otros');
+      if (otros) otros.addEventListener('click', function (e) {
+        e.preventDefault();
+        if ($('.result-note', innerOf('otros'))) return;
+        var n = document.createElement('div');
+        n.className = 'result-note result-box';
+        n.innerHTML = '<div class="spei-step" style="margin:0"><span class="spei-step-num">i</span>' +
+          'Elegí tu banco, abrí su app y autorizá el cargo de <strong>' + money() + ' MXN</strong>. ' +
+          'El pago se acredita de forma automática.</div>';
+        otros.parentNode.insertBefore(n, otros);
+      });
 
-        // ============================================
-        // AUTO-START desde deep-link (QR escaneado)
-        // ============================================
-        // Si el portal se abre por un QR de factura (autopay=1), forzamos la
-        // experiencia de pago (Paso 3) configurada: revelamos "Pago Automatico"
-        // y disparamos el banco configurado, reusando el handler real de .bank-card
-        // (que rutea por currentFlow). Backward-compat: sin autopay=1, todo manual.
-        (function autoStartFromQR() {
-            if (urlParams.get('autopay') !== '1') return;
-            if (typeof getDemoConfig !== 'function' || typeof getOptionById !== 'function') return;
+      // Tarjeta -> procesando -> exito
+      var card = btnOf('tarjeta');
+      if (card) card.addEventListener('click', function (e) {
+        e.preventDefault();
+        var inner = innerOf('tarjeta');
+        inner.innerHTML = '<div class="pay-processing"><div class="spinner"></div>' +
+          '<div style="color:var(--tapi-muted);font-size:.875rem">Procesando pago seguro…</div></div>';
+        setTimeout(function () {
+          var folio = 'TXN-' + String(Date.now()).slice(-8);
+          inner.innerHTML =
+            '<div class="success-box">' +
+              '<div class="success-check"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>' +
+              '<div class="success-amount">' + money() + ' <span style="font-size:1rem;color:var(--tapi-muted)">MXN</span></div>' +
+              '<div style="margin-top:6px"><span class="success-badge-ok">✓ Pago aprobado</span></div>' +
+              '<div class="success-rows">' +
+                '<div class="success-row"><span class="k">Folio</span><span class="v">' + folio + '</span></div>' +
+                '<div class="success-row"><span class="k">Método</span><span class="v">VISA •••• 1234</span></div>' +
+                '<div class="success-row"><span class="k">Fecha</span><span class="v">' + new Date().toLocaleDateString('es-MX') + '</span></div>' +
+              '</div>' +
+            '</div>';
+        }, 2500);
+      });
 
-            var config = getDemoConfig();
-            var payOpt = getOptionById('payment', config.payment);
-            if (!payOpt || !payOpt.bank) return;
+      // SPEI -> generar CLABE
+      var spei = btnOf('spei');
+      if (spei) spei.addEventListener('click', function (e) {
+        e.preventDefault();
+        if ($('.result-box', innerOf('spei'))) return;
+        var box = document.createElement('div');
+        box.className = 'result-box';
+        box.innerHTML =
+          copyable('CLABE interbancaria', '646180' + String(Date.now()).slice(-12)) +
+          copyable('Monto exacto', money()) +
+          '<div class="result-row"><div><div class="rk">Banco</div><div class="rv">STP</div></div></div>' +
+          '<div class="result-row"><div><div class="rk">Beneficiario</div><div class="rv">AUNTAPI TECHSOLUTIONS</div></div></div>';
+        spei.parentNode.insertBefore(box, spei.nextSibling);
+        spei.style.display = 'none';
+      });
 
-            var bank = payOpt.bank;
-            // Nubank y video son flujos autocontenidos / sin bank-card estandar → no forzar
-            if (bank === 'nubank' || bank === 'video') return;
+      // Efectivo -> referencia + codigo de barras
+      var cash = btnOf('efectivo');
+      if (cash) cash.addEventListener('click', function (e) {
+        e.preventDefault();
+        if ($('.result-box', innerOf('efectivo'))) return;
+        var box = document.createElement('div');
+        box.className = 'result-box';
+        box.innerHTML =
+          '<div class="ref-code">' + String(Date.now()).slice(-4) + ' ' + String(Date.now()).slice(-8, -4) + ' ' + String(Date.now()).slice(-12, -8) + '</div>' +
+          '<div class="barcode"></div>' +
+          copyable('Monto a pagar', money());
+        cash.parentNode.insertBefore(box, cash.nextSibling);
+        cash.style.display = 'none';
+      });
 
-            // 1) Seleccionar metodo "Pago Automatico" (revela bancos + setea selectedMethod)
-            var methodOpt = document.querySelector('.payment-option[data-method="paga-domicilia"]');
-            if (!methodOpt) return;
-            methodOpt.click();
+      // Pago digital -> codigo de referencia + pasos
+      var digital = btnOf('digital');
+      if (digital) digital.addEventListener('click', function (e) {
+        e.preventDefault();
+        if ($('.result-box', innerOf('digital'))) return;
+        var box = document.createElement('div');
+        box.className = 'result-box';
+        box.innerHTML =
+          copyable('Código de referencia', String(Date.now()).slice(-10)) +
+          copyable('Monto', money()) +
+          '<div class="spei-steps" style="margin-top:12px">' +
+            '<div class="spei-step"><span class="spei-step-num">1</span>Abrí tu billetera y entrá a "Pago de Servicios"</div>' +
+            '<div class="spei-step"><span class="spei-step-num">2</span>Buscá la empresa e ingresá el código de referencia</div>' +
+            '<div class="spei-step"><span class="spei-step-num">3</span>Confirmá el monto y pagá</div>' +
+          '</div>';
+        digital.parentNode.insertBefore(box, digital.nextSibling);
+        digital.style.display = 'none';
+      });
+    }
 
-            // 2) Tras una pausa visible (que se vea el portal), disparar el banco configurado
-            setTimeout(function() {
-                var card = document.querySelector('#banksSelectionPagaDomicilia .bank-card[data-bank="' + bank + '"]')
-                        || document.querySelector('.bank-card[data-bank="' + bank + '"]');
-                if (card) card.click();
-            }, 1300);
-        })();
+    function boot() { initBrand(); filterMethods(); wire(); }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+    else boot();
+  })();
+  </script>
 
-    </script>
 </body>
 </html>
-

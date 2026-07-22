@@ -61,6 +61,21 @@ function getDemoConfig() {
         }
     }
 
+    // methods: Paso 3 multi-select (array de metodos habilitados en el portal).
+    // Precedencia: URL (?methods=csv) > sessionStorage > default (todos los metodos).
+    var paymentStage = (typeof getStageById === 'function') ? getStageById('payment') : null;
+    var allMethods = paymentStage ? paymentStage.options.map(function (o) { return o.id; }) : [];
+    var fromUrlMethods = params ? params.get('methods') : null;
+    var methodsCandidate = fromUrlMethods
+        ? fromUrlMethods.split(',')
+        : (Array.isArray(stored.methods) ? stored.methods : null);
+    if (methodsCandidate && methodsCandidate.length) {
+        config.methods = methodsCandidate
+            .map(function (m) { return String(m).trim(); })
+            .filter(function (m) { return !allMethods.length || allMethods.indexOf(m) !== -1; });
+    }
+    if (!config.methods || !config.methods.length) config.methods = allMethods; // default: todos
+
     // Persistir el merge para continuidad de navegacion en el mismo dispositivo
     try { sessionStorage.setItem('demoConfig', JSON.stringify(config)); } catch (e) {}
 
@@ -93,15 +108,17 @@ function getNextPageUrl(currentStage) {
     // Propagar la marca (param `b`) al siguiente paso, para que sobreviva la cadena en el celular
     var _bp = new URLSearchParams(window.location.search).get('b');
     var bParam = _bp ? ('&b=' + encodeURIComponent(_bp)) : '';
+    // Metodos habilitados del portal (Paso 3 multi-select) → viajan al checkout
+    var methodsParam = (config.methods && config.methods.length) ? ('&methods=' + config.methods.join(',')) : '';
 
     if (currentStage === 'arrival') {
         // Siguiente: checkout
         var checkoutOption = getOptionById('checkout', config.checkout);
-        if (!checkoutOption) return 'checkout.html?flow=curp-deeplink' + cfgParam + bParam + embeddedParam;
+        if (!checkoutOption) return 'checkout.html?flow=curp-deeplink' + cfgParam + methodsParam + bParam + embeddedParam;
 
         var flow = checkoutOption.flow || 'curp-deeplink';
         var source = config.arrival === 'qr' ? '&source=qr' : '';
-        return checkoutOption.page + '?flow=' + flow + source + cfgParam + bParam + embeddedParam;
+        return checkoutOption.page + '?flow=' + flow + source + cfgParam + methodsParam + bParam + embeddedParam;
     }
 
     if (currentStage === 'checkout') {
